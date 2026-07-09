@@ -1,17 +1,30 @@
-## Workflow Phases
+## Workflow
 
-Ideate → Define → Sketch → Plan → Build → Compound
-
-### Spec-Driven Development
+### 코어 경로 (Spec-Driven Development)
 
 | Phase | Skill | 산출물 |
 |---|---|---|
-| Ideate | `/idea-refine` | `artifacts/<feature>/idea.md` (선택) |
 | Specify | `/write-spec` | `artifacts/<feature>/spec.md` |
-| Sketch | `/sketch-wireframe` | `artifacts/<feature>/wireframe.html` |
 | Plan | `/draft-plan` | `artifacts/<feature>/plan.md` |
-| Build | `/execute-plan` | `artifacts/<feature>/learnings.md` |
-| Compound | `/compound` | — |
+| Build | `/execute-plan` | 코드 + 커밋, `artifacts/<feature>/learnings.md` |
+| Compound | `/compound` | Skill·Hook·Rule·CLAUDE.md 승격 |
+
+한 세션에 끝나고 diff를 한 문장으로 설명할 수 있는 작업은 코어 경로 대신 내장 plan 모드로 진행한다.
+
+### 옵션 모듈 (조건이 맞을 때만 켠다)
+
+| 모듈 | 켜는 조건 | 산출물 |
+|---|---|---|
+| `/idea-refine` | 아이디어가 막연하거나 방향을 정해야 할 때 | `artifacts/<feature>/idea.md` |
+| `/sketch-wireframe` | 레이아웃 구조가 바뀌는 UI feature | `artifacts/<feature>/wireframe.html` |
+| `plan-reviewer` 에이전트 | Task 5개 이상, wireframe 존재, 또는 되돌리기 비싼 도메인 | plan 독립 검토 |
+
+### 판정 기준 체계
+
+- spec.md의 판정 기준이 유일한 원본이다. plan과 테스트는 ID(`S1`, `S1-1`, `INV-1`)로 참조하고, 기준 문장을 복사하지 않는다.
+- 테스트 이름에 담당 ID를 `[S1-1]` 형식으로 인용한다.
+- 커버리지 검사: `scripts/spec-coverage.sh <feature> [--tests]`
+- spec의 판정 기준 체크박스는 실행 증거(테스트 통과, End-to-end 확인)로만 켠다.
 
 ## Development Workflow
 
@@ -23,18 +36,18 @@ Ideate → Define → Sketch → Plan → Build → Compound
 ## Testing
 
 ### 원칙
-**수용 기준을 정의한다. 검증될 때까지 반복한다.**
+**판정 기준을 정의한다. 검증될 때까지 반복한다.**
 
-- 모든 변경에는 측정 가능한 수용 기준(구체적인 입력, 관찰 가능한 결과)이 필요하다
-- 각 기준은 이를 증명하는 테스트를 가진다. 
-- 수용 기준이 실제로 증명되는 가장 낮은 경계를 선택한다. mock이 기준을 가린다면 거기서 mock하지 않는다.
+- 모든 변경에는 측정 가능한 판정 기준(구체적인 입력, 관찰 가능한 결과)이 필요하다
+- 각 기준은 이를 증명하는 테스트를 가지고, 테스트 이름은 기준 ID를 인용한다
+- 판정 기준이 실제로 증명되는 가장 낮은 경계를 선택한다. mock이 기준을 가린다면 거기서 mock하지 않는다.
 
 ### Stack & 파일 배치
 
 | 도구 | 용도 | 위치 |
 |---|---|---|
-| Vitest (jsdom, `@testing-library/react`) | 단위·통합·수용 기준 | `<file>.test.tsx` colocated |
-| Playwright | E2E | `e2e/*.spec.ts` | global
+| Vitest (jsdom, `@testing-library/react`) | 단위·통합·판정 기준 | `<file>.test.tsx` colocated |
+| Playwright | E2E | `e2e/*.spec.ts` |
 
 ### Commands
 
@@ -46,7 +59,7 @@ Ideate → Define → Sketch → Plan → Build → Compound
 
 ## Architecture
 
-순환 의존 방지를 위해 역방향 의존은 금지한다. 의존성이 적은 것부터 구현한다.
+순환 의존 방지를 위해 역방향 의존을 금지한다. 의존성이 적은 것부터 구현한다.
 
 | 순서 | 디렉토리 | 허용 의존성 |
 |---|---|---|
