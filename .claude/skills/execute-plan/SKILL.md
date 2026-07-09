@@ -28,6 +28,7 @@ plan.md의 Task를 메인 컨텍스트에서 한 번에 하나씩 직접 구현�
 - `artifacts/<feature>/wireframe.html`: 있으면 참조
 - plan.md의 필요 스킬에 나열된 각 SKILL.md 읽기
 - `references/learnings-template.md` 읽기 (learnings.md 기록 형식 확인)
+- **과거 learnings 검색**: feature 이름과 plan.md의 기술 키워드(라이브러리, 파일 경로, 작업 유형)로 `artifacts/*/learnings.md`의 `triggers:` 라인을 grep하고, 걸린 항목만 읽는다. `status: verified`는 지시문을 따르고, `hypothesis`는 참고만 한다.
 
 ### Step 2. Task 순서 결정
 
@@ -37,7 +38,7 @@ plan.md의 Task 목록을 분석한다.
 2. 실행 순서를 결정한다 (순차, 의존성 우선)
 3. 순서를 간단히 출력한다
 
-순서와 근거를 learnings.md에 기록한다.
+plan.md와 다르게 순서를 결정한 경우에만 그 근거를 learnings.md에 기록한다.
 
 ### Step 3. Task 실행
 
@@ -54,7 +55,7 @@ plan의 체크포인트에 도달하면 체크포인트 항목을 실행한다 (
 
 컨텍스트가 길어졌으면 체크포인트 통과 후 `/clear`하고 `/execute-plan <feature>`로 재개해도 안전하다. plan.md의 완료 표시와 spec.md 체크박스가 진행 상태를 들고 있다.
 
-실패하면 우회하지 않고 근본 원인을 찾는다. 빌드 skip, 테스트 disable, 에러 swallow는 기술 부채를 가리는 단기 우회일 뿐이다.
+빌드·테스트가 실패하면 근본 원인을 찾기 전에 **에러 메시지 문자열로 `artifacts/*/learnings.md`를 grep**한다 — 과거에 같은 함정을 밟았다면 verified 지시문이 우회 없이 해결해 준다. 없으면 우회하지 않고 근본 원인을 찾는다. 빌드 skip, 테스트 disable, 에러 swallow는 기술 부채를 가리는 단기 우회일 뿐이다.
 
 #### 유연한 판단
 
@@ -91,7 +92,7 @@ plan의 체크포인트에 도달하면 체크포인트 항목을 실행한다 (
 
 사용자에게 spec.md 대비 feature를 검증해 달라고 요청한다. 피드백이 있으면 직접 수정하고 재검증한다. 판단을 learnings.md에 기록한다.
 
-### Step 6. Compound: 학습 즉시 반영
+### Step 6. Retrospective: 학습 정리
 
 Compound Engineering 정신: 이번 feature가 다음 feature를 더 쉽게 만들도록 학습을 누적한다. 항상 실행한다. 발견이 없으면 "발견 없음"도 기록한다.
 
@@ -101,15 +102,12 @@ Compound Engineering 정신: 이번 feature가 다음 feature를 더 쉽게 만�
 2. **무엇이 안 됐는가**
 3. **다음에도 쓸 인사이트는 무엇인가**
 
-#### 즉시 승격 vs 메모
+이어서 이번 feature의 learnings.md 항목을 최종 정리한다. learnings는 다음 feature가 검색으로 소비하는 메모리이므로, 여기가 기록 품질을 지키는 마지막 관문이다:
 
-- **명확한 인사이트** (재발 가능성 높음, 일반화 가능) → 사용자 승인 후 즉시 `.claude/rules/<name>.md` 또는 `CLAUDE.md`에 반영한다. learnings.md에는 `applied: rule`로 기록한다.
-- **약한 신호** (재발 가능성 모호) → learnings.md에 `applied: not-yet`로 메모만 남긴다. 여러 feature 누적 후 `/compound`가 회고로 분석한다.
-
-판단 가이드:
-- 같은 실수가 이미 다른 feature에서 발생한 적 있는가 → 즉시 승격
-- 일반화 가능한 규칙으로 표현되는가 → 즉시 승격
-- 이번 feature 특유의 우연인가 → 메모만
+- **triggers 보강**: 각 항목의 triggers를 미래의 검색어 관점에서 재검토한다 (에러 메시지 원문, 라이브러리명, 파일 경로가 들어갔는가)
+- **증거 확인**: 커밋 해시·테스트 이름이 실제로 존재하는가
+- **status 확정**: 증거가 있으면 `verified`, 원인이 불확실하면 `hypothesis`
+- **재발 명기**: 과거 feature의 learnings에 같은 패턴이 이미 있으면 그 사실을 에피소드에 남긴다 (`/compound`의 병합·확정 근거가 된다)
 
 ### Step 7. Done
 
@@ -117,6 +115,6 @@ Compound Engineering 정신: 이번 feature가 다음 feature를 더 쉽게 만�
 
 - **실행 요약**: 전체 Task 개수, 생성된 커밋
 - **판정 기준 커버리지**: spec.md의 어느 기준이 실행 증거로 충족되었는가
-- **Compound 결과**: 즉시 승격된 원칙 + learnings.md에 남긴 메모 요약
+- **학습 결과**: learnings.md에 남긴 교훈 요약 (verified / hypothesis 구분)
 
-이번 feature는 완료다. feature가 여러 개 누적되면 **다음 단계**는 `/compound`로 약한 신호의 패턴을 회고하는 것이다.
+이번 feature는 완료다. learnings가 여러 feature에 쌓이면 **다음 단계**는 `/compound`로 메모리를 정리(병합·폐기·확정)하는 것이다.

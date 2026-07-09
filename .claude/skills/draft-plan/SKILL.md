@@ -29,10 +29,11 @@ spec.md의 판정 기준을 어떤 순서로, 어떤 단위로 구현할지 Task
 
 ### Step 2. Pre-exploration
 
-plan을 쓰기 전에 이미 존재하는 맥락을 코드와 스킬 두 축에서 모은다.
+plan을 쓰기 전에 이미 존재하는 맥락을 코드·스킬·learnings 세 축에서 모은다.
 
 - **코드베이스**: 아키텍처, 관련 패턴, 영향받을 파일, 의존성, 유사 기능을 파악하고 위험을 기록한다.
 - **스킬**: `.claude/skills/`를 스캔해 이 feature와 조금이라도 관련 있는 스킬을 모두 고른다. 애매하면 포함한다. 빠진 스킬 때문에 plan이 프로젝트 규약과 어긋나는 쪽이 넘치는 쪽보다 비용이 크다.
+- **learnings**: feature의 도메인 키워드(라이브러리, 파일 경로, 작업 유형)로 `artifacts/*/learnings.md`의 `triggers:` 라인을 grep한다. 걸린 `verified` 항목의 지시문은 plan의 입력이다 — 과거 함정이 Task에 닿으면 해당 Task의 검증 필드나 참조에 명시한다. `hypothesis`는 위험 항목으로만 기록한다.
 
 ### Step 3. 빈칸 채우기
 
