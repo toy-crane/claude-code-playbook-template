@@ -59,6 +59,7 @@ phase 산출물이 확정되면 다음 phase는 새 세션(`/clear`)에서 시�
 
 | 명령 | 범위 |
 |---|---|
+| `bun run typecheck` | tsc 타입 검사 (Task 단위 검증용, 풀빌드는 체크포인트에서만) |
 | `bun run test` | Vitest |
 | `bun run test:watch` | Vitest watch |
 | `bun run test:e2e` | Playwright |

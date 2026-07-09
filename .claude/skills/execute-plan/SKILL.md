@@ -46,7 +46,7 @@ Step 2의 순서대로 Task를 한 번에 하나씩 구현한다. 각 Task에 �
 1. **담당 판정 기준**의 ID로 spec.md에서 원문을 읽는다
 2. **코드로 표현 가능한 판정 기준에 TDD(RED → GREEN)를 적용한다**: UI 시각 검증·디자인 판단은 제외. `CLAUDE.md` → Testing 규율을 따른다. 테스트 이름에 담당 ID를 `[S1-1]` 형식으로 인용한다.
 3. 기준을 충족하는 최소 코드를 구현한다
-4. `bun run build`와 영향받은 테스트를 실행한다
+4. `bun run typecheck`와 영향받은 테스트를 실행한다 (풀빌드는 체크포인트에서만 돈다)
 5. Task당 conventional commit 하나를 만든다
 6. plan.md에서 Task를 완료로 표시하고, 테스트로 증명된 판정 기준의 체크박스를 spec.md에서 켠다
 

@@ -77,7 +77,7 @@ NG (horizontal): Task 1: 모든 DB 스키마 / Task 2: 모든 API / Task 3: 모�
 
 | 증명 가능한 곳 | 사용 |
 |---|---|
-| 코드 (DOM, 함수, DB, HTTP) | Vitest / `bun run build` |
+| 코드 (DOM, 함수, DB, HTTP) | Vitest / `bun run typecheck` |
 | 실제 브라우저, CI에서 반복 가능 | Playwright (`bun run test:e2e`) |
 | 실제 브라우저, 일회성 증거 | Browser MCP (`mcp__claude-in-chrome__*`) |
 | 자동화 불가능 (디자인 판단, 스크린 리더, cross-browser 느낌) | Human review: 리뷰어·기준 명시, 증거는 `artifacts/<feature>/evidence/`에 저장 |
