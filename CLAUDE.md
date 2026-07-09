@@ -23,7 +23,7 @@
 
 - spec.md의 판정 기준이 유일한 원본이다. plan과 테스트는 ID(`S1`, `S1-1`, `INV-1`)로 참조하고, 기준 문장을 복사하지 않는다.
 - 테스트 이름에 담당 ID를 `[S1-1]` 형식으로 인용한다.
-- 커버리지 검사: `scripts/spec-coverage.sh <feature> [--tests]`
+- 커버리지 검사: `scripts/spec-coverage.sh <feature> [--tests] [--wireframe]`
 - spec의 판정 기준 체크박스는 실행 증거(테스트 통과, End-to-end 확인)로만 켠다.
 
 ## Development Workflow
