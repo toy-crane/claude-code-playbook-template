@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Wireframe: {{FEATURE_NAME}}</title>
 <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
-<script src="https://unpkg.com/lucide@latest"></script>
+<script src="https://unpkg.com/lucide@0.576.0"></script>
 <style>
   :root {
     --w-bg: #f5f5f5;
@@ -31,6 +31,14 @@
   .screen { display: none; }
   .screen.active { display: block; }
 
+  /* 화면 간 전환 배선: data-goto="screen-<id>" 를 단 요소는 클릭 시 해당 화면으로 이동 */
+  [data-goto] { cursor: pointer; }
+  [data-goto]::after { content: " ↗"; color: var(--w-muted); }
+  [data-goto]:hover { outline: 2px solid var(--w-text); outline-offset: 2px; }
+
+  /* 화면 밖 진입 조건 한 줄 (템플릿 크롬) */
+  .screen-entry { font-size: 12px; color: var(--w-muted); margin: -12px 0 16px; }
+
   /* Viewport toggle */
   .vp-toggle button {
     font-size: 12px; padding: 2px 8px;
@@ -45,33 +53,10 @@
     max-width: 375px !important;
     margin: 24px auto !important;
     border: 2px solid var(--w-border);
-    border-radius: 24px;
     min-height: 667px;
     background: white;
-    box-shadow: 0 4px 24px rgba(0,0,0,0.08);
     padding: 32px 16px !important;
   }
-
-  /* Screen Notes */
-  .screen-notes {
-    background: #fffde7;
-    border-left: 3px solid #ffd54f;
-    padding: 12px 16px;
-    margin-top: 24px;
-    font-size: 13px;
-    border-radius: 0 4px 4px 0;
-  }
-  .screen-notes summary {
-    cursor: pointer;
-    font-weight: bold;
-    font-size: 12px;
-    color: #b0a050;
-    text-transform: uppercase;
-    letter-spacing: 0.05em;
-  }
-  .screen-notes p { margin: 6px 0 2px; color: #777; }
-  .screen-notes ul { margin: 4px 0 0 16px; padding: 0; color: #777; }
-  .screen-notes li { margin: 2px 0; }
 </style>
 </head>
 <body class="p-0 m-0 viewport-mobile">
@@ -92,46 +77,37 @@
   화면 삽입 패턴 (이 주석은 삭제하지 않는다)
   ──────────────────────────────────────
 
+  화면 id는 의미 있는 이름을 쓴다 (예: list, empty, detail).
+  숫자 순번은 중간에 화면을 삽입할 때 data-goto 참조가 깨진다.
+
   NAV_BUTTONS 위치에 삽입:
-  <button id="nav-0" onclick="show(0)" class="px-2 py-1">화면 이름</button>
+  <button id="nav-list" onclick="show('list')" class="px-2 py-1">화면 이름</button>
 
   SCREEN_CONTENT 위치에 삽입:
-  <div id="screen-0" class="screen" data-scenario="S1, S2">
+  <div id="screen-list" class="screen" data-scenario="S1">
     <div class="screen-content @container max-w-6xl mx-auto p-6">
 
       <h2 class="text-lg font-bold mb-5" style="color:var(--w-muted); border-bottom:1px solid var(--w-border); padding-bottom:8px;">
         화면 이름
       </h2>
+      <p class="screen-entry">진입: 로그인 성공 직후</p>
+      (진입 조건 줄은 화면 밖에서 진입하는 조건이 있을 때만 넣는다)
 
       여기에 와이어프레임 컨텐츠 작성
-      반응형: 모바일 우선 → @md: 접두사로 데스크톱 레이아웃
-
-      <div class="screen-notes">
-        <details open>
-          <summary>Notes</summary>
-          <p>화면 목적과 사용자 행동 설명</p>
-          <ul>
-            <li>트리거: 이 화면으로 진입하는 조건</li>
-            <li>인터랙션: 주요 사용자 동작</li>
-            <li>전환: 다른 화면으로 이동하는 조건</li>
-          </ul>
-        </details>
-      </div>
+      - 반응형: 모바일 우선 → @md: 접두사로 데스크톱 레이아웃
+      - 다른 화면으로 전환하는 요소에는 data-goto를 단다. 전환을 글로 설명하지 않는다:
+        <button data-goto="screen-detail" class="...">할 일 열기</button>
 
     </div>
   </div>
 -->
 
 <script>
-var currentScreen = 0;
-var screenIds = [];
-
 function show(id) {
   document.querySelectorAll('.screen').forEach(function(s) { s.classList.remove('active'); });
   document.getElementById('screen-' + id).classList.add('active');
   document.querySelectorAll('nav button[id^="nav-"]').forEach(function(b) { b.classList.remove('active'); });
   document.getElementById('nav-' + id).classList.add('active');
-  currentScreen = screenIds.indexOf(id);
 }
 
 function setViewport(mode) {
@@ -141,10 +117,12 @@ function setViewport(mode) {
   document.getElementById('vp-' + mode).classList.add('active');
 }
 
+document.addEventListener('click', function(e) {
+  var target = e.target.closest('[data-goto]');
+  if (target) show(target.getAttribute('data-goto').replace('screen-', ''));
+});
+
 document.addEventListener('DOMContentLoaded', function() {
-  document.querySelectorAll('nav button[id^="nav-"]').forEach(function(b) {
-    screenIds.push(parseInt(b.id.replace('nav-', '')));
-  });
   var first = document.querySelector('nav button[id^="nav-"]');
   if (first) first.click();
   lucide.createIcons();
