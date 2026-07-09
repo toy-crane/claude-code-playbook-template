@@ -1,6 +1,6 @@
 ---
 name: execute-plan
-description: plan.md의 Task를 메인 컨텍스트에서 직접 구현한다. `artifacts/<feature>/plan.md`가 확정돼 각 Task를 실제로 실행할 준비가 된 상태에서 트리거한다. 사용자가 "이제 구현 시작", "플랜 실행" 같은 신호를 보낼 때 쓴다. CLAUDE.md → Testing의 TDD 규율을 따르고, 각 Task를 한 커밋으로 구현한 뒤 내장 /code-review와 사용자 리뷰를 받는다. plan.md 없이 바로 구현하려는 경우에는 쓰지 않는다. "/execute-plan", "플랜 실행", "구현 시작"으로도 호출한다.
+description: 확정된 artifacts/<feature>/plan.md의 Task를 TDD로 하나씩 구현하고 Task당 한 커밋을 만든다. 사용자가 "이제 구현 시작", "플랜 실행" 같은 신호를 보낼 때 트리거한다. plan.md 없이 바로 구현하는 경우에는 쓰지 않는다. "/execute-plan", "플랜 실행", "구현 시작"으로도 호출한다.
 argument-hint: "feature name"
 ---
 

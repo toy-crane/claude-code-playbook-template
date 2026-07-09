@@ -1,6 +1,6 @@
 ---
 name: sketch-wireframe
-description: spec.md를 기반으로 HTML 와이어프레임을 생성하는 옵션 모듈. 레이아웃 구조가 바뀌는 UI feature에서 사용한다 (예: 새 화면, 새 레이아웃, 화면 간 흐름). 서버·데이터 전용 변경이나 단일 카피·토글처럼 레이아웃이 그대로인 변경에는 쓰지 않는다. 레이아웃을 시각적으로 검증하고 피드백 루프를 도는 게 본질이기 때문이다. "/sketch-wireframe", "wireframe", "와이어프레임", "레이아웃 확인"으로도 호출한다.
+description: spec.md를 기반으로 HTML 와이어프레임을 생성하는 옵션 모듈. 레이아웃 구조가 바뀌는 UI feature(새 화면, 새 레이아웃, 화면 간 흐름)에 사용한다. 서버·데이터 전용 변경이나 레이아웃이 그대로인 변경에는 쓰지 않는다. "/sketch-wireframe", "wireframe", "와이어프레임", "레이아웃 확인"으로도 호출한다.
 argument-hint: "feature name"
 ---
 

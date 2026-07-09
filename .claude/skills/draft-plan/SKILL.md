@@ -1,6 +1,6 @@
 ---
 name: draft-plan
-description: spec.md를 기반으로 구현 계획(artifacts/<feature>/plan.md)을 작성한다. 모호하거나, 여러 파일에 걸치거나, 30분 이상 걸리는 product feature에만 사용한다. meta-tooling(skills/rules/hooks/repo config), 한 줄 수정, 명백한 변경에는 쓰지 않는다. 한 세션에 끝나고 diff를 한 문장으로 설명할 수 있는 작업이면 내장 plan 모드로 충분하다. spec.md가 확정됐는데 어디서부터 시작할지 불명하거나 시나리오들이 서로 의존할 때 트리거한다. "/draft-plan", "draft plan", "계획 작성", "구현 계획"으로도 호출한다.
+description: spec.md를 기반으로 구현 계획(artifacts/<feature>/plan.md)을 작성한다. 여러 파일에 걸치거나 시나리오가 서로 의존하는 product feature에 쓴다. 한 세션에 끝나는 작업·meta-tooling·명백한 변경은 내장 plan 모드로 한다. "/draft-plan", "draft plan", "계획 작성", "구현 계획"으로도 호출한다.
 argument-hint: "feature name"
 ---
 
