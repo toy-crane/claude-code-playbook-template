@@ -1,4 +1,9 @@
 {
+  "permissions": {
+    "deny": [
+      "Read(./.claude/skills/**/AGENTS.md)"
+    ]
+  },
   "hooks": {
     "WorktreeCreate": [
       {

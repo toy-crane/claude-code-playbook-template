@@ -26,6 +26,10 @@
 - 커버리지 검사: `scripts/spec-coverage.sh <feature> [--tests] [--wireframe]`
 - spec의 판정 기준 체크박스는 실행 증거(테스트 통과, End-to-end 확인)로만 켠다.
 
+## Skills 관리
+
+- `skills-lock.json`에 등록된 외부 스킬은 파일을 절대 직접 수정하지 않는다. 동작 조정이 필요하면 스킬 바깥에서 한다: `.claude/rules/`, hooks, `settings.json`(permissions).
+
 ## Development Workflow
 
 - 패키지 매니저: `bun`

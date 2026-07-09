@@ -136,4 +136,6 @@ Each rule file contains:
 - Correct code example with explanation
 - Additional context and references
 
-Read only the individual rule files relevant to the task at hand — never more than a few at a time.
+## Full Compiled Document
+
+For the complete guide with all rules expanded: `AGENTS.md`
