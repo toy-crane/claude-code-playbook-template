@@ -19,9 +19,9 @@ ESLINT_EXIT=$?
 if [ $ESLINT_EXIT -eq 0 ]; then
   exit 0
 elif [ $ESLINT_EXIT -eq 1 ]; then
-  echo "$RESULT" >&2
+  echo "$RESULT" | head -30 >&2
   exit 2
 else
-  echo "$RESULT" >&2
+  echo "$RESULT" | head -30 >&2
   exit 1
 fi

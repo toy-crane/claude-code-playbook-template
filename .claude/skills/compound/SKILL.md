@@ -1,6 +1,6 @@
 ---
 name: compound
-description: 여러 feature에 누적된 learnings.md의 약한 신호를 패턴으로 묶어 Skill·Hook·Rule·CLAUDE.md 변경을 제안한다. feature를 3~5개 완료해 `artifacts/*/learnings.md`가 여럿 쌓였을 때, 또는 여러 feature에서 같은 함정에 반복해 빠졌다고 느낄 때 트리거한다. 단일 feature 진행 중에는 쓰지 않는다. learnings가 축적되기 전에는 신호가 약하다 (즉시 승격은 /execute-plan Step 6이 담당). "/compound", "원칙 갱신", "회고"로도 호출한다.
+description: 여러 feature에 누적된 learnings.md의 약한 신호를 패턴으로 묶어 Skill·Hook·Rule·CLAUDE.md 승격을 제안한다. `artifacts/*/learnings.md`가 여럿 쌓였거나 같은 함정에 반복해 빠질 때 트리거한다. 단일 feature 진행 중에는 쓰지 않는다. "/compound", "원칙 갱신", "회고"로도 호출한다.
 ---
 
 # Compound: 누적 회고

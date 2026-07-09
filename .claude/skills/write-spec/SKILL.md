@@ -1,6 +1,6 @@
 ---
 name: write-spec
-description: 새 feature의 외부 관찰 가능한 동작(WHAT)을 사용자와 대화하며 spec.md로 확정한다. 요구사항이 모호하거나 여러 화면·경로에 걸쳐 있을 때 사용한다. 사용자가 "spec"이라는 단어를 쓰지 않아도 다단계 feature를 정의하려는 신호가 보이면 트리거한다. 버그 수정, 한 줄 변경, 이미 구체적인 요구에는 쓰지 않는다. "/write-spec", "스펙 작성", "기능 정의"로도 호출한다.
+description: 새 feature의 외부 관찰 가능한 동작(WHAT)을 사용자와 대화하며 spec.md로 확정한다. 요구사항이 모호하거나 여러 화면·경로에 걸친 다단계 feature를 정의하려는 신호가 보이면 트리거한다. 버그 수정, 한 줄 변경, 이미 구체적인 요구에는 쓰지 않는다. "/write-spec", "스펙 작성", "기능 정의"로도 호출한다.
 argument-hint: "feature description"
 ---
 
@@ -105,7 +105,7 @@ spec은 시스템을 블랙박스로 놓고, 그 경계면에서 "완료"를 판
 
 파일명: `artifacts/<feature>/spec.md`
 
-spec이 확정되면 **다음 단계**:
+spec이 확정되면 **다음 단계**를 새 세션(`/clear`)에서 시작한다 (필요한 상태는 spec.md가 전부 들고 있다):
 
 - **공간·시각 설계 결정**이 필요한 UI feature (예: 새 화면, 새 레이아웃, 화면 간 흐름) → `/sketch-wireframe <feature>`
 - 그 외 → `/draft-plan <feature>`

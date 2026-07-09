@@ -51,7 +51,7 @@
   - `components/<feature>/<component>.test.tsx` (colocated; App Router 페이지는 `app/**/__tests__/`)
 - **검증**: SKILL.md Step 4의 Verification 표에서 적합한 도구·명령을 고른다. 테스트 이름에 담당 ID를 `[S1]` 형식으로 인용한다.
   - 예: `bun run test -- <pattern>`
-  - 예: `bun run build`
+  - 예: `bun run typecheck`
   - 예: Browser MCP: 영향받는 라우트로 이동, 결과 단언, 증거 `artifacts/<feature>/evidence/<task-N>.<ext>` 저장
 
 ---

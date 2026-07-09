@@ -1,6 +1,6 @@
 ---
 name: draft-plan
-description: spec.md를 기반으로 구현 계획(artifacts/<feature>/plan.md)을 작성한다. 모호하거나, 여러 파일에 걸치거나, 30분 이상 걸리는 product feature에만 사용한다. meta-tooling(skills/rules/hooks/repo config), 한 줄 수정, 명백한 변경에는 쓰지 않는다. 한 세션에 끝나고 diff를 한 문장으로 설명할 수 있는 작업이면 내장 plan 모드로 충분하다. spec.md가 확정됐는데 어디서부터 시작할지 불명하거나 시나리오들이 서로 의존할 때 트리거한다. "/draft-plan", "draft plan", "계획 작성", "구현 계획"으로도 호출한다.
+description: spec.md를 기반으로 구현 계획(artifacts/<feature>/plan.md)을 작성한다. 여러 파일에 걸치거나 시나리오가 서로 의존하는 product feature에 쓴다. 한 세션에 끝나는 작업·meta-tooling·명백한 변경은 내장 plan 모드로 한다. "/draft-plan", "draft plan", "계획 작성", "구현 계획"으로도 호출한다.
 argument-hint: "feature name"
 ---
 
@@ -77,7 +77,7 @@ NG (horizontal): Task 1: 모든 DB 스키마 / Task 2: 모든 API / Task 3: 모�
 
 | 증명 가능한 곳 | 사용 |
 |---|---|
-| 코드 (DOM, 함수, DB, HTTP) | Vitest / `bun run build` |
+| 코드 (DOM, 함수, DB, HTTP) | Vitest / `bun run typecheck` |
 | 실제 브라우저, CI에서 반복 가능 | Playwright (`bun run test:e2e`) |
 | 실제 브라우저, 일회성 증거 | Browser MCP (`mcp__claude-in-chrome__*`) |
 | 자동화 불가능 (디자인 판단, 스크린 리더, cross-browser 느낌) | Human review: 리뷰어·기준 명시, 증거는 `artifacts/<feature>/evidence/`에 저장 |
@@ -115,4 +115,4 @@ NG (horizontal): Task 1: 모든 DB 스키마 / Task 2: 모든 API / Task 3: 모�
 
 완성된 plan.md를 사용자에게 제시한다. 승인 또는 수정 요청을 받고, 요청된 변경을 반영한다. 사용자가 승인할 때까지 다음 단계로 진행하지 않는다.
 
-승인되면 **다음 단계**는 `/execute-plan <feature>`다.
+승인되면 **다음 단계**는 새 세션(`/clear`)에서 `/execute-plan <feature>`다.

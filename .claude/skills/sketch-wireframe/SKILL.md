@@ -1,6 +1,6 @@
 ---
 name: sketch-wireframe
-description: spec.md를 기반으로 HTML 와이어프레임을 생성하는 옵션 모듈. 레이아웃 구조가 바뀌는 UI feature에서 사용한다 (예: 새 화면, 새 레이아웃, 화면 간 흐름). 서버·데이터 전용 변경이나 단일 카피·토글처럼 레이아웃이 그대로인 변경에는 쓰지 않는다. 레이아웃을 시각적으로 검증하고 피드백 루프를 도는 게 본질이기 때문이다. "/sketch-wireframe", "wireframe", "와이어프레임", "레이아웃 확인"으로도 호출한다.
+description: spec.md를 기반으로 HTML 와이어프레임을 생성하는 옵션 모듈. 레이아웃 구조가 바뀌는 UI feature(새 화면, 새 레이아웃, 화면 간 흐름)에 사용한다. 서버·데이터 전용 변경이나 레이아웃이 그대로인 변경에는 쓰지 않는다. "/sketch-wireframe", "wireframe", "와이어프레임", "레이아웃 확인"으로도 호출한다.
 argument-hint: "feature name"
 ---
 
@@ -70,7 +70,7 @@ Step 2의 **피드백 루프**를 같은 방식으로 적용해 검증한다.
 
 이어서 spec.md에서 시각적 변경이 있는 시나리오 ID를 나열하고, 각 ID가 wireframe의 어느 화면(`data-scenario`)에 매핑되는지 대조한다. attribute만 있고 해당 상태가 렌더링에 보이지 않으면 미커버로 취급한다. 누락된 ID를 사용자에게 보고한다. 비시각적 시나리오(데이터 저장, 유효성 로직 등)는 wireframe 커버리지 대상이 아니다.
 
-검증 후 **다음 단계**는 `/draft-plan <feature>`로 plan 작성이다.
+검증 후 **다음 단계**는 새 세션(`/clear`)에서 `/draft-plan <feature>`로 plan 작성이다.
 
 ## Principles
 

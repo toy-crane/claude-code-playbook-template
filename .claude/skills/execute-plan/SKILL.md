@@ -1,6 +1,6 @@
 ---
 name: execute-plan
-description: plan.md의 Task를 메인 컨텍스트에서 직접 구현한다. `artifacts/<feature>/plan.md`가 확정돼 각 Task를 실제로 실행할 준비가 된 상태에서 트리거한다. 사용자가 "이제 구현 시작", "플랜 실행" 같은 신호를 보낼 때 쓴다. CLAUDE.md → Testing의 TDD 규율을 따르고, 각 Task를 한 커밋으로 구현한 뒤 내장 /code-review와 사용자 리뷰를 받는다. plan.md 없이 바로 구현하려는 경우에는 쓰지 않는다. "/execute-plan", "플랜 실행", "구현 시작"으로도 호출한다.
+description: 확정된 artifacts/<feature>/plan.md의 Task를 TDD로 하나씩 구현하고 Task당 한 커밋을 만든다. 사용자가 "이제 구현 시작", "플랜 실행" 같은 신호를 보낼 때 트리거한다. plan.md 없이 바로 구현하는 경우에는 쓰지 않는다. "/execute-plan", "플랜 실행", "구현 시작"으로도 호출한다.
 argument-hint: "feature name"
 ---
 
@@ -46,11 +46,13 @@ Step 2의 순서대로 Task를 한 번에 하나씩 구현한다. 각 Task에 �
 1. **담당 판정 기준**의 ID로 spec.md에서 원문을 읽는다
 2. **코드로 표현 가능한 판정 기준에 TDD(RED → GREEN)를 적용한다**: UI 시각 검증·디자인 판단은 제외. `CLAUDE.md` → Testing 규율을 따른다. 테스트 이름에 담당 ID를 `[S1-1]` 형식으로 인용한다.
 3. 기준을 충족하는 최소 코드를 구현한다
-4. `bun run build`와 영향받은 테스트를 실행한다
+4. `bun run typecheck`와 영향받은 테스트를 실행한다 (풀빌드는 체크포인트에서만 돈다)
 5. Task당 conventional commit 하나를 만든다
 6. plan.md에서 Task를 완료로 표시하고, 테스트로 증명된 판정 기준의 체크박스를 spec.md에서 켠다
 
 plan의 체크포인트에 도달하면 체크포인트 항목을 실행한다 (테스트 + 빌드 + `scripts/spec-coverage.sh <feature> --tests` + slice 동작 확인). **마지막 체크포인트는 spec.md의 End-to-end 검증 절차를 실제로 실행하는 것이다.** 절차가 통과해야 feature가 완료다.
+
+컨텍스트가 길어졌으면 체크포인트 통과 후 `/clear`하고 `/execute-plan <feature>`로 재개해도 안전하다. plan.md의 완료 표시와 spec.md 체크박스가 진행 상태를 들고 있다.
 
 실패하면 우회하지 않고 근본 원인을 찾는다. 빌드 skip, 테스트 disable, 에러 swallow는 기술 부채를 가리는 단기 우회일 뿐이다.
 

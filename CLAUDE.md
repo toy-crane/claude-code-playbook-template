@@ -11,6 +11,8 @@
 
 한 세션에 끝나고 diff를 한 문장으로 설명할 수 있는 작업은 코어 경로 대신 내장 plan 모드로 진행한다.
 
+phase 산출물이 확정되면 다음 phase는 새 세션(`/clear`)에서 시작한다. 필요한 상태는 artifacts가 전부 들고 있다.
+
 ### 옵션 모듈 (조건이 맞을 때만 켠다)
 
 | 모듈 | 켜는 조건 | 산출물 |
@@ -25,6 +27,10 @@
 - 테스트 이름에 담당 ID를 `[S1-1]` 형식으로 인용한다.
 - 커버리지 검사: `scripts/spec-coverage.sh <feature> [--tests] [--wireframe]`
 - spec의 판정 기준 체크박스는 실행 증거(테스트 통과, End-to-end 확인)로만 켠다.
+
+## Skills 관리
+
+- `skills-lock.json`에 등록된 외부 스킬은 파일을 절대 직접 수정하지 않는다. 동작 조정이 필요하면 스킬 바깥에서 한다: `.claude/rules/`, hooks, `settings.json`(permissions).
 
 ## Development Workflow
 
@@ -53,6 +59,7 @@
 
 | 명령 | 범위 |
 |---|---|
+| `bun run typecheck` | tsc 타입 검사 (Task 단위 검증용, 풀빌드는 체크포인트에서만) |
 | `bun run test` | Vitest |
 | `bun run test:watch` | Vitest watch |
 | `bun run test:e2e` | Playwright |

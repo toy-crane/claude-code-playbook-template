@@ -1,6 +1,6 @@
 ---
 name: idea-refine
-description: 날것의 아이디어를 확산·수렴 사고로 다듬어 실행 가능한 one-pager로 만드는 옵션 모듈. 아이디어가 막연하거나 MVP 범위를 좁혀야 하거나 여러 방향 중 무엇을 추진할지 정해야 할 때 트리거한다. 사용자가 "이거 괜찮을까?", "뭘 먼저 만들지?" 같은 신호를 보낼 때 쓴다. 요구사항이 이미 구체적이면 이 단계를 건너뛰고 바로 /write-spec으로 간다. 버그 수정·한 줄 변경에는 쓰지 않는다. "/idea-refine", "아이디어 정리", "ideate"로도 호출한다.
+description: 날것의 아이디어를 실행 가능한 one-pager(artifacts/<feature>/idea.md)로 다듬는 옵션 모듈. 아이디어가 막연하거나 MVP 범위·추진 방향을 정해야 할 때("이거 괜찮을까?", "뭘 먼저 만들지?") 트리거한다. 요구사항이 이미 구체적이면 건너뛰고 /write-spec으로 간다. "/idea-refine", "아이디어 정리", "ideate"로도 호출한다.
 argument-hint: "idea or feature name"
 ---
 
