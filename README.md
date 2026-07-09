@@ -41,6 +41,7 @@ bunx playwright install chromium
 | `bun run test` | Vitest 실행 |
 | `bun run test:watch` | Vitest 워치 모드 |
 | `bun run test:e2e` | Playwright E2E 실행 |
+| `scripts/spec-coverage.sh <feature> [--tests]` | spec 판정 기준의 plan 배정·테스트 인용 검사 |
 
 ## Hooks
 
@@ -48,53 +49,66 @@ Claude Code hooks 기반 자동 품질 게이트 (`.claude/settings.json`)
 
 | 단계 | 트리거 | 동작 |
 |---|---|---|
-| **WorktreeCreate** | 워크트리 생성 | `worktree-create.sh` — main 동기화, `.env` 복사, 의존성 설치 |
-| **PostToolUse** | `Write\|Edit` | `lint-fix.sh` — ESLint auto-fix |
+| **WorktreeCreate** | 워크트리 생성 | `worktree-create.sh`: main 동기화, `.env` 복사, 의존성 설치 |
+| **PostToolUse** | `Write\|Edit` | `lint-fix.sh`: ESLint auto-fix |
 
 ## 테스트 파일 컨벤션
 
 | 파일 패턴 | 용도 |
 |---|---|
-| `*.test.tsx` / `*.test.ts` | 단위·통합·수용 기준 테스트 (Vitest, colocated) |
+| `*.test.tsx` / `*.test.ts` | 단위·통합·판정 기준 테스트 (Vitest, colocated) |
 | `*.spec.ts` | E2E 테스트 (Playwright, `e2e/`) |
 
-자세한 테스팅 원칙과 Stack은 [CLAUDE.md → Testing](./CLAUDE.md#testing)을 참조합니다.
+테스트 이름에는 담당하는 spec 판정 기준 ID를 `[S1-1]` 형식으로 인용합니다. 자세한 테스팅 원칙은 [CLAUDE.md → Testing](./CLAUDE.md#testing)을 참조합니다.
 
 ## Claude Code 워크플로우
 
+### 코어 경로
+
 ```mermaid
 flowchart LR
-    A["/idea-refine"] --> B["/write-spec"]
-    B --> C["/sketch-wireframe"]
-    C --> D["/draft-plan"]
-    D --> E["/execute-plan"]
-    E --> F["/compound"]
+    B["/write-spec"] --> C["/draft-plan"]
+    C --> D["/execute-plan"]
+    D --> E["/compound"]
 ```
 
-`artifacts/<feature>/spec.md`가 각 feature의 **단일 불변 계약**입니다. spec.md의 Success Criteria에서 테스트를 파생하고, 구현이 spec.md와 맞지 않으면 구현을 수정합니다.
+모든 feature가 통과하는 경로입니다. 한 세션에 끝나고 diff를 한 문장으로 설명할 수 있는 작업은 코어 경로 대신 Claude Code 내장 plan 모드로 진행합니다.
+
+#### 1. Specify (`/write-spec`)
+
+사용자와 대화하며 feature의 스펙을 작성합니다. 사용자 흐름을 시뮬레이션하고 빈칸을 질문으로 채운 뒤, 시나리오와 판정 기준을 담은 `artifacts/<feature>/spec.md`를 생성합니다. WHAT만 기술하며 구현 결정(파일 경로, 라이브러리 등)은 포함하지 않습니다.
+
+spec.md가 각 feature의 **단일 원본**입니다. 각 판정 기준은 ID(`S1`, `S1-1`, `INV-1`)를 가지며, plan과 테스트는 이 ID를 참조합니다. 문서는 feature 완료를 실행으로 증명하는 End-to-end 검증 절차로 끝납니다.
+
+#### 2. Plan (`/draft-plan`)
+
+spec.md를 참조해 구현 계획을 수립합니다. vertical slicing과 의존성 순서로 TDD 기반 Task 목록을 만들고, 각 Task는 담당하는 판정 기준을 ID로 참조합니다. 커버리지(모든 ID가 어느 Task에 배정됐는가)는 `scripts/spec-coverage.sh`가 기계적으로 검사합니다. 산출물은 `artifacts/<feature>/plan.md`입니다.
+
+#### 3. Build (`/execute-plan`)
+
+plan.md의 Task를 한 번에 하나씩 구현합니다. TDD(RED → GREEN) 규율을 따르고, 테스트 이름에 판정 기준 ID를 인용하며, Task당 conventional commit 하나를 만듭니다. 완료의 기준은 실행 증거입니다: spec의 체크박스는 테스트 통과 또는 End-to-end 확인으로만 켜지고, 마지막에는 spec의 End-to-end 검증 절차를 실제로 실행합니다. 독립 검증은 내장 `/code-review` 스킬이 담당하고, 구현 중 판단은 `artifacts/<feature>/learnings.md`에 기록합니다.
+
+#### 4. Compound (`/compound`)
+
+여러 feature의 `learnings.md`에 누적된 약한 신호를 읽어 반복된 패턴을 감지하고, Skill/Hook/Rule/CLAUDE.md로 승격할 후보를 제안합니다. 사용자 승인 후에만 적용합니다. 명확한 인사이트는 `/execute-plan`이 완료 시점에 즉시 승격하므로, 이 단계는 누적되어야 보이는 패턴을 다룹니다.
+
+### 옵션 모듈
+
+조건이 맞을 때만 켜는 단계입니다.
+
+| 모듈 | 켜는 조건 | 산출물 |
+|---|---|---|
+| `/idea-refine` | 아이디어가 막연하거나 여러 방향 중 하나를 정해야 할 때 | `artifacts/<feature>/idea.md` |
+| `/sketch-wireframe` | 레이아웃 구조가 바뀌는 UI feature. spec 확정 후, plan 전에 실행 | `artifacts/<feature>/wireframe.html` |
+| `plan-reviewer` 에이전트 | Task 5개 이상, wireframe 존재, 또는 되돌리기 비싼 도메인 | plan 독립 검토 리포트 |
+
+### 검증 책임
+
+| 실패 양상 | 담당 | 방식 |
+|---|---|---|
+| 누락 (합의된 기준이 테스트 없이 증발) | `scripts/spec-coverage.sh` | 기계적 grep |
+| 왜곡 (테스트가 ID를 달고 엉뚱한 것을 단언) | `/execute-plan` Step 4 | 인용된 ID의 spec 원문과 단언 대조 |
+| 품질 (버그, 중복, 비효율) | 내장 `/code-review` | feature 브랜치 전체 diff 리뷰 |
+| 초록불 착각 (커버는 됐지만 실제로 안 됨) | spec의 End-to-end 검증 절차 | 실행 증거로만 완료 판정 |
 
 각 단계는 human review gate를 가집니다. 현재 단계가 검증되기 전에는 다음 단계로 넘어가지 않습니다.
-
-### 1. Ideate (`/idea-refine`)
-
-날것의 아이디어를 구조화된 확산적/수렴적 사고로 다듬어, 만들 가치가 있는 행동 가능한 개념으로 정리합니다. 산출물은 `artifacts/<feature>/idea.md`입니다 (선택).
-
-### 2. Specify (`/write-spec`)
-
-사용자와 대화하며 feature의 스펙을 작성합니다. 사용자 흐름을 시뮬레이션하고 빈칸을 질문으로 채운 뒤, scope/scenarios/invariants를 담은 `artifacts/<feature>/spec.md`를 생성합니다. WHAT만 기술하며 구현 결정(파일 경로, 라이브러리 등)은 포함하지 않습니다.
-
-### 3. Sketch (`/sketch-wireframe`)
-
-spec.md 기반 HTML 와이어프레임을 생성합니다. 레이아웃 검증이 목적이며, 피드백 루프를 돌려 `artifacts/<feature>/wireframe.html`에 저장합니다. UI가 포함되지 않은 feature에서는 건너뜁니다.
-
-### 4. Plan (`/draft-plan`)
-
-spec.md와 wireframe을 참조해 구현 계획을 수립합니다. vertical slicing과 의존성 순서로 TDD 기반 Task 목록을 생성하며, 각 Task의 Acceptance는 spec.md의 Success Criteria에 1:1 매핑됩니다. 산출물은 `artifacts/<feature>/plan.md`입니다.
-
-### 5. Build (`/execute-plan`)
-
-Team Lead로서 plan.md의 Task를 한 번에 하나씩 직접 구현합니다. TDD (RED → GREEN) 규율을 따르고, Task당 conventional commit 하나를 만듭니다. 완료 후 사용자에게 spec.md 대비 검증을 요청하며, 판단은 `artifacts/<feature>/decisions.md`에 Harness Signal과 함께 기록합니다.
-
-### 6. Compound (`/compound`)
-
-`decisions.md`에 누적된 판단을 읽어 반복된 패턴을 감지하고, Skill/Hook/Rule/CLAUDE.md로 승격할 후보를 제안합니다. 사용자 승인(Ask-first) 후에만 적용합니다.
