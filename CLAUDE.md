@@ -7,11 +7,13 @@
 | Specify | `/write-spec` | `artifacts/<feature>/spec.md` |
 | Plan | `/draft-plan` | `artifacts/<feature>/plan.md` |
 | Build | `/execute-plan` | 코드 + 커밋, `artifacts/<feature>/learnings.md` |
-| Compound | `/compound` | Skill·Hook·Rule·CLAUDE.md 승격 |
+| Compound | `/compound` | learnings.md 정리 (병합·폐기·확정) |
 
 한 세션에 끝나고 diff를 한 문장으로 설명할 수 있는 작업은 코어 경로 대신 내장 plan 모드로 진행한다.
 
 phase 산출물이 확정되면 다음 phase는 새 세션(`/clear`)에서 시작한다. 필요한 상태는 artifacts가 전부 들고 있다.
+
+`artifacts/*/learnings.md`는 feature 간 메모리 레이어다. 항목마다 `triggers` 검색 키워드를 달고, `/draft-plan`(Step 2)과 `/execute-plan`(Step 1, 에러 발생 시)이 grep으로 검색해 걸린 항목만 소비한다. `status: verified`는 지시문을 따르고, `hypothesis`는 참고만 한다.
 
 ### 옵션 모듈 (조건이 맞을 때만 켠다)
 
