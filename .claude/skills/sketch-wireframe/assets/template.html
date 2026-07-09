@@ -48,14 +48,15 @@
   .vp-toggle button:last-child { border-radius: 0 4px 4px 0; border-left: none; }
   .vp-toggle button.active { background: var(--w-text); color: white; }
 
-  /* Mobile viewport frame */
+  /* Mobile viewport frame
+     Tailwind v4 유틸리티는 cascade layer 안에 있어 unlayered 규칙이 이긴다 — !important 불필요.
+     padding은 강제하지 않는다: 콘텐츠가 쓴 유틸리티가 모바일 뷰에서도 그대로 보여야 한다. */
   body.viewport-mobile .screen-content {
-    max-width: 375px !important;
-    margin: 24px auto !important;
+    max-width: 375px;
+    margin: 24px auto;
     border: 2px solid var(--w-border);
     min-height: 667px;
     background: white;
-    padding: 32px 16px !important;
   }
 </style>
 </head>
