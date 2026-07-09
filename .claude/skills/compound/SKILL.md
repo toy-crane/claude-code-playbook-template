@@ -1,59 +1,47 @@
 ---
 name: compound
-description: 여러 feature에 누적된 learnings.md의 약한 신호를 패턴으로 묶어 Skill·Hook·Rule·CLAUDE.md 승격을 제안한다. `artifacts/*/learnings.md`가 여럿 쌓였거나 같은 함정에 반복해 빠질 때 트리거한다. 단일 feature 진행 중에는 쓰지 않는다. "/compound", "원칙 갱신", "회고"로도 호출한다.
+description: 여러 feature에 쌓인 `artifacts/*/learnings.md`를 정리한다 — 중복 병합, 충돌 해소, 낡은 항목 폐기, hypothesis 확정. 승격은 하지 않는다. learnings.md가 여러 feature에 쌓였을 때 트리거하고, 단일 feature 진행 중에는 쓰지 않는다. "/compound", "회고", "메모리 정리"로도 호출한다.
 ---
 
-# Compound: 누적 회고
+# Compound: 메모리 정리
 
-여러 feature에 누적된 약한 신호의 패턴을 찾아 원칙(Skill·Hook·Rule·CLAUDE.md)으로 승격할 후보를 제안한다. `/execute-plan` Step 6이 명확한 인사이트를 이미 즉시 승격하므로, 이 스킬은 그 시점엔 약했지만 누적되면 강해지는 신호를 다룬다.
+learnings.md는 feature 간 메모리 레이어다. `/draft-plan`과 `/execute-plan`이 검색으로 소비하므로, 메모리의 품질이 곧 다음 feature의 품질이다. 이 스킬은 규칙을 만들지 않는다 — **쌓인 메모리를 병합·해소·폐기·확정으로 관리한다.** 나쁜 메모리는 무용한 게 아니라 유해하다(에이전트는 저장된 경험을 그대로 따라 하므로).
 
 ## Inputs / Outputs
 
 | 입력 | 출력 |
 |---|---|
-| 모든 `artifacts/*/learnings.md` (특히 `applied: not-yet` 항목) | 사용자 승인을 거친 Skill·Hook·Rule·CLAUDE.md 변경 |
+| 모든 `artifacts/*/learnings.md` | 사용자 승인을 거친 learnings.md 정리 (병합·수정·삭제) |
 
 ## Workflow
 
-### Step 1. 약한 신호 수집
+### Step 1. 수집
 
-모든 `artifacts/*/learnings.md` 파일을 읽는다. **`applied: not-yet`** 항목이 1차 분석 대상이다. `applied: rule`은 Step 6에서 이미 승격됐고, `applied: discarded`는 일회성으로 판정됐다.
+모든 `artifacts/*/learnings.md` 파일을 읽는다.
 
-추가로 다음 신호도 본다. 원리는 **사람의 추가 손길이 들었던 모든 흔적**이다:
+### Step 2. 분석
 
-- 복구 경로를 거친 실패 (build/test 실패 → 우회 → 재시도)
-- 같은 에러에 두 번 이상 걸린 상황
-- Human Review에서 사용자가 지적한 반복 패턴
-- 수동 개입이 필요했던 상황
-- 그 밖에도 "사람이 한 번 더 손대야 했던 것"은 모두 신호다
+네 종류의 후보를 찾는다:
 
-### Step 2. 승격 대상 분류
-
-각 패턴을 적절한 메커니즘으로 분류한다. 기준: **무엇이 가장 적은 비용으로 재발을 막는가**
-
-| 반복 유형 | 승격 대상 | 예시 |
-|---|---|---|
-| 같은 제약 위반이 반복됨 | **Rule** | `.tsx에서 px 단위 금지`, `components/ui/* 직접 수정 금지` |
-| 100% 기계적으로 잡아야 하는 것 | **Hook** | 커밋 전 `bun run build`, 저장 후 linter 자동 실행 |
-| 잘못된 사용 패턴 (올바른 방법을 가르쳐야 함) | **Skill** | shadcn 컴포넌트 설치·조합법, 특정 라이브러리 도입 가이드 |
-| 아키텍처 결정 변경 | **CLAUDE.md** | 순방향 의존성 순서, 패키지 매니저 결정 |
-
-새 Skill은 라이브러리·도구 단위로 제안한다. 더 작은 단위로 쪼개면 Skill이 누적되어 검색·관리 비용이 커지고, 더 큰 단위(phase 전체)로 묶으면 description으로 트리거하기 어렵다. 새 skill을 실제로 만들 땐 `skill-creator` 스킬을 쓴다. 상세 주제는 `references/`로 분리한다.
-
-### Step 3. 변경 제안
-
-각 제안을 사용자에게 제시한다:
-- **무엇이 반복되었는가**: 근거로 해당 learnings.md 항목을 인용한다
-- **어느 메커니즘으로 승격할지**: Step 2의 분류 중 하나
-- **구체적 파일 경로와 내용 초안**
-
-#### 메커니즘별 기본 경로
-
-| 메커니즘 | 위치 |
+| 신호 | 조치 후보 |
 |---|---|
-| Rule | `.claude/rules/<name>.md` |
-| Hook | `.claude/settings.json`: `hooks` 섹션 |
-| Skill | `.claude/skills/<name>/SKILL.md` |
-| CLAUDE.md | 프로젝트 루트의 `CLAUDE.md` |
+| 같은 triggers·주제의 항목이 여러 feature에 흩어져 있다 | **병합** — 하나의 강한 교훈으로 합치고 지시문을 일반화한다 |
+| 서로 모순되는 지시문이 있다 | **충돌 해소** — 증거를 대조해 한쪽을 수정하거나 scope로 분리한다 |
+| scope·date가 낡았거나 이후 작업이 지시문을 반증했다 | **폐기** — 삭제한다 |
+| `hypothesis` 항목의 패턴이 다른 feature에서 재발했다 | **확정** — `status: verified`로 올리고 증거를 보강한다 |
 
-사용자가 승인한 것만 적용한다. 적용 후 해당 learnings.md 항목의 `applied`를 `rule`로 갱신한다.
+### Step 3. 제안
+
+각 후보를 사용자에게 제시한다:
+
+- **무엇을 발견했는가**: 근거로 해당 learnings.md 항목들을 인용한다
+- **어떤 조치인가**: Step 2의 네 분류 중 하나
+- **조치 후의 모습**: 병합본·수정본 초안 또는 삭제 대상 목록
+
+사용자가 승인한 것만 적용한다.
+
+### Step 4. 적용
+
+- **병합**: 병합본은 가장 관련 깊은 feature의 learnings.md에 두고, 흡수된 항목은 삭제한다. 병합본의 에피소드에 출처 feature들을 남긴다. triggers는 합집합으로 보강한다.
+- **폐기**: 삭제로 처리한다 (주석 처리·보관 아님). 낡은 메모리를 남겨두면 검색에 계속 걸린다.
+- **확정**: `status`를 `verified`로 바꾸고 재발 증거를 증거 필드에 추가한다.
