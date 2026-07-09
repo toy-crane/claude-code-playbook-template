@@ -86,11 +86,11 @@ spec.md를 참조해 구현 계획을 수립합니다. vertical slicing과 의�
 
 #### 3. Build (`/execute-plan`)
 
-plan.md의 Task를 한 번에 하나씩 구현합니다. TDD(RED → GREEN) 규율을 따르고, 테스트 이름에 판정 기준 ID를 인용하며, Task당 conventional commit 하나를 만듭니다. 완료의 기준은 실행 증거입니다: spec의 체크박스는 테스트 통과 또는 End-to-end 확인으로만 켜지고, 마지막에는 spec의 End-to-end 검증 절차를 실제로 실행합니다. 독립 검증은 내장 `/code-review` 스킬이 담당하고, 구현 중 판단은 `artifacts/<feature>/learnings.md`에 기록합니다.
+plan.md의 Task를 한 번에 하나씩 구현합니다. TDD(RED → GREEN) 규율을 따르고, 테스트 이름에 판정 기준 ID를 인용하며, Task당 conventional commit 하나를 만듭니다. 완료의 기준은 실행 증거입니다: spec의 체크박스는 테스트 통과 또는 End-to-end 확인으로만 켜지고, 마지막에는 spec의 End-to-end 검증 절차를 실제로 실행합니다. 독립 검증은 내장 `/code-review` 스킬이 담당하고, 구현 중 판단·함정·우회는 `artifacts/<feature>/learnings.md`에 검색 키워드(`triggers`)를 달아 기록합니다 — 다음 feature의 `/draft-plan`·`/execute-plan`이 grep으로 검색해 재사용하는 메모리입니다.
 
 #### 4. Compound (`/compound`)
 
-여러 feature의 `learnings.md`에 누적된 약한 신호를 읽어 반복된 패턴을 감지하고, Skill/Hook/Rule/CLAUDE.md로 승격할 후보를 제안합니다. 사용자 승인 후에만 적용합니다. 명확한 인사이트는 `/execute-plan`이 완료 시점에 즉시 승격하므로, 이 단계는 누적되어야 보이는 패턴을 다룹니다.
+여러 feature에 쌓인 `learnings.md`를 정리하는 정원사 역할입니다: 중복 항목 병합, 모순되는 지시문 해소, 낡은 항목 폐기, 재발이 확인된 `hypothesis`의 `verified` 확정. 규칙을 만들지 않습니다 — 메모리의 품질을 관리합니다. 사용자 승인 후에만 적용합니다.
 
 ### 옵션 모듈
 
