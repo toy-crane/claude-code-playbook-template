@@ -70,7 +70,7 @@ Step 2의 **피드백 루프**를 같은 방식으로 적용해 검증한다.
 
 이어서 spec.md에서 시각적 변경이 있는 시나리오 ID를 나열하고, 각 ID가 wireframe의 어느 화면(`data-scenario`)에 매핑되는지 대조한다. attribute만 있고 해당 상태가 렌더링에 보이지 않으면 미커버로 취급한다. 누락된 ID를 사용자에게 보고한다. 비시각적 시나리오(데이터 저장, 유효성 로직 등)는 wireframe 커버리지 대상이 아니다.
 
-검증 후 **다음 단계**는 `/draft-plan <feature>`로 plan 작성이다.
+검증 후 **다음 단계**는 새 세션(`/clear`)에서 `/draft-plan <feature>`로 plan 작성이다.
 
 ## Principles
 

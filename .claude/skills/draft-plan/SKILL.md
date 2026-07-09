@@ -115,4 +115,4 @@ NG (horizontal): Task 1: 모든 DB 스키마 / Task 2: 모든 API / Task 3: 모�
 
 완성된 plan.md를 사용자에게 제시한다. 승인 또는 수정 요청을 받고, 요청된 변경을 반영한다. 사용자가 승인할 때까지 다음 단계로 진행하지 않는다.
 
-승인되면 **다음 단계**는 `/execute-plan <feature>`다.
+승인되면 **다음 단계**는 새 세션(`/clear`)에서 `/execute-plan <feature>`다.

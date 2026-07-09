@@ -105,7 +105,7 @@ spec은 시스템을 블랙박스로 놓고, 그 경계면에서 "완료"를 판
 
 파일명: `artifacts/<feature>/spec.md`
 
-spec이 확정되면 **다음 단계**:
+spec이 확정되면 **다음 단계**를 새 세션(`/clear`)에서 시작한다 (필요한 상태는 spec.md가 전부 들고 있다):
 
 - **공간·시각 설계 결정**이 필요한 UI feature (예: 새 화면, 새 레이아웃, 화면 간 흐름) → `/sketch-wireframe <feature>`
 - 그 외 → `/draft-plan <feature>`

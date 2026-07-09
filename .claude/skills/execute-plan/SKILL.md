@@ -52,6 +52,8 @@ Step 2의 순서대로 Task를 한 번에 하나씩 구현한다. 각 Task에 �
 
 plan의 체크포인트에 도달하면 체크포인트 항목을 실행한다 (테스트 + 빌드 + `scripts/spec-coverage.sh <feature> --tests` + slice 동작 확인). **마지막 체크포인트는 spec.md의 End-to-end 검증 절차를 실제로 실행하는 것이다.** 절차가 통과해야 feature가 완료다.
 
+컨텍스트가 길어졌으면 체크포인트 통과 후 `/clear`하고 `/execute-plan <feature>`로 재개해도 안전하다. plan.md의 완료 표시와 spec.md 체크박스가 진행 상태를 들고 있다.
+
 실패하면 우회하지 않고 근본 원인을 찾는다. 빌드 skip, 테스트 disable, 에러 swallow는 기술 부채를 가리는 단기 우회일 뿐이다.
 
 #### 유연한 판단
