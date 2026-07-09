@@ -33,9 +33,10 @@ for id in $ids; do
 
   if [ "$check_tests" = "--tests" ]; then
     # 시나리오 ID(S1)는 세부 기준 인용([S1-1])으로도 커버된 것으로 본다
+    # 검색 경로는 CLAUDE.md Architecture의 전체 레이어를 포함한다
     if ! grep -rqE "\[$id(-[0-9]+)?\]" \
         --include='*.test.ts' --include='*.test.tsx' --include='*.spec.ts' \
-        app components lib e2e 2>/dev/null; then
+        app components lib services hooks types config e2e 2>/dev/null; then
       echo "테스트 미인용: $id"
       fail=1
     fi

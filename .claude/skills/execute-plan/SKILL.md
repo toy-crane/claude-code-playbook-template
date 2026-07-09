@@ -23,7 +23,8 @@ plan.md의 Task를 메인 컨텍스트에서 한 번에 하나씩 직접 구현�
 `$ARGUMENTS`에서 feature 이름을 추출한다.
 
 - `artifacts/<feature>/plan.md`: 없으면 "`/draft-plan`을 먼저 실행하세요." 출력 후 중단
-- `artifacts/<feature>/spec.md` 읽기 (판정 기준 ID와 원문이 여기에 있다)
+- `artifacts/<feature>/spec.md`: 없으면 "`/write-spec`을 먼저 실행하세요." 출력 후 중단. 커버리지 검사와 판정 기준 체크가 이 파일 경로에 의존한다
+- spec.md에서 판정 기준 ID와 원문을 읽는다
 - `artifacts/<feature>/wireframe.html`: 있으면 참조
 - plan.md의 필요 스킬에 나열된 각 SKILL.md 읽기
 - `references/learnings-template.md` 읽기 (learnings.md 기록 형식 확인)
