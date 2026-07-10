@@ -4,28 +4,15 @@
       "Read(./.claude/skills/**/AGENTS.md)"
     ]
   },
-  "hooks": {
-    "WorktreeCreate": [
-      {
-        "hooks": [
-          {
-            "type": "command",
-            "command": "\"$(git rev-parse --show-toplevel)\"/.claude/hooks/worktree-create.sh"
-          }
-        ]
+  "extraKnownMarketplaces": {
+    "mulle": {
+      "source": {
+        "source": "github",
+        "repo": "toy-crane/mulle"
       }
-    ],
-    "PostToolUse": [
-      {
-        "matcher": "Write|Edit",
-        "hooks": [
-          {
-            "type": "command",
-            "command": "\"$(git rev-parse --show-toplevel)\"/.claude/hooks/lint-fix.sh",
-            "timeout": 30
-          }
-        ]
-      }
-    ]
+    }
+  },
+  "enabledPlugins": {
+    "mulle@mulle": true
   }
 }
