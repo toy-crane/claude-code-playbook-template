@@ -105,6 +105,12 @@ flowchart LR
 
 `shape-idea`와 `tdd`는 작업 전에 이 라우터를 읽고 관련 주제만 로드합니다. 빈 상태로 시작해 작업하면서 채워집니다.
 
+### AGENTS.md
+
+`AGENTS.md`의 `nextjs-agent-rules` 블록과 `CLAUDE.md`는 **Next.js가 관리합니다.** `next dev`가 에이전트를 감지하면 다시 써넣으므로 직접 수정하지 않습니다. 에이전트를 `node_modules/next/dist/docs/`의 버전 매칭 문서로 보내는 역할이며, 이전에 쓰던 `next-best-practices` 스킬을 대체합니다. 끄려면 `next.config.ts`에 `agentRules: false`를 넣습니다.
+
+프로젝트 고유의 지침은 이 파일이 아니라 `docs/decisions/`에 씁니다.
+
 ### 검증 책임
 
 | 실패 양상 | 담당 |
