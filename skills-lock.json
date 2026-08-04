@@ -1,35 +1,77 @@
 {
   "version": 1,
   "skills": {
-    "find-skills": {
-      "source": "vercel-labs/skills",
+    "add-stack-context": {
+      "source": "toy-crane/skills",
       "sourceType": "github",
-      "computedHash": "d31e234f0c90694a670222cdd1dafa853e051d7066beda389f1097c22dadd461"
+      "skillPath": "skills/add-stack-context/SKILL.md",
+      "computedHash": "3dfa0aed194644ab39a43945e05b384e54bccc6a046be6179819d5faae814e0f"
     },
-    "next-best-practices": {
-      "source": "vercel-labs/next-skills",
+    "build-prototype": {
+      "source": "toy-crane/skills",
       "sourceType": "github",
-      "computedHash": "515ba75178bd44875812d9a560bdf14651f86709f89cf1d4f209638e879807f3"
+      "skillPath": "skills/build-prototype/SKILL.md",
+      "computedHash": "a5f12db4edd6d265bac8d89cf3ef443e6078d209ec43130f31f0557ac5ca8f0d"
+    },
+    "compact-decisions": {
+      "source": "toy-crane/skills",
+      "sourceType": "github",
+      "skillPath": "skills/compact-decisions/SKILL.md",
+      "computedHash": "b2280c1f4d00e23fb98dce0b6fdf99384867573b67c3ace031c17f2fe742b907"
+    },
+    "discover-opportunity": {
+      "source": "toy-crane/skills",
+      "sourceType": "github",
+      "skillPath": "skills/discover-opportunity/SKILL.md",
+      "computedHash": "19b67d15e31519001e65f21066680f27641fb1f466b14a8ae3047b59618354cb"
+    },
+    "explain-visually": {
+      "source": "toy-crane/skills",
+      "sourceType": "github",
+      "skillPath": "skills/explain-visually/SKILL.md",
+      "computedHash": "35b45440595c394bfc9742324512c1c91b2235d2a35d7e6da8dc6cafda66add8"
+    },
+    "project-knowledge": {
+      "source": "toy-crane/skills",
+      "sourceType": "github",
+      "skillPath": "skills/project-knowledge/SKILL.md",
+      "computedHash": "c70d7c5e4654e349fdf1767a863eb3d319f46d50e7e827e62e6c7e925c525f69"
     },
     "shadcn": {
       "source": "shadcn/ui",
       "sourceType": "github",
-      "computedHash": "1ec42c9b918b315d8e5c6c856b78c3c4725fc93dea30b9b7e9975c69848fcce6"
+      "skillPath": "skills/shadcn/SKILL.md",
+      "computedHash": "c1a68ee06a668aced9ab2b5fbdea5f989864123794eb2e056b339a072dbb7f10"
     },
-    "skill-creator": {
-      "source": "anthropics/skills",
+    "shape-idea": {
+      "source": "toy-crane/skills",
       "sourceType": "github",
-      "computedHash": "b122f4d1e91aa1d83027e050b5b37c3156203ee85458d7b1360bc48167c9e02a"
+      "skillPath": "skills/shape-idea/SKILL.md",
+      "computedHash": "5f076bcc471fbfdc1a9ed26309a66e162a56600e528f676bc337fb30cc528123"
+    },
+    "split-into-tasks": {
+      "source": "toy-crane/skills",
+      "sourceType": "github",
+      "skillPath": "skills/split-into-tasks/SKILL.md",
+      "computedHash": "09f17b1901159b85b70363c297151bd7b29ffef68dd654a432eadd46ba537b8f"
+    },
+    "tdd": {
+      "source": "toy-crane/skills",
+      "sourceType": "github",
+      "skillPath": "skills/tdd/SKILL.md",
+      "computedHash": "98cc3a64783dcd8049c4701ba1efeb065dc56b24db791ab613273ca8b4a22627"
     },
     "vercel-react-best-practices": {
       "source": "vercel-labs/agent-skills",
       "sourceType": "github",
-      "computedHash": "afeca00ac2f492d88fdd010e73d91719a5b57c564bb4a73325b0bd77e11323ab"
+      "skillPath": "skills/react-best-practices/SKILL.md",
+      "computedHash": "ca7b0c0c6e5f2750043f7f0cd72d16ac4e2abc48f9b5500d047a4b77a2506212"
     },
     "web-design-guidelines": {
       "source": "vercel-labs/agent-skills",
       "sourceType": "github",
-      "computedHash": "a6a44d5498f7e8f68289902f3dedfc6f38ae0cee1e96527c80724cf27f727c2a"
+      "skillPath": "skills/web-design-guidelines/SKILL.md",
+      "computedHash": "f3bc47f890f42a44db1007ab390709ec368e4b8c089baee6b0007182236ac474"
     }
   }
 }
