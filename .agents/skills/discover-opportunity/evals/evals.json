@@ -1,0 +1,76 @@
+{
+  "skill_name": "discover-opportunity",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "/discover-opportunity 사이드 프로젝트를 하나 만들고 싶은데 뭘 만들지는 전혀 모르겠어. 퇴근 후 일주일에 다섯 시간 정도 쓸 수 있고, 꼭 돈을 벌어야 하는 건 아니야.",
+      "expected_output": "The response grounds the conversation in evidence about the user instead of returning the blank page or brainstorming generic products. It offers to look at the user's real traces (repositories, published writing, notes, past sessions) after agreeing on scope, or otherwise explores what the user knows firsthand. It treats the supplied time and motivation as context and begins an adaptive conversation.",
+      "files": [],
+      "expectations": [
+        "It proposes grounding observations in the user's real traces and agrees on scope before reading anything personal, rather than relying on recall alone.",
+        "It explores something the user knows, notices, does, or repeatedly cares about firsthand.",
+        "It does not merely ask what the user wants to build or present a generic product-idea list.",
+        "It respects the five-hour weekly appetite and non-commercial motivation.",
+        "It does not require a document, scoring exercise, or product definition."
+      ]
+    },
+    {
+      "id": 2,
+      "prompt": "/discover-opportunity 나는 작은 세무사 사무실에서 일해서 매달 고객에게 빠진 서류를 다시 요청하는 모습을 자주 봐. 이 경험에서 내가 할 수 있는 게 있는지는 모르겠어.",
+      "expected_output": "The response recognizes that the user has tacit knowledge of a recurring workflow and reflects one or more plausible ways that knowledge could matter. It uses the user's reaction to explore the situation further without jumping straight to a document-request app or requiring formal opportunity proof.",
+      "files": [],
+      "expectations": [
+        "It identifies the user's firsthand knowledge of the missing-document workflow as useful ground.",
+        "It offers a concrete interpretation or application direction for the user to recognize or correct.",
+        "It does not jump directly to an app, feature list, MVP, or implementation.",
+        "Its next move follows the promising thread rather than a fixed questionnaire."
+      ]
+    },
+    {
+      "id": 3,
+      "prompt": "/discover-opportunity 나는 팀에서 복잡한 내용을 정리해서 설명하는 일을 자주 맡고, 동료들이 새로운 업무를 배울 때 종종 나를 찾아와. 이 능력을 회사 밖에서 어디에 적용할 수 있을지는 모르겠어.",
+      "expected_output": "The response makes the user's implicit capability visible and reflects plausible people or situations where it could help. It may explore alternatives, but does not force exactly three candidates, formal comparisons, market sizing, or validation plans.",
+      "files": [],
+      "expectations": [
+        "It articulates the tacit capability more clearly than simply repeating the user's words.",
+        "It connects that capability to at least one concrete person, situation, or desired change.",
+        "It invites recognition or correction instead of presenting a final answer as fact.",
+        "It avoids mandatory candidate counts, scoring criteria, and premature product behavior."
+      ]
+    },
+    {
+      "id": 4,
+      "prompt": "/discover-opportunity 우리 팀의 PR 리뷰 지연을 줄이기 위해 GitHub 앱을 만들 거야. 리뷰어 자동 지정과 24시간 미응답 알림까지는 확정했고, 알림을 Slack과 GitHub 중 어디에 둘지만 정하면 돼.",
+      "expected_output": "The response recognizes that a concrete problem, intended change, and broad direction already exist. It routes the remaining behavioral decision to shape-idea rather than restarting discovery.",
+      "files": [],
+      "expectations": [
+        "It states that opportunity discovery is unnecessary or already complete.",
+        "It invokes or continues with shape-idea for the remaining behavior decision.",
+        "It does not ask about the user's tacit knowledge, generate unrelated directions, or create a discovery artifact."
+      ]
+    },
+    {
+      "id": 5,
+      "prompt": "/discover-opportunity 지금 이야기한 것 중에서는 독립 디자이너가 고객에게 작업 범위를 쉽게 설명하도록 돕는 방향이 가장 끌려. 내가 견적과 범위 협의를 해온 경험도 여기에 쓸 수 있을 것 같아. 이 방향으로 계속 가자.",
+      "expected_output": "The response briefly carries forward the user's relevant experience, the person or situation it could help, and the intended change, then naturally continues with shape-idea in the same conversation. It does not create an opportunity brief unless asked.",
+      "files": [],
+      "expectations": [
+        "It recognizes that a direction now resonates and does not prolong discovery unnecessarily.",
+        "It restates the relevant firsthand knowledge, audience or situation, and possible change concisely.",
+        "It invokes or transitions into shape-idea using the current conversational context.",
+        "It does not write docs/opportunities or require a formal handoff."
+      ]
+    },
+    {
+      "id": 6,
+      "prompt": "/discover-opportunity 이야기해보니 내가 반복해서 관심을 두는 영역은 알겠는데, 지금은 어느 방향도 더 해보고 싶다는 느낌이 없어. 억지로 프로젝트를 정하지 말고 여기서 끝내자.",
+      "expected_output": "The response accepts the user's lack of resonance, reflects any useful self-knowledge gained, and ends without manufacturing an opportunity, invoking shape-idea, or writing a handoff.",
+      "files": [],
+      "expectations": [
+        "It does not push the user to choose or recommend a direction against their reaction.",
+        "It may preserve the clearer self-knowledge in a short conversational summary.",
+        "It does not invoke shape-idea or write a discovery artifact."
+      ]
+    }
+  ]
+}

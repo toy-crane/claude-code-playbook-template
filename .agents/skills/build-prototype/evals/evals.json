@@ -1,0 +1,158 @@
+{
+  "skill_name": "build-prototype",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "/build-prototype 북마크한 아티클을 모아 매주 다이제스트로 보내주는 웹앱을 만들려고 해. 화면부터 보면서 정하고 싶어.",
+      "expected_output": "The response uses the current request and conversation as sufficient context without requiring or searching for a pre-existing spec. It proposes a screen inventory as a correctable draft, then builds one temporary self-contained HTML file grown from the shell template (a screen selector, the selected screen's representative state selector, and a viewport cycle) with every proposed screen finished the first time it is shown, and walks the user through the surface asking for reactions. It does not create a durable spec folder before approval. This project has no design system, so it builds on the shell's minimal palette and treats that as the finished look. It does not scaffold the production app.",
+      "files": [],
+      "expectations": [
+        "It proposes the screen inventory as a draft to correct instead of asking the user to enumerate screens.",
+        "It builds one self-contained HTML file holding every proposed screen, not one file per screen.",
+        "The file declares UTF-8 and carries the shell chrome (screen selector, current-screen state selector, viewport cycle) and shared :root tokens, with no build step, framework, or network dependency.",
+        "The screen selector uses screen names without counts or indexes, and the state selector supplies Default plus only representative direct-entry presets rather than every one-click or transient interaction state.",
+        "With no design system to copy, it builds on the shell's minimal palette and presents it as the finished look rather than a stage to be replaced later.",
+        "Screens carry realistic dummy data and their edge states from the first render, with no lorem ipsum and no staged fidelity.",
+        "It treats the current request and conversation as sufficient context and neither requires nor searches for a pre-existing work-unit spec before building.",
+        "It keeps the working prototype temporary and does not create or populate docs/specs before every screen is approved or explicitly deferred.",
+        "It walks the user through the whole surface and requests reactions rather than approval of a plan.",
+        "It does not write project-stack or production code."
+      ]
+    },
+    {
+      "id": 2,
+      "prompt": "/build-prototype 방금 화면들 봤어. 홈의 다이제스트 미리보기를 최상단으로 올리고, 구독 설정은 별도 화면 말고 홈에서 여는 모달로 바꿔줘. 나머지는 그대로.",
+      "expected_output": "The response applies exactly those two structural changes while holding everything else fixed, and re-renders the same single file with its existing styling and dummy data intact.",
+      "files": [],
+      "expectations": [
+        "It applies both requested structural changes and nothing else.",
+        "Every other screen and settled element stays fixed.",
+        "It carries the existing styling and dummy data through the change instead of restyling or regenerating content the user did not ask about.",
+        "The prototype remains one self-contained file on the shared tokens."
+      ]
+    },
+    {
+      "id": 3,
+      "prompt": "/build-prototype 구조는 이 정도면 됐어. 이제 진짜처럼 보이게 스타일 입히는 단계로 넘어가자.",
+      "expected_output": "The response does not open a styling phase, because there is none: the screens already carry the project's design system, or the shell's minimal palette where the project has none, and that is their finished look. It says so, applies any concrete visual direction the user gives in place rather than scheduling it, and turns the review back to reactions to the screens themselves.",
+      "files": [],
+      "expectations": [
+        "It does not introduce, resume, or promise a separate styling or fill phase.",
+        "It states that the screens are already at their finished fidelity rather than treating the current look as provisional.",
+        "Where a concrete visual direction is available it applies it in place, without re-rendering settled structure.",
+        "It turns the review back to the screens themselves instead of to a plan for a next pass."
+      ]
+    },
+    {
+      "id": 4,
+      "prompt": "/build-prototype 홈 상단의 다이제스트 미리보기 말인데, 카드 그리드가 나을지 리스트가 나을지 우리 둘 다 확신이 없어.",
+      "expected_output": "The response treats this as a contested detail and renders two or three variants differing only on the grid-versus-list treatment, holding every confirmed element fixed, asks for the user's reaction as the answer, then folds the winner back into the prototype.",
+      "files": [],
+      "expectations": [
+        "It renders two or three variants differing only on the contested treatment.",
+        "Confirmed screens, content, data, surrounding layout, and behavior stay fixed across the variants.",
+        "It requests the user's reaction as the answer instead of arguing the choice in prose.",
+        "It folds the chosen variant back into the single prototype file."
+      ]
+    },
+    {
+      "id": 5,
+      "prompt": "/build-prototype 모든 화면 승인이야. 원본 아티클 보관 기능은 이번에는 보류하기로 했고. 마무리해줘.",
+      "expected_output": "The response closes the session: it reuses a work-unit folder identified by the request or prior handoff, or otherwise derives a kebab-case slug from the product or feature name. It records the settled decisions in docs/specs/<slug>/spec.md (created in the spec folder shape when missing), saves the approved surface as docs/specs/<slug>/prototype.html linked from the spec, records the archive feature as explicitly deferred, and presents spec plus prototype as the handoff.",
+      "files": [],
+      "expectations": [
+        "It records the settled decisions in docs/specs/<slug>/spec.md, creating it in the spec folder shape when missing.",
+        "It reuses an identified work-unit folder or derives the slug at close instead of requiring one before prototyping.",
+        "It saves the approved surface as docs/specs/<slug>/prototype.html and links it from the spec.",
+        "The deferred archive feature is recorded explicitly rather than silently dropped.",
+        "The spec records only confirmed or visibly approved behavior and does not infer navigation or screen order from the prototype's source order.",
+        "It hands off the spec and prototype together and does not treat the prototype as production code."
+      ]
+    },
+    {
+      "id": 6,
+      "prompt": "/build-prototype 새로 만들 CLI 도구의 서브커맨드 구조랑 터미널 출력 형식을 프로토타입으로 정렬하고 싶어.",
+      "expected_output": "The response states that command-line and terminal interfaces are outside this skill's scope, does not build an HTML mockup of a terminal, and points to a prose or shape-idea-style path for settling the question.",
+      "files": [],
+      "expectations": [
+        "It states that CLI and terminal interfaces are outside this skill's scope.",
+        "It does not build an HTML mockup of a terminal.",
+        "It offers a prose or shape-idea-style path for the question instead."
+      ]
+    },
+    {
+      "id": 7,
+      "prompt": "/build-prototype 지금 레포에 있는 대시보드 앱에 알림 센터를 추가하려고 해. 화면으로 먼저 정렬하자.",
+      "expected_output": "The response inspects the existing app, copies its design-system tokens verbatim into the prototype's :root (or extracts the design language where no token file exists), names screen elements after the system's own component names, and proposes the notification-center screen set as a correctable draft, so the new screens read as the existing product.",
+      "files": [],
+      "expectations": [
+        "It copies the project's design tokens verbatim into the prototype rather than approximating the look.",
+        "Screen elements are named after the design system's own component names so implementation maps one to one.",
+        "Existing overlays, drawers, and modals keep their relationship to the source screen instead of becoming separate routes.",
+        "Responsive prototype styles follow the shell's simulated viewport classes rather than relying on browser media queries alone.",
+        "The new screens read as the existing product rather than a generic style.",
+        "It proposes the screen set as a correctable draft."
+      ]
+    },
+    {
+      "id": 8,
+      "prompt": "/build-prototype 더미 데이터 말고 실제 우리 API를 붙여서 보여줘. 그래야 진짜 느낌이 날 것 같아.",
+      "expected_output": "The response keeps the prototype on dummy data: real data, latency, and production wiring are not what the alignment is about. It offers a cheaper alternative such as dummy content mirroring the API's real shapes, and stays within the single-file, no-network constraint.",
+      "files": [],
+      "expectations": [
+        "It keeps the prototype on dummy data and does not wire the real API.",
+        "It explains that real data and production wiring are not the alignment target.",
+        "It offers a cheaper alternative, such as realistic dummy content mirroring the API's shapes.",
+        "It stays within the single-file, no-network constraint."
+      ]
+    },
+    {
+      "id": 9,
+      "prompt": "/build-prototype 팀이 함께 여행 일정을 만들고 예약 후보를 비교하는 모바일 앱을 화면으로 먼저 정리해줘. 일정 목록, 일정 상세, 장소 검색, 후보 비교, 투표, 초대, 알림, 설정까지 보고 싶어. 대부분의 버튼은 직접 눌러볼 수 있게 해줘.",
+      "expected_output": "The response builds the complete mobile surface in one temporary self-contained HTML file. The pinned shell remains compact even with the larger inventory: one screen selector shows names without an index or total, one state selector shows Default plus only representative presets for the selected screen, and the viewport control remains. Obvious filters, menus, expansion, and other one-click states stay reachable through working interactions instead of becoming state presets; important multi-step results, forced data or errors, and materially different structures may be direct-entry states. When an interaction enters or leaves one of those declared states, the state selector stays synchronized in both directions, including recovery to Default.",
+      "files": [],
+      "expectations": [
+        "All requested screens live in one self-contained HTML file rather than one file per screen.",
+        "The pinned shell uses a single screen selector, a current-screen state selector, and a viewport cycle; it does not render screen tabs, state pills, a separate inspector, or a cases taxonomy.",
+        "The screen selector lists natural screen names without counts or indexes that imply a linear flow or progress.",
+        "Each screen gets Default automatically, while additional state names remain contextual rather than following a fixed global naming schema.",
+        "State presets are limited to important multi-step results, forced data or error conditions, and materially different structures.",
+        "Obvious one-click filters, menus, expanded details, hover, focus, typing, and combinatorial variations remain interactive behavior rather than state presets.",
+        "When working interactions enter or leave a declared representative state, the selector stays synchronized in both directions, including recovery to Default.",
+        "The prototype uses realistic dummy data and no real API, framework, build step, or network dependency."
+      ]
+    },
+    {
+      "id": 10,
+      "prompt": "/build-prototype 고객지원팀이 쓰는 모바일 인박스를 구현 전에 검토하고 싶어. 대화 목록, 대화 상세, 통합 검색, 고객 정보, 답변 작성, 큐 현황, 알림, 자동화 규칙, 설정 화면을 한 파일에서 보고 싶고 필터, 전체 읽음, 검색 초기화, 답변 전송, 오류 복구 같은 동작은 직접 눌러볼 수 있게 해줘.",
+      "expected_output": "The response builds the complete mobile support surface in one temporary self-contained HTML file with a screen selector, contextual representative-state selector, and viewport control. It keeps filters, mark-all-read, menus, expanded details, and other obvious one-click results as direct interactions rather than state presets. Forced empty or error conditions and important multi-step results may be presets. Every interaction that enters a declared preset updates the state selector, and every clear, retry, recovery, or reset path returns it to Default.",
+      "files": [],
+      "expectations": [
+        "All requested screens live in one self-contained HTML file with realistic dummy content and no external runtime dependencies.",
+        "The shell contains one screen selector with natural names and no counts or indexes, one contextual state selector, and the viewport cycle.",
+        "Default is automatic and any additional state names are contextual to their selected screen.",
+        "Filters, mark-all-read, menus, expanded details, and other obvious one-click results remain working interactions and are not duplicated as state presets.",
+        "Only important multi-step results, forced data or error conditions, and materially different structures that are not trivial to reach become state presets.",
+        "Each interaction that enters a declared preset synchronizes the state selector.",
+        "Each clear, retry, recovery, or reset path leaves the preset and synchronizes the selector back to Default.",
+        "The prototype is browser-verified rather than accepted from source inspection alone."
+      ]
+    },
+    {
+      "id": 11,
+      "prompt": "/build-prototype 가족이 함께 쓰는 반려동물 돌봄 모바일 앱을 화면으로 검토하고 싶어. 오늘 돌봄, 일정, 사료 재고, 건강 기록, 가족 초대, 알림, 설정을 한 파일에 넣어줘. 필터와 전체 읽음은 바로 눌러보고, 사료 수량은 여러 번 줄여서 재고 없음까지 갔다가 다시 채워볼 수 있게 해줘.",
+      "expected_output": "The response builds one temporary self-contained mobile prototype and keeps the review open for user feedback. Filters, mark-all-read, stock adjustments, and restocking are product interactions rather than separate review presets. If repeated stock reductions cross into a declared out-of-stock preset, the state selector synchronizes on entry; restocking synchronizes it back to Default. The response presents the screen draft and asks what the user wants changed instead of closing with a completion handoff.",
+      "files": [],
+      "expectations": [
+        "All requested screens live in one self-contained HTML file with realistic dummy content and no external runtime dependencies.",
+        "The shell uses natural screen names without indexes or totals, contextual representative states, and the viewport cycle.",
+        "Filters, mark-all-read, stock adjustments, and restocking remain working product interactions rather than separate presets.",
+        "Only a forced out-of-stock condition or another important non-trivial condition becomes a representative preset.",
+        "Repeated stock reductions that cross the declared out-of-stock condition synchronize the state selector on entry.",
+        "Restocking from the declared out-of-stock condition synchronizes the selector back to Default.",
+        "The cumulative entry and recovery paths are browser-verified.",
+        "The response presents the artifact and correctable screen draft, then asks what the user wants changed instead of treating the open review as complete."
+      ]
+    }
+  ]
+}

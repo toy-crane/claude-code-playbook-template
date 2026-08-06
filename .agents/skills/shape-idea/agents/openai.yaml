@@ -1,0 +1,4 @@
+interface:
+  display_name: "Shape Idea"
+  short_description: "Clarify an idea before implementation"
+  default_prompt: "Use $shape-idea to clarify this idea and produce an implementation-ready spec."
