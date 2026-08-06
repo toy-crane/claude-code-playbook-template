@@ -1,4 +1,4 @@
-# Harness Engineering Template
+# Claude Code Playbook Template
 
 [![Claude Hunt](https://img.shields.io/badge/Claude_Hunt-강의-000000)](https://www.claude-hunt.com)
 [![Docs](https://img.shields.io/badge/docs-claude--hunt-2563eb)](https://docs.claude-hunt.com)
