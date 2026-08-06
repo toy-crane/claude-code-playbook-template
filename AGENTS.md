@@ -7,3 +7,9 @@ This version has breaking changes — APIs, conventions, and file structure may 
 This block is written and re-added by `next dev` — verify at `node_modules/next/dist/server/lib/generate-agent-files.js`. Removing it from a diff only re-creates the uncommitted change; committing it with your work keeps the tree clean.
 
 <!-- END:nextjs-agent-rules -->
+
+# 언어
+
+모든 대화는 한글로 한다. 답변, 질문, 커밋 메시지, PR 문안까지 해당된다.
+
+경로, 명령어, 식별자, 라이브러리 이름, 로그 인용은 원문을 유지한다.

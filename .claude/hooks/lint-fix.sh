@@ -13,8 +13,9 @@ fi
 
 [ ! -f "$FILE_PATH" ] && exit 0
 
-RESULT=$(bunx eslint --fix "$FILE_PATH" 2>&1)
-ESLINT_EXIT=$?
+# `|| ESLINT_EXIT=$?` keeps set -e from aborting before the exit code is read
+ESLINT_EXIT=0
+RESULT=$(bunx eslint --fix "$FILE_PATH" 2>&1) || ESLINT_EXIT=$?
 
 if [ $ESLINT_EXIT -eq 0 ]; then
   exit 0
