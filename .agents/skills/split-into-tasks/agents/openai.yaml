@@ -1,0 +1,4 @@
+interface:
+  display_name: "Split Into Tasks"
+  short_description: "Split specs into deliverable implementation tasks"
+  default_prompt: "Use $split-into-tasks to turn this implementation-ready spec into the fewest independently deliverable tasks."

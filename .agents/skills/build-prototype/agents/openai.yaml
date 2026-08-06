@@ -1,0 +1,4 @@
+interface:
+  display_name: "Build Prototype"
+  short_description: "Prototype every screen before implementation"
+  default_prompt: "Use $build-prototype to prototype every screen of this feature in the project's existing style before implementation."
