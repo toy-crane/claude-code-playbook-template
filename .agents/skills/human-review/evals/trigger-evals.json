@@ -1,0 +1,74 @@
+[
+  {
+    "query": "AI가 구현한 PR이 너무 커서 diff를 다 못 보겠어. 실제 결과를 중심으로 내가 판단해야 할 것만 시각적으로 정리해줘.",
+    "should_trigger": true
+  },
+  {
+    "query": "/human-review 이번 에이전트 작업 결과를 한눈에 보고 최종 결정할 수 있게 만들어줘.",
+    "should_trigger": true
+  },
+  {
+    "query": "API, DB, UI가 전부 바뀌었는데 파일 목록 말고 이 제품이 새로 약속하는 것 중 사람이 봐야 할 것만 보여줘.",
+    "should_trigger": true
+  },
+  {
+    "query": "코딩 에이전트가 구현을 끝냈어. 변경 요약과 실제 화면, 그리고 내가 승인해야 하는 위험한 동작만 작은 리뷰 페이지로 만들어줘.",
+    "should_trigger": true
+  },
+  {
+    "query": "마이그레이션, 권한, 공개 API를 같이 바꾼 작업이야. 자동 검증은 끝났으니 인간 판단이 필요한 약속을 결과부터 보여줘.",
+    "should_trigger": true
+  },
+  {
+    "query": "사람이 코드 전체를 읽지 않고도 이 대규모 구현 결과를 검토할 수 있는 시각적 handoff를 만들어줘.",
+    "should_trigger": true
+  },
+  {
+    "query": "한 줄 변경이지만 일반 멤버도 전체 고객 데이터를 내보낼 수 있게 됐어. 배포 전에 내가 받아들여야 할 권한 경계를 실제 결과로 보여줘.",
+    "should_trigger": true
+  },
+  {
+    "query": "구현은 끝났어. 배포 전에 내가 승인해야 할 제품 동작만 결과부터 보여줘.",
+    "should_trigger": true
+  },
+  {
+    "query": "이 변경의 버그도 자동으로 확인하고, 그와 별개로 제품 오너인 내가 결정해야 할 동작은 작은 리뷰 화면으로 만들어줘.",
+    "should_trigger": true
+  },
+  {
+    "query": "README 오타 한 글자 고친 diff 리뷰해줘.",
+    "should_trigger": false
+  },
+  {
+    "query": "이 PR에서 버그와 보안 취약점 전부 찾아서 코드 리뷰 코멘트 달아줘.",
+    "should_trigger": false
+  },
+  {
+    "query": "아직 구현 전인데 Todo 앱 아이디어를 비교할 수 있는 프로토타입 세 개 만들어줘.",
+    "should_trigger": false
+  },
+  {
+    "query": "이번 분기 시장 조사 보고서가 너무 길어. 임원용 한 페이지 요약으로 줄여줘.",
+    "should_trigger": false
+  },
+  {
+    "query": "고객에게 보낼 장애 안내 이메일을 검토하고 더 쉬운 말로 고쳐줘.",
+    "should_trigger": false
+  },
+  {
+    "query": "human review라는 개념이 왜 필요한지 철학만 설명해줘. 파일은 만들지 마.",
+    "should_trigger": false
+  },
+  {
+    "query": "이 작은 함수 리팩터링 diff가 동작을 유지하는지 평범하게 리뷰해줘.",
+    "should_trigger": false
+  },
+  {
+    "query": "큰 PR의 릴리스 노트를 시각적인 변경 로그로 만들어줘. 내가 승인할 내용은 없어.",
+    "should_trigger": false
+  },
+  {
+    "query": "완성된 대시보드 화면의 타이포그래피와 여백만 디자인 관점에서 critique해줘.",
+    "should_trigger": false
+  }
+]

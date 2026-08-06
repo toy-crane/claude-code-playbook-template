@@ -1,0 +1,50 @@
+[
+  {
+    "query": "docs/specs/billing/tasks에 승인된 task들이 있어. 하나씩 순서대로 전부 구현하고 중간에 세션이 끊겨도 이어서 끝내줘.",
+    "should_trigger": true
+  },
+  {
+    "query": "방금 split-into-tasks로 만든 task set을 fresh subagent로 하나씩 실행해줘. 병렬 실행은 하지 마.",
+    "should_trigger": true
+  },
+  {
+    "query": "Task 03 진행 중에 context가 끝났어. task 파일과 Git 상태를 기준으로 전체 작업을 계속해줘.",
+    "should_trigger": true
+  },
+  {
+    "query": "생성된 task들을 구현, 테스트, 각 task 리뷰와 마지막 전체 리뷰까지 맡아서 완료해줘.",
+    "should_trigger": true
+  },
+  {
+    "query": "모든 task는 completed인데 마지막 cumulative review만 비어 있어. task set 실행을 마무리해줘.",
+    "should_trigger": true
+  },
+  {
+    "query": "Task 02가 내 결정을 기다리며 blocked됐어. 결정을 내렸으니 그 task set을 이어서 완료해줘.",
+    "should_trigger": true
+  },
+  {
+    "query": "어느 것인지는 안 정했지만 생성된 task set 중 하나를 실행해줘.",
+    "should_trigger": true
+  },
+  {
+    "query": "docs/specs/checkout/spec.md를 보고 여러 task로 나눌지 먼저 제안해줘.",
+    "should_trigger": false
+  },
+  {
+    "query": "task 파일은 없어. 이 작은 버그 하나만 바로 고치고 테스트해줘.",
+    "should_trigger": false
+  },
+  {
+    "query": "현재 브랜치 diff를 코드 리뷰만 해줘. 구현이나 task 실행은 하지 마.",
+    "should_trigger": false
+  },
+  {
+    "query": "task마다 별도 worktree를 만들고 여러 agent가 병렬로 구현하게 해줘.",
+    "should_trigger": false
+  },
+  {
+    "query": "완료된 PR을 main에 머지하고 배포 상태를 확인해줘.",
+    "should_trigger": false
+  }
+]

@@ -51,7 +51,7 @@
     {
       "id": 5,
       "prompt": "/split-into-tasks 방금 제안한 세 task와 blocker를 승인해. task 파일을 작성해줘.",
-      "expected_output": "The response writes one task file per approved deliverable in dependency order. Each file carries complete behavior, blocker reasons, status, outcome-level acceptance checkboxes, and task-specific constraints. It ends after publishing the approved task definitions without adding a generic execution contract or beginning implementation.",
+      "expected_output": "The response writes one task file per approved deliverable in dependency order. Each file carries complete behavior, blocker reasons, pending status, outcome-level acceptance checkboxes, task-specific constraints, and the minimal blank execution state. It ends after publishing the approved task definitions without beginning implementation.",
       "files": [],
       "expectations": [
         "It writes only the approved tasks and preserves their approved boundaries.",
@@ -60,7 +60,7 @@
         "Acceptance criteria verify observable completed behavior instead of naming files, classes, hooks, or implementation steps.",
         "It references an approved prototype when relevant rather than copying its implementation.",
         "It numbers blockers before dependents.",
-        "It does not add a generic implementation-session contract or implementation procedure to task files.",
+        "It initializes base commit, final code commit, verification, task and cumulative review, both correction counters, and blocker fields without adding implementation procedure to the task contract.",
         "It ends after publishing the approved task files."
       ]
     },

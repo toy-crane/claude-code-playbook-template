@@ -56,15 +56,24 @@ Each task file contains:
 
 - title
 - independently deliverable, end-to-end behavior from the user's perspective
-- blocking tasks and why each one gates completion
-- status
+- a `## Blockers` section naming each blocking task and why it gates
+  completion; write `None.` when there are no declared dependencies
+- status initialized to `pending`; later execution may change it only to
+  `in-progress`, `completed`, or `blocked`
 - outcome-level acceptance-criteria checkboxes for observable completed behavior
 - constraints specific to that task's delivery or coordination
+- mutable execution state copied from the
+  [task state template](./templates/task-state.md)
 
 Record constraints shared by multiple tasks in `spec.md` and constraints that
 apply to one task in that task file. Describe observable behavior and settled
 boundaries at a level that remains valid as the code evolves. Use an approved
 prototype as the authority for the intended experience.
+
+Copy the [task state template](./templates/task-state.md) without changing its
+field names. Keep `## Status` and `## Execution` in every task. Keep
+`## Run completion` only in the highest-numbered terminal task; remove that
+section from every other task. Do not add a separate orchestration file.
 
 ## Revisit a breakdown
 

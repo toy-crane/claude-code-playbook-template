@@ -1,0 +1,4 @@
+interface:
+  display_name: "Run Tasks"
+  short_description: "Execute approved tasks with fresh sequential agents"
+  default_prompt: "Use $run-tasks to execute the approved tasks for this spec sequentially with restartable checkpoints."
