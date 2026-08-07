@@ -1,0 +1,4 @@
+interface:
+  display_name: "Implement"
+  short_description: "Implement an approved spec folder through review"
+  default_prompt: "Use $implement to implement this spec folder, run its required verification, and finish with the current harness's native review process."

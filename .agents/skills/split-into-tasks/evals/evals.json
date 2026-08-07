@@ -51,7 +51,7 @@
     {
       "id": 5,
       "prompt": "/split-into-tasks 방금 제안한 세 task와 blocker를 승인해. task 파일을 작성해줘.",
-      "expected_output": "The response writes one task file per approved deliverable in dependency order. Each file carries complete behavior, blocker reasons, pending status, outcome-level acceptance checkboxes, task-specific constraints, and the minimal blank execution state. It ends after publishing the approved task definitions without beginning implementation.",
+      "expected_output": "The response writes one task file per approved deliverable in dependency order using templates/task.md. Each file carries complete behavior, blocker reasons, pending status, outcome-level acceptance checkboxes, focused verification, any approved risk-based review checkpoint, and minimal execution state. It ends without beginning implementation.",
       "files": [],
       "expectations": [
         "It writes only the approved tasks and preserves their approved boundaries.",
@@ -60,7 +60,9 @@
         "Acceptance criteria verify observable completed behavior instead of naming files, classes, hooks, or implementation steps.",
         "It references an approved prototype when relevant rather than copying its implementation.",
         "It numbers blockers before dependents.",
-        "It initializes base commit, final code commit, verification, task and cumulative review, both correction counters, and blocker fields without adding implementation procedure to the task contract.",
+        "It uses the task template and preserves pending, in-progress, completed, and blocked as the status vocabulary.",
+        "It initializes only status, verification, and blocker execution state, without commit anchors, correction counters, or a terminal run-completion section.",
+        "It includes only review checkpoints approved in the proposed breakdown and does not add a final-review field to task files.",
         "It ends after publishing the approved task files."
       ]
     },
@@ -85,7 +87,45 @@
         "It recognizes the authenticated and documented public API as a complete outcome for partner users.",
         "It proposes the API as a standalone task because it is independently usable, deployable, verifiable, and reviewable.",
         "It makes the operator UI depend on the API and explains why that outcome gates the UI.",
+        "It proposes an intermediate review after the public API only when the external contract risk cannot be settled adequately by deterministic checks, and states the exact cumulative scope and risk.",
         "It presents the proposed breakdown for approval before writing task files."
+      ]
+    },
+    {
+      "id": 8,
+      "prompt": "/split-into-tasks docs/specs/preferences/spec.md에는 서로 독립적으로 배포 가능한 테마 설정, 키보드 단축키, CSV 내보내기가 확정돼 있어. 모두 기존 로컬 데이터만 사용하고 자동 테스트로 동작을 충분히 검증할 수 있어. 분리안을 보여줘.",
+      "expected_output": "The response proposes the fewest vertical delivery tasks and no intermediate independent review checkpoint because the boundaries are low risk and deterministic checks adequately settle them; the implementation workflow still owns the final review.",
+      "files": [],
+      "expectations": [
+        "It does not add an intermediate review merely because there are several tasks.",
+        "It proposes focused deterministic verification for each outcome.",
+        "It does not place the final cumulative review in a task file.",
+        "It waits for approval before writing files."
+      ]
+    },
+    {
+      "id": 9,
+      "prompt": "/split-into-tasks docs/specs/workspace-sharing/spec.md는 먼저 조직·역할·행 단위 접근 제어를 도입하고, 그 권한 모델 위에 외부 사용자 초대와 공유 UI를 구현하기로 확정했어. 권한 누출은 테스트만으로 완전히 배제하기 어렵고 뒤 작업 전체가 이 경계에 의존해. 분리안과 리뷰 지점을 보여줘.",
+      "expected_output": "The response proposes a cumulative independent review after the authorization boundary and before substantial invitation and sharing work, naming permission leakage and downstream dependence as the reason, without assigning a new implementer or extra reviews to every task.",
+      "files": [],
+      "expectations": [
+        "It places a review checkpoint at the completed authorization boundary before dependent work compounds risk.",
+        "It states the cumulative diff scope and permission risk for the reviewer.",
+        "It does not prescribe a fresh implementation or repair context.",
+        "It does not add another intermediate review without separate material risk.",
+        "It waits for approval before writing files."
+      ]
+    },
+    {
+      "id": 10,
+      "prompt": "/split-into-tasks 승인한 billing webhook task들을 작성해줘. `(provider, event_id)` 멱등성 키와 30일 상태 보존은 모든 task가 공유하는 확정 제약이고, replay 직전 확인은 운영 UI task만의 제약이야. 그 외 동작은 아직 정하지 않았어.",
+      "expected_output": "The response records the shared settled constraints in spec.md, keeps replay confirmation in only the relevant task, publishes the approved tasks from the template, and does not invent behavior for any unsettled policy.",
+      "files": [],
+      "expectations": [
+        "It writes the idempotency identity and retention rule to spec.md rather than duplicating them as task-only decisions.",
+        "It keeps the replay confirmation constraint in only the operator UI task.",
+        "It does not invent backfill, retry limits, retention exceptions, or recovery behavior that the user did not settle.",
+        "It ends after updating the spec and task handoff without beginning implementation."
       ]
     }
   ]
