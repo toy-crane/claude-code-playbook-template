@@ -1,0 +1,82 @@
+{
+  "skill_name": "pull",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "현재 feature 브랜치를 최신 origin/main 위로 업데이트해줘. working tree는 clean이고 main에 새 커밋 3개가 있어.",
+      "expected_output": "The response fetches remote truth and rebases the branch onto origin/main.",
+      "files": [],
+      "expectations": [
+        "It uses the fetched origin/main as the base.",
+        "It preserves linear history through rebase rather than a merge commit.",
+        "It confirms the resulting base relationship and summarizes incoming commits."
+      ]
+    },
+    {
+      "id": 2,
+      "prompt": "main 최신화해줘. 그런데 아직 커밋하지 않은 src/cart.ts와 새 파일 notes.txt가 있어.",
+      "expected_output": "The response preserves the dirty worktree and does not silently mutate or package those changes.",
+      "files": [],
+      "expectations": [
+        "It identifies the dirty files before rewriting history.",
+        "It does not commit, stash, or discard them without authority.",
+        "It leaves the local state intact and reports why the update cannot safely complete."
+      ]
+    },
+    {
+      "id": 3,
+      "prompt": "pull main 해줘. fetch해보니 HEAD가 이미 origin/main을 포함하고 있어.",
+      "expected_output": "The response reports that the checkout is already current without rewriting it.",
+      "files": [],
+      "expectations": [
+        "It fetches or otherwise verifies current remote truth.",
+        "It performs no unnecessary history rewrite.",
+        "It reports the up-to-date result clearly."
+      ]
+    },
+    {
+      "id": 4,
+      "prompt": "origin/main에 리베이스해줘. 충돌은 생성된 lockfile뿐이고 package manifest의 의도는 명확해.",
+      "expected_output": "The response resolves the mechanical conflict from established project evidence and completes the rebase.",
+      "files": [],
+      "expectations": [
+        "It derives the lockfile result from the authoritative manifest rather than guessing.",
+        "It completes the rebase when the intended result is provable.",
+        "It verifies that local work remains represented."
+      ]
+    },
+    {
+      "id": 5,
+      "prompt": "main을 당겨줘. 결제 정책 코드에서 양쪽 브랜치가 서로 다른 수수료 규칙을 추가해서 충돌해.",
+      "expected_output": "The response preserves recoverability and asks for the unresolved product intent instead of inventing a policy.",
+      "files": [],
+      "expectations": [
+        "It recognizes that the conflict requires product intent.",
+        "It keeps the original work recoverable.",
+        "It reports the conflicting files and asks only for the policy decision needed to continue."
+      ]
+    },
+    {
+      "id": 6,
+      "prompt": "detached worktree의 현재 커밋을 최신 main 기준으로 맞춰줘. 로컬 커밋은 잃으면 안 돼.",
+      "expected_output": "The response safely rebases the detached checkout or establishes an equivalent recoverable branch before updating.",
+      "files": [],
+      "expectations": [
+        "It recognizes the detached checkout.",
+        "It preserves a recoverable reference to the local commits.",
+        "It reaches a state based on fetched origin/main without losing work."
+      ]
+    },
+    {
+      "id": 7,
+      "prompt": "이 저장소의 remote default branch는 origin/trunk야. 브랜치 이름을 따로 지정하지 않았으니 기본 브랜치 최신 변경에 맞춰줘.",
+      "expected_output": "The response resolves origin/trunk as the advertised remote default and rebases onto it.",
+      "files": [],
+      "expectations": [
+        "It resolves the remote default branch rather than assuming main.",
+        "It fetches and rebases onto origin/trunk.",
+        "It reports the resolved remote and base branch."
+      ]
+    }
+  ]
+}

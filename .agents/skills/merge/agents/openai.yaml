@@ -1,0 +1,4 @@
+interface:
+  display_name: "Merge Pull Request"
+  short_description: "Merge through a verified PR and clean up"
+  default_prompt: "Use $merge to carry this change through a verified pull request merge and safe cleanup."

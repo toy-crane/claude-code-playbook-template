@@ -1,0 +1,4 @@
+interface:
+  display_name: "Create Pull Request"
+  short_description: "Publish changes as a ready-for-review PR"
+  default_prompt: "Use $pr to publish this change as a ready-for-review pull request against the repository's base branch."

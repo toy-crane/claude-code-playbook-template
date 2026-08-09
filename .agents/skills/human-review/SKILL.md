@@ -1,13 +1,14 @@
 ---
 name: human-review
-description: Turn a completed repository change into a minimal visual handoff for human judgment. Summarize the outcome, isolate consequential commitments that are costly if wrong, hard to reverse, or hard to verify automatically, show actual results, and keep evidence on demand. Use after substantial or consequential AI-authored code, UI, API, database, or infrastructure work when the user asks what changed, wants a visual review, or cannot reasonably inspect the whole diff. Do not use for a small ordinary diff, defect hunting alone, or non-repository content.
+description: Turn a completed repository change into a minimal visual handoff for human judgment. Use when the user explicitly asks to inspect the actual outcome of substantial or consequential AI-authored repository work and decide how to handle unresolved product commitments or material consequences, including requests for a visual review when the whole diff is unreasonable to inspect. Summarize the outcome, show observed results, isolate consequential human decisions, and keep evidence on demand. Do not use for a change summary alone, automatic post-implementation review, a small ordinary diff, defect hunting alone, or non-repository content.
 ---
 
 # Human Review
 
-Protect human attention. Let automated review handle mechanically checkable
-correctness; ask the human to accept or reject the consequential promises the
-change introduces.
+Protect human attention. Use automated evidence for mechanically checkable
+correctness; ask the human only about unresolved commitments or material
+consequences that require product intent, local context, or explicit risk
+acceptance.
 
 ## Establish trustworthy coverage
 
@@ -17,11 +18,14 @@ smallest checks needed to support each claim. Treat prior summaries as claims,
 never as proof. Review the completed work without fixing or broadening it.
 
 Before compressing, account for every changed product behavior, access or data
-boundary, external contract, and failure or recovery path. Give each one a
-disposition: summary, human question, mechanical issue, or unverified. Keep this
-coverage note behind the evidence path, but surface any release blocker or
-material unverified limit in the overview. This check exists because compression
-can otherwise make an omitted change invisible.
+boundary, external contract, and failure or recovery path. Include material
+implementation choices or consequences that the request and project decisions
+leave open; treat them as unresolved rather than settled. Give each commitment a
+review disposition—summary, human question, or mechanical issue—and an evidence
+status—observed, inferred, or unverified. Keep this coverage note behind the
+evidence path, but surface any release blocker or material unverified limit in
+the overview. This check exists because compression can otherwise make an
+omitted change invisible.
 
 Use results observed from the named change in a real runnable environment. Keep
 the change reference, route or command, and environment with the evidence. Never
@@ -34,21 +38,26 @@ rerun a destructive production action merely to create evidence.
 ## Find the human judgment
 
 Reason from commitments, not files or technical layers. Create a human question
-only when the answer is unresolved and would change the implementation, or when
-an owner must explicitly accept a consequence that is costly if wrong, difficult
-to reverse, or not decidable by automated evidence.
+only when the answer is unresolved and would change implementation or release,
+or when an owner must supply product intent or local context or explicitly accept
+a material consequence or release risk. Reserve explicit acceptance for
+consequences that are costly if wrong, difficult to reverse, or whose
+acceptability cannot be decided by factual verification alone. Missing evidence
+alone is not a human question.
 
-Demonstrate commitments already settled by the request or current project
-decisions without asking for approval again, unless their observed consequence
-still requires explicit risk acceptance. Keep routine defects, style, and
-internal refactors with demonstrated equivalence out of the human queue. Report
-confirmed defects as mechanical issues and expose blockers in the overview; do
-not turn them into approval questions.
+Demonstrate commitments whose intent and relevant consequences the request or
+current project decisions explicitly settle without asking for approval again.
+Treat a material consequence left open or newly exposed by the implementation as
+unresolved. Keep routine defects, style, and internal refactors with demonstrated
+equivalence out of the human queue. Report confirmed defects as mechanical
+issues and expose blockers in the overview; do not turn them into approval
+questions.
 
-Present zero to three independent questions, ordered by cost of error,
-reversibility, and limits of direct evidence. If more remain, name the remaining
-commitments instead of hiding them behind an anonymous count. Do not use model
-confidence as evidence.
+Present zero to three active independent questions in the current review set,
+ordered by cost of error, reversibility, and limits of direct evidence. Name
+every deferred commitment and bring it forward as earlier questions are
+resolved. Do not bundle independent commitments or use model confidence as
+evidence.
 
 ## Build the review surface
 
@@ -57,18 +66,25 @@ the repository and follow the presentation contract embedded there. Leave
 product source unchanged, keep the artifact free of network dependencies, and do
 not commit it.
 
-Render the finished artifact in a browser. Exercise every route, disclosure,
-comparison or replay, and relevant narrow viewport before presenting it. Return
-a direct link and one preview image when the host supports them. If local-file
-navigation is blocked, serve the temporary directory on loopback or use an
-available headless browser; if no browser path works, report the surface as
-an unverified draft. Browser verification is a completion gate: do not call the
-review complete or ready until it passes.
+Render the finished artifact in a browser. Exercise every review-surface route,
+disclosure, comparison or replay, and relevant narrow viewport before presenting
+it. Return a direct link and one preview image when the host supports them. If
+local-file navigation is blocked, serve the temporary directory on loopback or
+use an available headless browser; if no browser path works, report the surface
+as an unverified draft. Browser verification is a completion gate for the
+surface, not the underlying change. Preserve every product blocker and
+unverified result after the surface passes.
 
 ## Keep ownership human
 
-Open on the overview, then focus the conversation on the first unresolved
-question. When none remains, say why the evidence closed the queue. Do not treat
-silence, navigation, or an AI recommendation as approval. Record a human choice
-only after the user states it in the conversation. The temporary surface is not
-a project decision record.
+Open on the overview, then focus the conversation on the first active unresolved
+question. Treat a question as resolved only after the user states a choice in the
+conversation. Restate the choice and its consequence, then move to the next
+unresolved commitment and bring deferred commitments forward. When none remains,
+say what closed each question: governing decisions, direct evidence, or an
+explicit human choice. Do not treat silence, navigation, or an AI recommendation
+as approval.
+
+Keep the temporary surface non-authoritative. When a choice must constrain future
+work, identify the need for canonical preservation and write it only through the
+repository's established decision process and authorization.

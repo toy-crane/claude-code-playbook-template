@@ -5,11 +5,13 @@
   2. Set the document language. Replace every bracketed placeholder, example
      value, and label with the reviewer's product language. Confirm none remain,
      then remove data-template="true" from <body>.
-  3. Keep the overview to 3-5 summary lines and 0-3 review questions. Name any
-     additional commitments in the quiet remaining-items line.
-  4. Duplicate the review screen only for another independent question and give
-     every duplicated id and aria reference a unique value. With zero questions,
-     remove every review screen and show the overview's zero-question state.
+  3. Keep the overview to 3-5 summary lines and 0-3 active review questions.
+     Name every deferred commitment in the quiet remaining-items line and bring
+     it forward after earlier questions are resolved.
+  4. Duplicate the review screen only for another independent active question
+     and give every duplicated id and aria reference a unique value. With zero
+     questions, remove every review screen and show the overview's zero-question
+     state.
   5. Remove the optional excluded-scope row when none is established.
   6. Put the actual observed result before the decision or implementation
      evidence. Use a capture or output produced from the named change; never draw
@@ -17,7 +19,8 @@
   7. Copy the required result pattern from the inert templates near the end,
      then remove all unused patterns. Keep evidence behind <details>.
   8. Keep change ref, route or command, and environment with each observation.
-     Include the complete coverage disposition in the evidence screen.
+     Include every commitment's review disposition and separate evidence status
+     in the evidence screen.
   9. Do not add estimates, severity, scores, confidence, or file/test/line counts.
   10. Redact secrets and personal data. Never invent or destructively reproduce
      missing evidence; label it Unverified.
@@ -449,6 +452,7 @@
       }
 
       .verified,
+      .inferred,
       .unverified,
       .blocked {
         flex: 0 0 auto;
@@ -458,6 +462,10 @@
 
       .verified {
         color: var(--accent);
+      }
+
+      .inferred {
+        color: #5f5aa2;
       }
 
       .unverified {
@@ -529,7 +537,7 @@
           -->
         </ul>
 
-        <h2>What needs your judgment</h2>
+        <h2>What needs your judgment now</h2>
         <div class="question-list">
           <!-- Keep zero to three cards. If zero, remove cards and show .empty. -->
           <a class="question" href="#review-1">
@@ -540,8 +548,8 @@
             <span class="arrow" aria-hidden="true">→</span>
           </a>
         </div>
-        <!-- Show only when more than three unresolved questions exist:
-        <p class="remaining">[More to review: name each remaining commitment.]</p>
+        <!-- Show only when unresolved commitments are deferred from this review set:
+        <p class="remaining">[Deferred commitments: name each and bring it forward after an active question is resolved.]</p>
         -->
         <!-- Zero-question state:
         <p class="empty">No unresolved product judgment remains in this change.</p>
@@ -580,7 +588,7 @@
 
         <section class="decision" aria-labelledby="review-1-decision">
           <p id="review-1-decision">[Ask the reviewer to accept or change one consequence.]</p>
-          <p class="reply">[Reply in the conversation: accept, change, or discuss.]</p>
+          <p class="reply">[Reply explicitly in the conversation: accept, change, or discuss. Navigation does not resolve this question.]</p>
         </section>
 
         <details>
@@ -593,7 +601,7 @@
           <summary>Evidence</summary>
           <div class="detail-body">
             <p><strong>Directly observed:</strong> [What was actually rendered, requested, or recovered.]</p>
-            <p><strong>Still inferred:</strong> [What the available checks cannot establish.]</p>
+            <p><strong>Still inferred or unverified:</strong> [What the available checks cannot establish.]</p>
             <pre>[Smallest useful command, source, or raw result]</pre>
           </div>
         </details>
@@ -611,14 +619,14 @@
               <h2>Coverage</h2>
               <span class="verified">Accounted for</span>
             </header>
-            <p>[Every changed commitment has a disposition. Keep the detail complete even when the overview is short.]</p>
+            <p>[Every changed commitment has a review disposition and a separate evidence status. Keep the detail complete even when the overview is short.]</p>
             <details>
               <summary>Changed commitments and disposition</summary>
               <div class="detail-body table-wrap">
                 <table>
-                  <thead><tr><th>Changed commitment</th><th>Disposition</th><th>Where shown</th></tr></thead>
+                  <thead><tr><th>Changed commitment</th><th>Review disposition</th><th>Evidence status</th><th>Where shown</th></tr></thead>
                   <tbody>
-                    <tr><td>[Changed behavior or boundary]</td><td>[Summary, human question, mechanical issue, or unverified]</td><td>[Visible location]</td></tr>
+                    <tr><td>[Changed behavior or boundary]</td><td>[Summary, human question, or mechanical issue]</td><td>[Observed, inferred, or unverified]</td><td>[Visible location]</td></tr>
                   </tbody>
                 </table>
               </div>
