@@ -1,0 +1,8 @@
+[
+  {"query":"remote default branch의 새 변경을 현재 checkout에 선형 히스토리로 반영해줘.","should_trigger":true},
+  {"query":"내 feature 브랜치를 freshest main 위에 replay해서 뒤처지지 않게 해줘.","should_trigger":true},
+  {"query":"origin/main보다 5커밋 뒤야. 로컬 작업 보존하면서 최신 상태로 맞춰줘.","should_trigger":true},
+  {"query":"git submodule을 remote 최신 태그로 업데이트해줘.","should_trigger":false},
+  {"query":"pull request #19의 변경 파일만 읽고 리뷰해줘.","should_trigger":false},
+  {"query":"main을 merge commit으로 합칠 때와 rebase할 때 장단점을 비교해줘.","should_trigger":false}
+]

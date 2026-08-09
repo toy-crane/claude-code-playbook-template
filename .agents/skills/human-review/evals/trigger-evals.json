@@ -36,6 +36,10 @@
     "should_trigger": true
   },
   {
+    "query": "에이전트가 구현한 계정 비활성화 결과를 실제 동작부터 보여주고, 스펙이 정하지 않은 중요한 결과 중 내가 결정해야 할 것만 리뷰 화면으로 만들어줘.",
+    "should_trigger": true
+  },
+  {
     "query": "README 오타 한 글자 고친 diff 리뷰해줘.",
     "should_trigger": false
   },
@@ -65,6 +69,10 @@
   },
   {
     "query": "큰 PR의 릴리스 노트를 시각적인 변경 로그로 만들어줘. 내가 승인할 내용은 없어.",
+    "should_trigger": false
+  },
+  {
+    "query": "에이전트가 큰 PR 구현을 끝냈어. 결과 요약만 텍스트로 알려줘. HTML 리뷰나 승인 질문은 필요 없어.",
     "should_trigger": false
   },
   {

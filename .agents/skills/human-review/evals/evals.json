@@ -73,6 +73,8 @@
       "expectations": [
         "It treats the AI-authored completion statement as an unverified claim.",
         "It clearly separates directly observed local behavior from unavailable production evidence.",
+        "It records review disposition separately from evidence status for each changed commitment.",
+        "It does not ask the human to decide whether an unobserved factual behavior occurred; any human question instead concerns product intent or explicit release-risk acceptance.",
         "It does not fabricate a screenshot, delivery result, or passing end-to-end test.",
         "It states the missing evidence in the summary when it materially limits the outcome."
       ]
@@ -85,8 +87,9 @@
         "evals/fixtures/multi-commitments.md"
       ],
       "expectations": [
-        "It presents no more than three review questions at once.",
+        "It presents no more than three active review questions in the current set.",
         "It names every commitment deferred beyond the first three instead of using only an anonymous count.",
+        "It makes clear that deferred commitments come forward after earlier questions are resolved.",
         "Each card asks one independent decision rather than bundling multiple commitments.",
         "The ordering is based on cost of error, reversibility, and limits of automated verification."
       ]
@@ -101,6 +104,7 @@
       "expectations": [
         "It presents zero human questions because the intended product behavior is settled.",
         "It prominently states that the named change is not ready because the duplicate-charge defect is confirmed.",
+        "It does not treat successful browser verification of the review surface as evidence that the product change is release-ready.",
         "It classifies the defect as a mechanical issue in the coverage disposition rather than asking a human to accept it."
       ]
     },
@@ -124,6 +128,22 @@
         "The final artifact does not contain data-template=true or bracketed template placeholders.",
         "It does not claim browser verification before the browser checks actually run.",
         "It does not preserve unused inert result patterns in the delivered artifact."
+      ]
+    },
+    {
+      "id": 10,
+      "prompt": "/human-review 첨부한 계정 비활성화 변경을 검토해줘. 스펙에 적힌 목표뿐 아니라 구현이 새로 결정한 결과와 증거가 부족한 사실을 구분해서, 내가 판단할 것만 실제 결과부터 보여줘.",
+      "expected_output": "The review treats session revocation and permanent draft deletion as unresolved implementation-introduced commitments rather than consent implied by specification silence. It separates review disposition from evidence status, keeps the missing audit event mechanical, and does not turn unverified production propagation into a factual question for the human.",
+      "files": [
+        "evals/fixtures/account-deactivation-spec-gap.md"
+      ],
+      "expectations": [
+        "It presents the specified account-login block as a summary with observed evidence.",
+        "It routes immediate session revocation and permanent draft deletion to independent human questions because the request left those material consequences open.",
+        "It marks production SSO propagation unverified without asking the human to decide whether propagation occurred.",
+        "It reports the missing audit event as a mechanical issue rather than an approval question.",
+        "Its coverage path records a review disposition and a separate evidence status for every changed commitment.",
+        "It shows observed results before asking the human to accept or change the unresolved consequences."
       ]
     }
   ]

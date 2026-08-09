@@ -74,6 +74,78 @@
         "It uses the approved Checkout API seam without inventing an implementation-only test boundary.",
         "It still completes the required verification and the harness's automated final code review."
       ]
+    },
+    {
+      "id": 7,
+      "prompt": "/implement docs/specs/payments/의 구현과 검증은 끝났어. 이전 Claude Code 세션에서는 code-review 호출이 disable-model-invocation 때문에 거부됐어. 지금 남은 작업을 마무리해줘.",
+      "expected_output": "The response retries the active session's model-invocable reviewer instead of treating a prior session's rejection as permanent. It fixes and re-reviews blocking findings, passes the gate only after a clean result, and hands off only if the current attempt cannot produce an outcome.",
+      "files": [],
+      "expectations": [
+        "It tries the active harness's model-invocable review facility rather than treating a prior session's rejection as permanent.",
+        "It does not hand the review to the user solely because another session rejected it.",
+        "It treats the automated review gate as passed only when the current review result has no blocking findings.",
+        "It uses a user handoff only if the active session's attempt is user-only, rejected, errors, or times out."
+      ]
+    },
+    {
+      "id": 8,
+      "prompt": "/implement docs/specs/payments/의 구현과 검증은 끝났어. 현재 세션에서 model-invocable reviewer를 재시도했지만 user-only로 거부됐고, command help에는 /review 별칭과 /code-review가 같은 reviewer 명령으로 확인돼. 마무리해줘.",
+      "expected_output": "The response hands the confirmed /review alias to the user, leaves the final review gate outstanding, and does not claim completion.",
+      "files": [],
+      "expectations": [
+        "It reports /review because the active session confirms it as an alias for the rejected reviewer.",
+        "It does not invent a command that the active session has not confirmed for that reviewer.",
+        "It leaves the review gate outstanding.",
+        "It does not claim completion until the user-invoked review passes."
+      ]
+    },
+    {
+      "id": 9,
+      "prompt": "/implement docs/specs/payments/의 구현과 검증은 끝났어. 현재 세션에서 model-invocable reviewer를 재시도했지만 user-only로 거부됐고, Claude Code에는 /code-review만 보여. /review 별칭은 확인되지 않아. 마무리해줘.",
+      "expected_output": "The response hands the confirmed /code-review command to the user and leaves the review gate outstanding without inventing an unconfirmed alias or claiming completion.",
+      "files": [],
+      "expectations": [
+        "It reports /code-review because that is the command the active session confirms for the rejected reviewer.",
+        "It does not substitute the unconfirmed /review alias.",
+        "It leaves the review gate outstanding.",
+        "It does not claim completion until the user-invoked review passes."
+      ]
+    },
+    {
+      "id": 10,
+      "prompt": "/implement docs/specs/legacy/의 구현과 검증은 끝났어. 현재 harness에는 자동 review facility도 사용자용 review command도 없어. 마무리해줘.",
+      "expected_output": "The response reports that the automated review facility is absent, leaves that review as the remaining completion gate, and does not invent a command or claim completion.",
+      "files": [],
+      "expectations": [
+        "It distinguishes a missing review facility from a user-only or rejected review facility.",
+        "It reports the absent automated review as the remaining completion gate.",
+        "It does not invent a user command that the active harness does not expose.",
+        "It does not claim completion while the review gate remains outstanding."
+      ]
+    },
+    {
+      "id": 11,
+      "prompt": "/implement docs/specs/legacy/의 구현과 검증은 끝났어. 현재 harness의 model-invocable reviewer는 user-only로 거부됐고, 사용자용 review command는 확인되지 않아. 마무리해줘.",
+      "expected_output": "The response reports that no confirmed user command is available for the rejected reviewer, leaves that review as the remaining completion gate, and does not invent a command or claim completion.",
+      "files": [],
+      "expectations": [
+        "It distinguishes a rejected reviewer with no confirmed user command from one that has a handoff command.",
+        "It reports the reviewer's unavailability as the remaining completion gate.",
+        "It does not invent a user command.",
+        "It does not claim completion while the review gate remains outstanding."
+      ]
+    },
+    {
+      "id": 12,
+      "prompt": "/implement docs/specs/payments/의 구현과 검증은 끝났어. 현재 model-invocable reviewer가 결과 없이 timeout됐고, harness는 같은 reviewer의 사용자 명령으로 /code-review를 확인해 줬어. 마무리해줘.",
+      "expected_output": "The response reports the confirmed /code-review handoff, leaves the timed-out review as the remaining completion gate, and does not claim completion without a review outcome.",
+      "files": [],
+      "expectations": [
+        "It treats the timeout as a missing review outcome rather than a passed gate.",
+        "It reports /code-review because the active harness confirms it for the timed-out reviewer.",
+        "It leaves the review gate outstanding.",
+        "It does not claim completion until the review produces a passing outcome."
+      ]
     }
   ]
 }
