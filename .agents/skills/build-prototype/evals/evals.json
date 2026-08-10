@@ -4,7 +4,7 @@
     {
       "id": 1,
       "prompt": "/build-prototype 북마크한 아티클을 모아 매주 다이제스트로 보내주는 웹앱을 만들려고 해. 화면부터 보면서 정하고 싶어.",
-      "expected_output": "The response uses the current request and conversation as sufficient context without requiring or searching for a pre-existing spec. It proposes a screen inventory as a correctable draft, then builds one temporary self-contained HTML file grown from the shell template (a screen selector, the selected screen's representative state selector, and a viewport cycle) with every proposed screen finished the first time it is shown, and walks the user through the surface asking for reactions. It does not create a durable spec folder before approval. This project has no design system, so it builds on the shell's minimal palette and treats that as the finished look. It does not scaffold the production app.",
+      "expected_output": "The response uses the current request and conversation as sufficient context without requiring or searching for a pre-existing spec. It proposes a screen inventory as a correctable draft, then builds one temporary self-contained HTML file grown from the shell template (a screen selector, the selected screen's representative state selector, and a viewport cycle) with every proposed screen finished the first time it is shown, and walks the user through the surface asking for reactions. It runs the finished HTML using a method supported by the current harness and shares an address the user can open. It does not create a durable spec folder before approval. This project has no design system, so it builds on the shell's minimal palette and treats that as the finished look. It does not scaffold the production app.",
       "files": [],
       "expectations": [
         "It proposes the screen inventory as a draft to correct instead of asking the user to enumerate screens.",
@@ -15,6 +15,7 @@
         "Screens carry realistic dummy data and their edge states from the first render, with no lorem ipsum and no staged fidelity.",
         "It treats the current request and conversation as sufficient context and neither requires nor searches for a pre-existing work-unit spec before building.",
         "It keeps the working prototype temporary and does not create or populate docs/specs before every screen is approved or explicitly deferred.",
+        "It runs the finished HTML using a method supported by the current harness and shares an address the user can open; a bare temporary file path is not the completed handoff.",
         "It walks the user through the whole surface and requests reactions rather than approval of a plan.",
         "It does not write project-stack or production code."
       ]
@@ -51,6 +52,7 @@
       "expectations": [
         "It renders two or three variants differing only on the contested treatment.",
         "Confirmed screens, content, data, surrounding layout, and behavior stay fixed across the variants.",
+        "The variants remain disposable comparisons outside the product screen and state selectors; the canonical prototype keeps one version of the home screen.",
         "It requests the user's reaction as the answer instead of arguing the choice in prose.",
         "It folds the chosen variant back into the single prototype file."
       ]
@@ -152,6 +154,20 @@
         "Restocking from the declared out-of-stock condition synchronizes the selector back to Default.",
         "The cumulative entry and recovery paths are browser-verified.",
         "The response presents the artifact and correctable screen draft, then asks what the user wants changed instead of treating the open review as complete."
+      ]
+    },
+    {
+      "id": 12,
+      "prompt": "/build-prototype 기존 결제수단 등록은 카드 정보 입력 → 등록 완료 두 화면이야. 결제수단 선택 → 결제 정보 입력 → 등록 완료 흐름으로 바꾸고, 계좌이체도 선택할 수 있게 할 거야. 기존 디자인은 유지하고 카드 승인 실패와 재시도까지 포함한 새 흐름 전체를 프로토타입으로 만들어줘. 바뀐 점도 알려줘.",
+      "expected_output": "The response uses the existing payment flow as design evidence and builds one canonical prototype of the proposed product surface. The screen selector names product destinations such as 결제수단 선택, 결제 정보 입력, and 등록 완료 without baseline, current/proposed, variant, or step metadata. Review notes and the requested change summary stay in the conversation rather than inside product pixels.",
+      "files": [],
+      "expectations": [
+        "It does not duplicate the existing payment flow as current, before, or baseline screens because the user asked to review the proposed flow.",
+        "Every visible element inside the product surface is plausible end-user UI; the requested change summary and review guidance stay in the conversation.",
+        "The screen selector names product destinations by role without current, proposed, new, before, after, variant, numbered-step, index, or progress labels.",
+        "The proposed flow covers payment-method selection, payment-information entry, completion, card-decline handling, and retry behavior.",
+        "Payment-method choices and retry remain working product interactions rather than review-state presets; a forced card-decline condition may be a preset.",
+        "The prototype keeps exactly the screen, selected-screen state, and viewport review controls and remains open for user feedback."
       ]
     }
   ]

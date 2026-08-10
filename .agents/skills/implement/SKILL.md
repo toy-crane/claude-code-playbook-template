@@ -1,6 +1,6 @@
 ---
 name: implement
-description: Implement or resume settled work from a selected spec folder. Use when the user provides a `docs/specs/SLUG/` folder and wants its settled spec or approved tasks completed in the current checkout with verification and the current harness's automated code-review process.
+description: Implement or resume settled work from a selected spec folder. Use when the user provides a `docs/specs/SLUG/` folder and wants its settled spec or approved tasks completed in the current checkout with verification, the current harness's automated code-review process, and a runnable product handoff when the repository exposes one through a local server.
 ---
 
 # Implement
@@ -39,3 +39,17 @@ when the active session confirms that equivalence. If no confirmed command
 is available or no review facility exists, report the reviewer's unavailability
 as the remaining gate. Leave either fallback with the review gate outstanding
 and do not claim completion.
+
+After all acceptance criteria and the final review gate pass, when the
+repository exposes the implemented result through a user-reviewable local
+server, run the actual product through its repository-supported development or
+preview path. Verify the changed routes and essential states in that running
+instance, then share an address the user can open and name what to review.
+
+Reuse a healthy server owned by the current checkout or start an isolated
+instance while preserving other checkouts and unrelated processes. Keep the
+server running until the user finishes review or a later authorized delivery
+step cleans up the current checkout. When the active environment cannot provide
+a reachable address, report the exact launch command and blocker as the
+remaining handoff limitation. Access to the running result does not imply human
+approval.

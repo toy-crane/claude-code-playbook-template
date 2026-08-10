@@ -1,4 +1,4 @@
 interface:
   display_name: "Implement"
-  short_description: "Implement an approved spec folder through review"
-  default_prompt: "Use $implement to implement this spec folder, run its required verification, and finish with the current harness's automated code-review process."
+  short_description: "Implement a spec through review and runnable handoff"
+  default_prompt: "Use $implement to implement this spec folder, run its required verification and automated code review, and hand off a verified runnable product address when the repository provides one."

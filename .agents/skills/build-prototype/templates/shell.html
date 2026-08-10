@@ -4,11 +4,15 @@
   Keep this comment in the prototype you grow from here: it is the contract,
   and later turns work from that file rather than from this one.
 
-  Contract (extend freely, never strip):
+  Contract (extend product screens; keep the review shell):
+  - Product:  .sh-stage contains only end-user product UI. Keep review notes,
+               rationale, instructions, and approval controls in conversation.
   - Screens:  <section data-screen="slug" data-title="Label"> inside .sh-stage.
                The selector, arrow keys, and #hash routing build themselves.
-               Links may use href="#slug". Labels are names only: never add an
-               index or total.
+               Use one option per product destination or distinct surface,
+               named by its product role. Keep baselines, variants, comparison
+               labels, steps, indexes, and progress out of names and states.
+               Links may use href="#slug".
   - States:   "Default" is automatic. A screen declares only representative
                presets in data-states="Empty,Error". Use natural, screen-specific
                names. Reserve presets for important multi-step results, forced
@@ -31,8 +35,10 @@
   - Placeholders: .wf-pic stands in for pictures the prototype has no real
                files for. Use real text everywhere text belongs.
 
+  - Chrome:   Keep exactly the screen selector, selected-screen state selector,
+               and viewport cycle. Chrome that needs explaining has failed.
+
   Self-contained by design: no build, no framework, no network.
-  Chrome that needs explaining has failed; keep it three controls.
 -->
 <meta charset="utf-8">
 <title>Prototype</title>
@@ -50,7 +56,7 @@
     --font: system-ui, sans-serif;
   }
 
-  /* ── review chrome (sh-*): keep, extend, never strip ─────────────── */
+  /* ── review chrome (sh-*): keep; extend product styles elsewhere ── */
   * { box-sizing: border-box }
   body {
     margin: 0; padding: 0 0 40px;
