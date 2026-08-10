@@ -181,6 +181,20 @@
         "It writes the same content to docs/specs/<slug>/spec.md.",
         "It does not ask whether to begin implementation or prompt for another action."
       ]
+    },
+    {
+      "id": 15,
+      "prompt": "/shape-idea 로그인 흐름을 네이티브 앱에서 이메일 주소 입력 → 인증 코드 입력에서 로그인 방법 선택 → 이메일 주소 입력 → 인증 코드 입력으로 바꾸려고 해. 기존 코드 입력 화면의 디자인과 네이티브 숫자 키패드는 유지해. 주소 변경, 6자리 붙여넣기, 잘못된 코드 오류, 재요청 동작까지 새 로그인 흐름 전체를 프로토타입으로 만들어 검토하게 해주고, 바뀐 점도 알려줘.",
+      "expected_output": "The response treats the existing login surface as grounding evidence and builds only the proposed product surface for review. Every visible element inside the phone frame is plausible end-user UI: review notes and change explanations stay in the conversation. The screen selector names product destinations such as 로그인 방법, 이메일 주소 입력, and 인증 코드 입력 without current/proposed labels, step numbers, indexes, or progress wording.",
+      "files": [],
+      "expectations": [
+        "It uses the existing login surface as design evidence without duplicating the baseline as current or before screens that the user did not ask to compare.",
+        "Every visible element inside the product screen is plausible end-user UI; review notes, change summaries, rationale, and instructions remain outside the prototype.",
+        "The screen selector identifies product destinations by role and does not use current, proposed, new, before, after, numbered-step, index, or progress labels.",
+        "The proposed flow contains the login-method, email-address, and verification-code product screens with the established code-screen design and relevant interactions.",
+        "Address change, six-digit paste, and other one-click changes remain product interactions rather than review-state presets.",
+        "The response keeps the review open for reactions to the proposed product surface."
+      ]
     }
   ]
 }

@@ -16,6 +16,10 @@
     "should_trigger": true
   },
   {
+    "query": "docs/specs/dashboard/를 구현하고 최종 검증 뒤 실제 화면을 볼 수 있는 로컬 주소도 열어줘.",
+    "should_trigger": true
+  },
+  {
     "query": "docs/specs/checkout/를 보고 여러 task로 나눌지 먼저 제안해줘.",
     "should_trigger": false
   },
@@ -29,6 +33,10 @@
   },
   {
     "query": "서로 독립적인 500개 파일 변환을 여러 agent와 worktree로 병렬 처리해줘.",
+    "should_trigger": false
+  },
+  {
+    "query": "현재 앱 구현은 건드리지 말고 개발 서버만 다시 띄워줘.",
     "should_trigger": false
   }
 ]

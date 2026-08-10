@@ -4,7 +4,7 @@
     {
       "id": 1,
       "prompt": "/human-review 첨부한 요청과 Todo 앱 전후 결과를 검토해줘. 완료 항목 정리와 로컬 저장이 구현됐는데 diff 전체는 못 보겠어. 실제 결과와 내가 소유해야 할 판단만 보여줘.",
-      "expected_output": "The response produces a minimal local visual handoff from the attached runnable HTML. Its first screen gives a whole-change summary including established excluded scope, routes the irreversible clear-completed consequence to the human, and opens the question on actual captured product states rather than a redrawn mock.",
+      "expected_output": "The response produces a minimal local visual handoff from the attached runnable HTML. Its first screen gives a whole-change summary including established excluded scope, routes the irreversible clear-completed consequence to the human, and opens the question on actual captured product states rather than a redrawn mock. It runs the finished review HTML using a method supported by the current harness and shares an address the user can open.",
       "files": [
         "evals/fixtures/todo-request.md",
         "evals/fixtures/todo-before.html",
@@ -17,7 +17,8 @@
         "It preserves the named source files, route, and observation environment with the evidence instead of hand-drawing the Todo UI.",
         "Its evidence path accounts for local persistence and irreversible clearing even if only one becomes a human question.",
         "Commands, checks, and implementation details stay behind one quiet evidence path.",
-        "It provides a direct link to the temporary artifact and does not add that artifact to the product repository."
+        "It runs the finished HTML using a method supported by the current harness and shares an address the user can open; a bare temporary file path is not the completed handoff.",
+        "It does not add the temporary artifact to the product repository."
       ]
     },
     {

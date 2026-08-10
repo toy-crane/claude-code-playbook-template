@@ -68,12 +68,12 @@ not commit it.
 
 Render the finished artifact in a browser. Exercise every review-surface route,
 disclosure, comparison or replay, and relevant narrow viewport before presenting
-it. Return a direct link and one preview image when the host supports them. If
-local-file navigation is blocked, serve the temporary directory on loopback or
-use an available headless browser; if no browser path works, report the surface
-as an unverified draft. Browser verification is a completion gate for the
-surface, not the underlying change. Preserve every product blocker and
-unverified result after the surface passes.
+it. Run the finished HTML using a method supported by the current harness and
+share an address the user can open. Return one preview image when the host
+supports it. If no browser path works, report the surface as an unverified draft.
+Browser verification is a completion gate for the surface, not the underlying
+change. Preserve every product blocker and unverified result after the surface
+passes.
 
 ## Keep ownership human
 
