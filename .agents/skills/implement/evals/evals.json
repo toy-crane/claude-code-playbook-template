@@ -183,6 +183,28 @@
         "It names the active environment condition that prevents a reachable address.",
         "It keeps the runnable handoff limitation visible and does not claim that the user received a working URL."
       ]
+    },
+    {
+      "id": 16,
+      "prompt": "/implement docs/specs/account-settings/를 끝까지 구현해줘. 이 폴더는 Next.js 16.3 앱의 화면 변경이고 현재 세션에는 next-dev-loop가 설치되어 있으며 next dev도 실행 중이야.",
+      "expected_output": "The response uses the matching next-dev-loop while implementing the affected web surface, verifies the changed behavior in the running Next.js app, and then completes the remaining implement verification and review gates.",
+      "files": [],
+      "expectations": [
+        "It selects the available next-dev-loop because it matches the affected Next.js surface.",
+        "It verifies the changed behavior in the running app rather than relying on builds, type checks, or tests alone.",
+        "It still owns the complete verification and automated final code review required by implement."
+      ]
+    },
+    {
+      "id": 17,
+      "prompt": "/implement docs/specs/mobile-notifications/를 구현해줘. Expo 화면 변경이고 expo-dev-loop가 설치되어 있지만 agent-device를 사용할 수 없어. 타입 검사와 테스트는 모두 통과했어.",
+      "expected_output": "The response selects expo-dev-loop for the affected Expo surface, reports the unavailable device runtime as an outstanding verification gate, and does not claim completion from the passing static checks.",
+      "files": [],
+      "expectations": [
+        "It selects the available expo-dev-loop because it matches the affected Expo surface.",
+        "It leaves runtime verification incomplete when the device-side proof cannot run.",
+        "It does not treat passing type checks or tests as a substitute for runtime behavior."
+      ]
     }
   ]
 }

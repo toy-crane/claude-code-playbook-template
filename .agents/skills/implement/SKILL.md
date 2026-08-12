@@ -12,6 +12,12 @@ order. Otherwise implement `spec.md` directly.
 Use the `tdd` skill where behavior can be verified through a pre-agreed public
 seam.
 
+Use an available runtime-verification skill that matches each affected surface.
+If none is available, verify the changed behavior through the repository's
+supported runtime. If the changed behavior cannot be verified in the running
+product, leave verification incomplete. Builds, type checks, and tests do not
+replace this runtime check.
+
 After an actual interruption, reconstruct progress from the spec folder, Git,
 diff, and tests, then continue the remaining work. Confirm ownership before
 incorporating ambiguous dirty changes.
