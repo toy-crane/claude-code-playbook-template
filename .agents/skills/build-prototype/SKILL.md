@@ -8,6 +8,32 @@ description: Build a self-contained dummy-data HTML prototype covering every scr
 Build a disposable but finished-looking model of the whole surface so the user
 can settle structure, relationships, and behavior before implementation.
 
+## Set the effort
+
+Accept `effort=standard` or `effort=high`. Recommend and use `standard` when the
+argument is omitted.
+
+Pass one base completion gate at either effort: produce a finished-looking
+surface, cover every requested screen and relevant state, make intended
+interactions and reset paths work, exercise every relevant viewport in a
+browser, correct every reproduced defect found during that inspection, and
+share an address the user can open. Hold this gate fixed at `standard`.
+
+- `standard` uses the base gate as its complete result.
+- `high` passes the same base gate, then adds close visual matching to an
+  inspectable current product or reference. Broaden the search for mismatches,
+  independently reproduce each material candidate, correct verified mismatches,
+  and recheck affected screens until none remain. When the host supports
+  subagents, delegate the audit to one fresh reviewer subagent at high model
+  effort and give it the reference and candidate artifact without the builder's
+  findings. Otherwise separate the build and verification passes and report
+  that reviewer independence or model effort was unavailable. If no reference
+  can be inspected, report that visual equivalence is unverified and use the
+  extra pass only to strengthen layout robustness.
+
+The selected effort changes additional reference verification, not prototype
+completeness, interaction correctness, browser coverage, or visual finish.
+
 ## Ground the prototype
 
 Use the request and conversation as scope. When present, read `GLOSSARY.md`,
@@ -62,6 +88,18 @@ review guidance in the conversation, outside the product pixels. Present the
 artifact and correctable screen draft, walk through the surface screen by
 screen, and ask what to change. Do not close an open review with a completion
 handoff.
+
+For `high`, audit through two independent lenses. Compare the reference and
+prototype at matching screen, state, and viewport coordinates for typography,
+spacing, alignment, wrapping, overflow, and asset treatment. Separately stress
+layout and interaction recovery with realistic long or awkward content. Give
+each material mismatch candidate its exact coordinate, observed evidence, and
+reproduction path. Have the fresh reviewer subagent reproduce candidates when
+one is available, discard those that do not reproduce, and correct the verified
+set.
+After a correction, re-render its coordinate and the other screens or states
+that share the changed token, component, or shell behavior. Report the audited
+coverage and any unverified coordinates or fidelity claims in the conversation.
 
 For an unresolved detail, render two or three variants that differ only on that
 question. Hold content, data, surrounding layout, behavior, and every confirmed

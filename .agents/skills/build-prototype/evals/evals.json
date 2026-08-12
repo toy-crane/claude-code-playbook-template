@@ -169,6 +169,39 @@
         "Payment-method choices and retry remain working product interactions rather than review-state presets; a forced card-decline condition may be a preset.",
         "The prototype keeps exactly the screen, selected-screen state, and viewport review controls and remains open for user feedback."
       ]
+    },
+    {
+      "id": 13,
+      "prompt": "/build-prototype effort=standard 기존 모바일 앱의 홈, 저장됨, 활동, 채팅, 설정 화면을 현재 디자인으로 검토할 수 있게 만들어줘.",
+      "expected_output": "The response recognizes standard as the recommended effort and passes the same base completion gate required at every effort: finished visual quality, complete requested screen and relevant-state coverage, working intended interactions and reset paths, browser coverage at every relevant viewport, correction of every reproduced defect found during inspection, and an address the user can open. It treats standard as a complete result and does not infer reduced quality because high exists. It does not open the additional independent reference-matching loop that the request did not ask for.",
+      "files": [],
+      "expectations": [
+        "It treats effort=standard as the recommended default rather than as low fidelity.",
+        "It holds the shared base completion gate fixed rather than trading completeness, interaction correctness, browser coverage, or visual finish for speed.",
+        "Every requested screen is finished-looking when first presented and uses the existing product's terms, tokens, and components.",
+        "It exercises every screen, declared state, interaction entry and reset path, and relevant viewport in a browser.",
+        "It fixes issues found through the normal render inspection before presenting the artifact.",
+        "It runs the finished HTML and shares an address the user can open.",
+        "It does not claim or require repeated reference matching when the request supplies no close-match requirement."
+      ]
+    },
+    {
+      "id": 14,
+      "prompt": "/build-prototype effort=high 기존 모바일 앱의 홈, 저장됨, 활동, 채팅, 설정 화면을 실제 화면과 최대한 같게 만들어줘. 긴 이름이나 설명에서도 배열이 깨지지 않는지 자세히 봐줘.",
+      "expected_output": "The response first passes the same base completion gate as standard, then uses the inspectable current app as the reference for an additional high-effort visual convergence loop. It broadens mismatch discovery across reference fidelity and layout robustness, gives each material candidate an exact screen, state, viewport, evidence, and reproduction path, independently reproduces candidates when the host supports a fresh review context, fixes only verified mismatches, and rechecks affected and shared surfaces. If it cannot inspect the reference or obtain independent or high-model-effort review, it states the unavailable evidence rather than fabricating a high-fidelity claim.",
+      "files": [],
+      "expectations": [
+        "It treats effort=high as an additional visual convergence contract, not merely a request to think harder.",
+        "It passes the same finished-looking screen, state, interaction, reset-path, viewport, defect-correction, and runnable-address base gate as standard before adding reference verification.",
+        "It renders the inspectable reference and prototype at the same relevant viewports.",
+        "It searches broadly through separate reference-fidelity and layout-and-interaction-robustness lenses.",
+        "Each material candidate names its exact screen, state, viewport, observed evidence, and reproduction path.",
+        "When the host supports subagents, it delegates the audit to one fresh reviewer subagent at high model effort and supplies the raw reference and candidate artifact without leaking the builder's findings; otherwise it reports the missing reviewer independence or model effort.",
+        "It discards candidates that do not reproduce and fixes the verified set rather than treating every visual suspicion as a defect.",
+        "After a fix it rechecks the affected coordinate and other screens or states sharing the changed token, component, or shell behavior.",
+        "It reports audited coverage and any unverified coordinates or fidelity claims while retaining the full screen, state, interaction, and viewport coverage.",
+        "If the reference cannot be inspected, it reports visual equivalence as unverified and limits the extra claim to stronger layout robustness."
+      ]
     }
   ]
 }
