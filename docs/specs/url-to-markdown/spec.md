@@ -92,6 +92,8 @@ stateDiagram-v2
 | `text/html`·`application/xhtml+xml`이 아님 | **HTML 페이지가 아닙니다** — PDF·이미지·파일 주소는 변환할 수 없습니다. |
 | 추출 결과가 사실상 비어 있음 | **본문을 찾지 못했습니다** — JavaScript로 그려지는 페이지이거나 글 본문이 없는 주소일 수 있습니다. |
 
+정확한 문안과 보조 설명은 [prototype.html](./prototype.html)을 기준으로 한다.
+
 ---
 
 ## 3. 내보내기 동작
