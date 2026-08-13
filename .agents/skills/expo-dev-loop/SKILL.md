@@ -90,6 +90,13 @@ focused logs for runtime behavior, network output for request behavior,
 performance artifacts for performance claims, and a recorded `.ad` replay for
 a flow worth keeping as a regression check.
 
+When a workaround such as clearing a cache or rebuilding leaves its root cause
+open, or you observe an out-of-scope defect with evidence, record it at the
+moment of discovery through the `project-knowledge` skill. If that skill is
+unavailable, write the symptom, observed evidence, suspected cause, what was
+tried, and a proposed next step to `docs/follow-ups/<slug>.md` yourself.
+Reporting it only in conversation loses it.
+
 ## Finish the loop
 
 Finish only when the selected runtime contains the current change, the exact

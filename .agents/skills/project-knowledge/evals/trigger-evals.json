@@ -82,5 +82,37 @@
   {
     "query": "왜 우리가 Postgres 대신 SQLite로 시작하기로 했는지 이해가 안 돼. 결정 기록 찾아보고 나한테 설명해줘.",
     "should_trigger": false
+  },
+  {
+    "query": "iOS에서 만든 Metro 변환 캐시가 남아서 Android 번들에도 127.0.0.1이 들어갔어. 일단 캐시만 비우고 검증은 이어갔는데, 왜 플랫폼별로 캐시가 안 갈리는지는 아직 못 봤어.",
+    "should_trigger": true
+  },
+  {
+    "query": "결제 붙이다가 탈퇴 API가 소프트 삭제가 아니라 하드 삭제하는 걸 봤어. 로그로 확인했고, 이번 작업 범위는 아니라서 지금 고치진 않을 거야.",
+    "should_trigger": true
+  },
+  {
+    "query": "CI에서만 간헐적으로 죽길래 재시도 붙여서 일단 넘어갔어. 로컬에선 재현이 안 되고 진짜 원인은 아직 몰라.",
+    "should_trigger": true
+  },
+  {
+    "query": "had to pin the transitive dep to an old version to get the build green. the real fix is upstream's peer range but I'm not touching that today.",
+    "should_trigger": true
+  },
+  {
+    "query": "라이브러리 버그라서 patch-package로 임시로 덮어놓고 진행했어. 업스트림에 이슈는 아직 안 올렸고 다음에 제대로 봐야 해.",
+    "should_trigger": true
+  },
+  {
+    "query": "빌드 깨진 건 lock 파일 다시 생성해서 해결했고 이번 커밋에 같이 넣었어. 더 볼 건 없어.",
+    "should_trigger": false
+  },
+  {
+    "query": "이 라이브러리 왠지 나중에 발목 잡을 것 같은 느낌이야. 특별히 뭘 본 건 아니고 그냥 감이야.",
+    "should_trigger": false
+  },
+  {
+    "query": "테스트 돌려보니 반올림이 틀려서 방금 고쳤어. 이번 변경에 포함해서 커밋해줘.",
+    "should_trigger": false
   }
 ]
