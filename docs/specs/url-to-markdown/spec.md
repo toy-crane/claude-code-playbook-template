@@ -6,6 +6,9 @@ ChatGPT·Claude 대화창으로 넘길 수 있는 단일 페이지 도구.
 사용자가 "물어보지 말고 보편적인 값으로 정하라"고 명시적으로 위임했으므로, 아래 결정은
 모두 그 위임 아래 내려졌다. 되돌리기 쉬운 선택은 **가정**으로 표시했다.
 
+화면과 상태는 [prototype.html](./prototype.html)에서 직접 눌러 볼 수 있다.
+더미 데이터이며 실제 변환은 하지 않는다.
+
 ---
 
 ## 1. 범위
@@ -41,6 +44,7 @@ stateDiagram-v2
 ### 2.1 대기
 
 - URL 입력란 하나 + `변환` 버튼.
+- 입력란 아래에 예시 주소 칩 3개를 둔다. 누르면 입력란이 채워지고 포커스가 간다. 빈 화면이 무엇을 넣는 곳인지 스스로 설명하게 한다.
 - 입력값이 있을 때만 입력란 안쪽에 `지우기`(✕) 버튼이 뜬다. 누르면 입력·결과·오류가 모두 초기화되고 입력란에 포커스가 간다.
 - 입력값이 비어 있으면 `변환` 버튼은 비활성.
 - Enter 키로도 변환이 실행된다.
@@ -67,6 +71,7 @@ stateDiagram-v2
 **② 내보내기 바**
 - `복사하기`, `.md 다운로드`, `ChatGPT로 보내기`, `Claude로 보내기`
 - 본문이 길어지므로 스크롤해도 따라오도록 상단 고정(sticky).
+- 폭이 좁아지면 가로 스크롤 대신 두 줄로 감싸고, `미리보기`/`원문` 토글이 잘려 나가지 않게 오른쪽 정렬로 내려보낸다.
 
 **③ 본문**
 - `미리보기` / `원문` 세그먼트 토글. 기본값은 `미리보기`. *(가정 — 되돌리기 쉬움)*
@@ -219,8 +224,14 @@ const result = await Defuddle(document, url, { markdown: true, fetch: guardedFet
   이것이 별도 sanitizer 없이 XSS를 막는 방법이다.
 - 본문 타이포그래피는 `@tailwindcss/typography`의 `prose` / `prose-invert`.
 - 레이아웃: 가운데 정렬 단일 컬럼, `max-w-3xl`. 모바일 반응형.
-- 다크 모드는 시스템 설정을 따른다(템플릿 기존 방식 유지). *(가정)*
 - 버튼·입력은 기존 shadcn/ui + Base UI 컴포넌트를 쓴다.
+- 메타데이터 구분점(`·`)은 뒤따르는 항목에 붙인다. 줄이 바뀔 때 구분점만 남는 것을 막기 위해서다. 폭이 좁으면 구분점을 없애고 간격으로만 나눈다.
+
+**다크 모드** — 시스템 설정을 따른다. 현재 `app/globals.css`는
+`@custom-variant dark (&:is(.dark *))`로 클래스 기반이고 `.dark`를 붙이는 곳이 없어
+다크 모드가 아예 켜지지 않는다. UI가 전부 시맨틱 토큰(`bg-background` 등)으로 그려지므로,
+테마 프로바이더를 넣는 대신 `globals.css`에 `@media (prefers-color-scheme: dark)` 블록을
+추가해 `:root` 토큰만 다시 정의한다. 기존 `.dark` 변형은 그대로 둔다. *(가정)*
 
 ### 추가 의존성
 
@@ -275,7 +286,9 @@ const result = await Defuddle(document, url, { markdown: true, fetch: guardedFet
 
 ## 9. 건드리지 않는 영역
 
-- `app/layout.tsx`의 폰트·메타데이터 골격, `app/globals.css`의 테마 토큰 — 기존 템플릿 규약을 유지한다.
+- `app/layout.tsx`의 폰트 설정 — Geist / Geist Mono / Inter 조합을 그대로 쓴다.
+- `app/globals.css`의 기존 `:root` / `.dark` 토큰 값과 `@custom-variant dark` — 값을 바꾸지 않는다.
+  §5의 `prefers-color-scheme` 블록만 덧붙인다.
 - `components/ui/*` — shadcn 생성물이므로 수기 수정 대신 필요한 컴포넌트를 추가 설치한다.
 
 ---
