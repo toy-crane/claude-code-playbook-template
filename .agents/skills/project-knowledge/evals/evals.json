@@ -58,6 +58,42 @@
         "It preserves the plausible local-time alternative only to the extent needed to prevent the same evaluation from recurring.",
         "It adds one index entry without duplicating the decision."
       ]
+    },
+    {
+      "id": 6,
+      "prompt": "/project-knowledge Android 번들에 127.0.0.1이 박혀서 앱이 서버에 못 붙었어. iOS 세션이 남긴 Metro 변환 캐시를 Android가 그대로 집어온 거였고, 캐시를 비우니 10.0.2.2로 정상 번들됐어. 검증은 이어서 마쳤는데 왜 캐시 키에 플랫폼이 안 들어가는지는 못 봤어. 제품 코드는 안 건드렸고.",
+      "expected_output": "The response records one follow-up item for the open root cause at docs/follow-ups/<slug>.md carrying symptom, observed evidence, suspected cause, what was tried, and a proposed next step. It does not record the cache clear itself as a separate item and does not write a decision contract for an unsettled cause.",
+      "files": [],
+      "expectations": [
+        "It creates a single docs/follow-ups file named for the symptom rather than appending to a shared backlog list.",
+        "The item carries symptom, observed evidence, suspected cause, what was already tried, and a proposed next step.",
+        "It does not create or update a docs/decisions subject file for a cause that is only suspected.",
+        "It does not record the completed cache clear as its own follow-up item."
+      ]
+    },
+    {
+      "id": 7,
+      "prompt": "/project-knowledge 빌드가 깨졌던 건 lock 파일을 다시 생성해서 해결했어. 원인도 확인했고 이번 커밋에 수정까지 같이 들어갔어. 남은 건 없어.",
+      "expected_output": "The response recognizes a fully resolved in-scope action and records no follow-up item, explaining why it does not qualify.",
+      "files": [],
+      "expectations": [
+        "It does not create a docs/follow-ups file for work that closed inside the session.",
+        "It states why the resolved action does not meet the capture criteria.",
+        "It does not create a decision contract or glossary entry for the fix."
+      ]
+    },
+    {
+      "id": 8,
+      "prompt": "/project-knowledge docs/follow-ups/metro-cache-platform-leak.md 에 적어둔 캐시 키 문제, 방금 Metro 설정에서 플랫폼을 캐시 키에 넣어서 고쳤고 두 플랫폼 다 확인했어. 이 후속 작업은 끝났어.",
+      "expected_output": "The response deletes the resolved follow-up file and leaves Git history as the only archive, without creating an archive copy or a status-annotated record.",
+      "files": [
+        "fixtures/metro-cache-platform-leak.md"
+      ],
+      "expectations": [
+        "It removes the resolved docs/follow-ups file rather than marking it resolved in place.",
+        "It does not create an archive folder or a superseded copy of the item.",
+        "It evaluates separately whether the resolved cause is a settled reusable decision instead of promoting it automatically."
+      ]
     }
   ]
 }

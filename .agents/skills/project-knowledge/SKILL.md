@@ -1,6 +1,6 @@
 ---
 name: project-knowledge
-description: "Maintain a project's canonical terms and settled decisions that future work should reuse. Use when project-specific terms are being clarified or when a choice that may constrain future work is being considered or settles, including during planning. Do not use for simple definitions, routine implementation details, or carrying out an already-settled decision."
+description: "Maintain a project's canonical terms and settled decisions that future work should reuse, and record follow-ups a session discovers but does not resolve. Use when project-specific terms are being clarified, when a choice that may constrain future work is being considered or settles, including during planning, or when a session applies a temporary workaround whose root cause stays open or observes an out-of-scope defect with evidence. Do not use for simple definitions, routine implementation details, or carrying out an already-settled decision."
 ---
 
 # Project Knowledge
@@ -43,6 +43,24 @@ For each qualifying decision, use the
 [decision contract template](./templates/decision-contract.md) to create or
 update its single subject file in `docs/decisions/`. Preserve only the context
 future work needs to apply the decision without repeating the original analysis.
+
+## Record follow-ups
+
+Record a follow-up when a workaround applied in this session is temporary and
+its root cause stays open, or when an out-of-scope defect or suspected cause is
+observed with evidence. Work that closed inside the session, a guess without
+evidence, and a defect already fixed in the current change do not qualify.
+
+Write each qualifying item at the moment of discovery to its own
+`docs/follow-ups/<slug>.md` using the
+[follow-up template](./templates/follow-up.md), naming the slug for the symptom.
+An item must let a later session act without this conversation. Reporting the
+discovery in conversation does not preserve it.
+
+A follow-up records an open question, not a settled decision, so it does not
+enter `GLOSSARY.md` or a decision contract until its outcome settles on its own
+terms. Delete the file when the work ships or the item is promoted into a spec
+folder.
 
 ## Protect project truth
 

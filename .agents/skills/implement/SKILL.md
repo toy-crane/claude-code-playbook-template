@@ -6,8 +6,8 @@ description: Implement or resume settled work from a selected spec folder. Use w
 # Implement
 
 Treat the selected spec folder as the complete settled handoff. If approved
-task files exist under `tasks/`, implement them sequentially in dependency
-order. Otherwise implement `spec.md` directly.
+task files exist under `tasks/`, implement them sequentially. Otherwise
+implement `spec.md` directly.
 
 Use the `tdd` skill where behavior can be verified through a pre-agreed public
 seam.
@@ -18,9 +18,16 @@ supported runtime. If the changed behavior cannot be verified in the running
 product, leave verification incomplete. Builds, type checks, and tests do not
 replace this runtime check.
 
-After an actual interruption, reconstruct progress from the spec folder, Git,
-diff, and tests, then continue the remaining work. Confirm ownership before
-incorporating ambiguous dirty changes.
+When a workaround leaves its root cause open, or you observe an out-of-scope
+defect with evidence, record it at the moment of discovery through the
+`project-knowledge` skill. If that skill is unavailable, write the symptom,
+observed evidence, suspected cause, what was tried, and a proposed next step to
+`docs/follow-ups/<slug>.md` yourself. Reporting it only in conversation loses
+it.
+
+After an actual interruption, reconstruct progress from repository state, not
+remembered conversation, then continue the remaining work. Confirm ownership
+before incorporating ambiguous dirty changes.
 
 Complete each outcome and its acceptance criteria with focused verification.
 When task files exist, check their acceptance criteria, mark finished tasks
@@ -30,11 +37,9 @@ commit code, tests, and the task update together as a meaningful checkpoint.
 After all outcomes, run the complete required verification, then use the
 current harness's automated code-review process on the entire implementation
 diff against the selected spec and acceptance criteria. Prefer a
-model-invocable review facility when the harness provides one. Fix blocking
-findings and repeat the affected verification and review until no blocker
-remains. A rejection recorded only in an earlier session is not current
-evidence; before handing off on that basis, retry the reviewer once in the
-active session.
+model-invocable review facility when the harness provides one. A rejection
+recorded only in an earlier session is not current evidence; before handing
+off on that basis, retry the reviewer once in the active session.
 
 Completion requires every acceptance criterion and the final review gate to
 pass. If the current review cannot produce an outcome because it is user-only,
