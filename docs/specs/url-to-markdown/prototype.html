@@ -1,0 +1,896 @@
+<!--
+  prototype shell: the review chrome every prototype starts from.
+
+  Keep this comment in the prototype you grow from here: it is the contract,
+  and later turns work from that file rather than from this one.
+
+  Contract (extend product screens; keep the review shell):
+  - Product:  .sh-stage contains only end-user product UI. Keep review notes,
+               rationale, instructions, and approval controls in conversation.
+  - Screens:  <section data-screen="slug" data-title="Label"> inside .sh-stage.
+               The selector, arrow keys, and #hash routing build themselves.
+               Use one option per product destination or distinct surface,
+               named by its product role. Keep baselines, variants, comparison
+               labels, steps, indexes, and progress out of names and states.
+               Links may use href="#slug".
+  - States:   "Default" is automatic. A screen declares only representative
+               presets in data-states="Empty,Error". Use natural, screen-specific
+               names. Reserve presets for important multi-step results, forced
+               data or errors, or materially different structure; keep one-click
+               and transient states as interactions. Use data-when="Empty" on
+               preset-only elements. Call prototypeShell.setState("Name") on
+               entry and setState("Default") on exit, including when repeated
+               actions cross a preset condition.
+  - Viewport: "vp (m)" cycles full / 390 / 768. The 390 preset is a
+               fixed-height, internally scrolling phone frame. Start a
+               mobile-first prototype by adding class="sh-vp-390" to <body>
+               (or a bootstrap classList.add before the chrome script runs).
+  - Pinning:  keep in-frame bars (tab bars, CTAs) inside the phone with
+               position: sticky; position: fixed pins to the browser window.
+  - Tokens:   replace the project-tokens block with project tokens copied
+               verbatim. Map differing names to --background, --foreground, and
+               --font afterwards; replace network fonts with a system stack and
+               note that substitution. Without a design system, keep this
+               palette as the finished style.
+  - Placeholders: .wf-pic stands in for pictures the prototype has no real
+               files for. Use real text everywhere text belongs.
+
+  - Chrome:   Keep exactly the screen selector, selected-screen state selector,
+               and viewport cycle. Chrome that needs explaining has failed.
+
+  Self-contained by design: no build, no framework, no network.
+-->
+<meta charset="utf-8">
+<title>URL → Markdown 프로토타입</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<style>
+  /* ── project tokens: copied verbatim from app/globals.css ──
+     Geist / Geist Mono / Inter are loaded from Google Fonts in the real app;
+     substituted here with a system stack because the prototype is offline. */
+  :root {
+    --background: oklch(1 0 0);
+    --foreground: oklch(0.145 0 0);
+    --card: oklch(1 0 0);
+    --card-foreground: oklch(0.145 0 0);
+    --popover: oklch(1 0 0);
+    --popover-foreground: oklch(0.145 0 0);
+    --primary: oklch(0.205 0 0);
+    --primary-foreground: oklch(0.985 0 0);
+    --secondary: oklch(0.97 0 0);
+    --secondary-foreground: oklch(0.205 0 0);
+    --muted: oklch(0.97 0 0);
+    --muted-foreground: oklch(0.556 0 0);
+    --accent: oklch(0.97 0 0);
+    --accent-foreground: oklch(0.205 0 0);
+    --destructive: oklch(0.577 0.245 27.325);
+    --border: oklch(0.922 0 0);
+    --input: oklch(0.922 0 0);
+    --ring: oklch(0.708 0 0);
+    --radius: 0.625rem;
+
+    --font: ui-sans-serif, system-ui, -apple-system, "Apple SD Gothic Neo",
+            "Pretendard", "Malgun Gothic", sans-serif;
+    --font-mono: ui-monospace, SFMono-Regular, Menlo, "SF Mono", monospace;
+  }
+
+  /* Dark tokens: the app follows the OS setting, so the prototype does too. */
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --background: oklch(0.145 0 0);
+      --foreground: oklch(0.985 0 0);
+      --card: oklch(0.205 0 0);
+      --card-foreground: oklch(0.985 0 0);
+      --popover: oklch(0.205 0 0);
+      --popover-foreground: oklch(0.985 0 0);
+      --primary: oklch(0.922 0 0);
+      --primary-foreground: oklch(0.205 0 0);
+      --secondary: oklch(0.269 0 0);
+      --secondary-foreground: oklch(0.985 0 0);
+      --muted: oklch(0.269 0 0);
+      --muted-foreground: oklch(0.708 0 0);
+      --accent: oklch(0.269 0 0);
+      --accent-foreground: oklch(0.985 0 0);
+      --destructive: oklch(0.704 0.191 22.216);
+      --border: oklch(1 0 0 / 10%);
+      --input: oklch(1 0 0 / 15%);
+      --ring: oklch(0.556 0 0);
+    }
+  }
+
+  /* ── review chrome (sh-*): keep; extend product styles elsewhere ── */
+  * { box-sizing: border-box }
+  body {
+    margin: 0; padding: 0 0 40px;
+    background: var(--background, #f6f6f6); color: var(--foreground, #3a3a3a);
+    font-family: var(--font, system-ui, sans-serif);
+  }
+  .sh-bar {
+    position: sticky; top: 0; z-index: 999;
+    display: flex; gap: 10px; align-items: center; flex-wrap: wrap;
+    padding: 8px 12px; background: #191a1c; color: #d7d7d7;
+    font: 12px/1.5 ui-monospace, SFMono-Regular, Menlo, monospace;
+  }
+  .sh-bar b, .sh-control-label { color: #8a8f98; font-weight: 500 }
+  .sh-control { display: inline-flex; gap: 5px; align-items: center }
+  .sh-bar button {
+    border: 1px solid #3a3d42; background: none; color: inherit;
+    font: inherit; padding: 2px 9px; border-radius: 99px; cursor: pointer;
+  }
+  .sh-bar select {
+    width: 170px; border: 1px solid #3a3d42; background: #232428; color: inherit;
+    font: inherit; padding: 3px 28px 3px 9px; border-radius: 7px; cursor: pointer;
+    color-scheme: dark;
+  }
+  #sh-screen { width: 190px }
+  .sh-bar button.on { background: #d7d7d7; color: #191a1c; border-color: #d7d7d7 }
+  .sh-spacer { flex: 1 }
+  .sh-stage { max-width: 960px; margin: 0 auto; padding: 12px 16px 0 }
+  [hidden] { display: none !important }
+
+  /* viewport presets */
+  .sh-vp-390 .sh-stage {
+    max-width: 390px; background: var(--background, #f6f6f6);
+    border: 10px solid #191a1c; border-radius: 28px;
+    padding: 16px 12px; height: min(844px, calc(100dvh - 52px));
+    overflow-y: auto; margin-top: 12px;
+  }
+  .sh-vp-768 .sh-stage {
+    max-width: 768px; border: 1px solid #c4c4c4; border-radius: 12px;
+    padding: 16px; margin-top: 12px;
+  }
+
+  /* placeholders */
+  .wf-pic  { border-radius: 4px; background:
+             repeating-linear-gradient(45deg, #e9e9e9, #e9e9e9 6px, #f2f2f2 6px, #f2f2f2 12px) }
+  /* the placeholder pattern is light-only; keep it readable on the dark theme */
+  @media (prefers-color-scheme: dark) {
+    .wf-pic { background:
+              repeating-linear-gradient(45deg, #2a2a2a, #2a2a2a 6px, #333 6px, #333 12px) }
+  }
+
+  /* ══ product styles ══════════════════════════════════════════════ */
+
+  /* container query so the simulated 390 frame narrows like a real phone does */
+  .app { max-width: 48rem; margin: 0 auto; padding: 2.5rem 0 4rem; container-type: inline-size }
+  .sh-vp-390 .app { padding: 1rem 0 3rem }
+
+  .app-head { margin-bottom: 1.5rem }
+  .app-head h1 {
+    margin: 0 0 .4rem; font-size: 1.5rem; line-height: 1.3;
+    font-weight: 650; letter-spacing: -.02em;
+  }
+  .app-head p { margin: 0; color: var(--muted-foreground); font-size: .9375rem; line-height: 1.6 }
+
+  /* input row */
+  .url-form { display: flex; gap: .5rem; align-items: stretch }
+  .input-wrap { position: relative; flex: 1; min-width: 0 }
+  .input-wrap > svg {
+    position: absolute; left: .75rem; top: 50%; translate: 0 -50%;
+    width: 16px; height: 16px; color: var(--muted-foreground); pointer-events: none;
+  }
+  .field {
+    width: 100%; height: 2.75rem; padding: 0 2.5rem 0 2.25rem;
+    border: 1px solid var(--input); border-radius: calc(var(--radius) * .8);
+    background: var(--background); color: var(--foreground);
+    font: inherit; font-size: .9375rem; outline: none;
+  }
+  .field::placeholder { color: var(--muted-foreground) }
+  .field:focus-visible { border-color: var(--ring); box-shadow: 0 0 0 3px color-mix(in oklch, var(--ring), transparent 65%) }
+  .field:disabled { opacity: .55; cursor: not-allowed }
+  .clear:disabled { opacity: .4; pointer-events: none }
+  .clear {
+    position: absolute; right: .375rem; top: 50%; translate: 0 -50%;
+    display: grid; place-items: center; width: 1.75rem; height: 1.75rem;
+    border: 0; border-radius: 999px; background: transparent; cursor: pointer;
+    color: var(--muted-foreground);
+  }
+  .clear:hover { background: var(--muted); color: var(--foreground) }
+
+  .btn {
+    display: inline-flex; align-items: center; justify-content: center; gap: .375rem;
+    height: 2.25rem; padding: 0 .75rem; white-space: nowrap;
+    border: 1px solid transparent; border-radius: calc(var(--radius) * .8);
+    font: inherit; font-size: .875rem; font-weight: 500; cursor: pointer;
+    transition: background-color .12s, color .12s, border-color .12s;
+  }
+  .btn:disabled { opacity: .5; cursor: not-allowed }
+  .btn-primary { background: var(--primary); color: var(--primary-foreground) }
+  .btn-primary:not(:disabled):hover { background: color-mix(in oklch, var(--primary), transparent 20%) }
+  .btn-outline { border-color: var(--border); background: var(--background); color: var(--foreground) }
+  .btn-outline:hover { background: var(--muted) }
+  .btn-ghost { background: transparent; color: var(--muted-foreground) }
+  .btn-ghost:hover { background: var(--muted); color: var(--foreground) }
+  .btn-lg { height: 2.75rem; padding: 0 1.125rem; font-size: .9375rem }
+  .btn .spinner {
+    width: 14px; height: 14px; border-radius: 999px;
+    border: 2px solid color-mix(in oklch, currentColor, transparent 70%);
+    border-top-color: currentColor; animation: spin .7s linear infinite;
+  }
+  @keyframes spin { to { rotate: 360deg } }
+
+  .form-hint { margin: .625rem 0 0; font-size: .8125rem; color: var(--muted-foreground) }
+
+  /* idle guidance */
+  .samples { margin-top: 2rem }
+  .samples h2 { margin: 0 0 .625rem; font-size: .8125rem; font-weight: 550; color: var(--muted-foreground) }
+  .chips { display: flex; flex-wrap: wrap; gap: .5rem }
+  .chip {
+    border: 1px solid var(--border); border-radius: 999px; background: var(--background);
+    padding: .3125rem .75rem; font: inherit; font-size: .8125rem; cursor: pointer;
+    color: var(--foreground);
+  }
+  .chip:hover { background: var(--muted) }
+
+  /* result */
+  .doc { margin-top: 1.75rem }
+  .doc-head {
+    border: 1px solid var(--border); border-radius: var(--radius);
+    background: var(--card); color: var(--card-foreground); padding: 1.25rem;
+  }
+  .doc-src { display: flex; align-items: center; gap: .4375rem; font-size: .8125rem; color: var(--muted-foreground) }
+  .doc-src .favicon { width: 16px; height: 16px; border-radius: 4px; flex: none }
+  .doc-head h2 {
+    margin: .5rem 0 0; font-size: 1.375rem; line-height: 1.35;
+    font-weight: 650; letter-spacing: -.015em;
+  }
+  .doc-meta {
+    display: flex; flex-wrap: wrap; align-items: center; gap: .375rem;
+    margin-top: .625rem; font-size: .8125rem; color: var(--muted-foreground);
+  }
+  /* separators ride on the following item so a wrapped line never ends in "·" */
+  .doc-meta .dot, .doc-src .dot { display: none }
+  .doc-meta > span ~ span::before,
+  .doc-src > span:not(.favicon) ~ span::before {
+    content: "·"; margin-right: .375rem; opacity: .55;
+  }
+  .doc-link {
+    display: inline-flex; align-items: center; gap: .25rem; margin-top: .875rem;
+    font-size: .8125rem; color: var(--muted-foreground); text-decoration: none;
+    max-width: 100%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+  }
+  .doc-link:hover { color: var(--foreground); text-decoration: underline }
+
+  /* export bar — sticky under the review chrome in full/768, at the frame top in 390 */
+  .export-bar {
+    position: sticky; top: var(--sticky-top, 38px); z-index: 20;
+    display: flex; align-items: center; gap: .375rem;
+    margin-top: 1rem; padding: .5rem 0;
+    background: var(--background);
+    border-bottom: 1px solid var(--border);
+    overflow-x: auto; scrollbar-width: thin;
+  }
+  /* in the phone frame the stage itself scrolls; bleed over its 16/12px padding
+     so scrolled content does not peek above or beside the pinned bar */
+  .sh-vp-390 .export-bar {
+    --sticky-top: 0px;
+    margin-inline: -12px; padding-inline: 12px;
+    box-shadow: 0 -16px 0 var(--background);
+  }
+  .export-bar .vsep { width: 1px; height: 1.25rem; background: var(--border); flex: none; margin: 0 .25rem }
+  .export-bar .grow { flex: 1; min-width: .5rem }
+
+  .segmented { display: inline-flex; padding: 2px; border-radius: calc(var(--radius) * .8); background: var(--muted); flex: none }
+  .segmented button {
+    border: 0; background: transparent; color: var(--muted-foreground);
+    font: inherit; font-size: .8125rem; font-weight: 500;
+    padding: .25rem .625rem; border-radius: calc(var(--radius) * .6); cursor: pointer;
+  }
+  .segmented button[aria-pressed="true"] { background: var(--background); color: var(--foreground) }
+
+  .export-notice {
+    margin: .625rem 0 0; font-size: .8125rem; color: var(--muted-foreground);
+    display: flex; align-items: center; gap: .375rem;
+  }
+
+  /* rendered markdown (@tailwindcss/typography `prose` stands in here) */
+  .prose { font-size: 1rem; line-height: 1.75; padding-top: 1.5rem }
+  .prose > :first-child { margin-top: 0 }
+  .prose p { margin: 1.25em 0 }
+  .prose h2 { margin: 2em 0 .75em; font-size: 1.25rem; font-weight: 650; letter-spacing: -.01em; line-height: 1.4 }
+  .prose h3 { margin: 1.75em 0 .625em; font-size: 1.0625rem; font-weight: 620 }
+  .prose ul { margin: 1.25em 0; padding-left: 1.5em }
+  .prose li { margin: .5em 0 }
+  .prose a { color: var(--foreground); text-decoration: underline; text-underline-offset: 3px; text-decoration-color: var(--border) }
+  .prose a:hover { text-decoration-color: currentColor }
+  .prose code {
+    font-family: var(--font-mono); font-size: .875em;
+    background: var(--muted); padding: .125em .375em; border-radius: 4px;
+  }
+  .prose pre {
+    margin: 1.5em 0; padding: 1rem; overflow-x: auto;
+    background: var(--muted); border-radius: calc(var(--radius) * .8);
+    font-family: var(--font-mono); font-size: .8125rem; line-height: 1.7;
+  }
+  .prose pre code { background: none; padding: 0; font-size: inherit }
+  .prose blockquote {
+    margin: 1.5em 0; padding: .25em 0 .25em 1em;
+    border-left: 3px solid var(--border); color: var(--muted-foreground);
+  }
+  .prose table { width: 100%; margin: 1.5em 0; border-collapse: collapse; font-size: .875rem }
+  .prose th, .prose td { border: 1px solid var(--border); padding: .5rem .625rem; text-align: left }
+  .prose th { background: var(--muted); font-weight: 600 }
+  .prose img, .prose .wf-pic { max-width: 100%; border-radius: calc(var(--radius) * .8) }
+  .prose figcaption { margin-top: .5rem; font-size: .8125rem; color: var(--muted-foreground) }
+
+  /* raw markdown */
+  .raw {
+    margin: 1.5rem 0 0; padding: 1rem; white-space: pre-wrap; word-break: break-word;
+    background: var(--muted); border-radius: calc(var(--radius) * .8);
+    font-family: var(--font-mono); font-size: .8125rem; line-height: 1.75;
+  }
+
+  /* skeleton */
+  .sk { background: var(--muted); border-radius: 6px; animation: pulse 1.6s ease-in-out infinite }
+  @keyframes pulse { 0%,100% { opacity: 1 } 50% { opacity: .55 } }
+  .sk-head { border: 1px solid var(--border); border-radius: var(--radius); padding: 1.25rem; margin-top: 1.75rem }
+  .sk-body { padding-top: 1.75rem; display: grid; gap: .75rem }
+
+  /* error */
+  .error-card {
+    display: flex; gap: .875rem; margin-top: 1.75rem; padding: 1.125rem 1.25rem;
+    border: 1px solid color-mix(in oklch, var(--destructive), transparent 70%);
+    border-radius: var(--radius);
+    background: color-mix(in oklch, var(--destructive), transparent 94%);
+  }
+  .error-card > svg { width: 20px; height: 20px; flex: none; margin-top: 1px; color: var(--destructive) }
+  .error-card h2 { margin: 0; font-size: .9375rem; font-weight: 600 }
+  .error-card p { margin: .3125rem 0 0; font-size: .875rem; line-height: 1.6; color: var(--muted-foreground) }
+  .error-card .retry { margin-top: .875rem }
+  .error-card .url {
+    font-family: var(--font-mono); font-size: .8125rem;
+    word-break: break-all; color: var(--muted-foreground);
+  }
+
+  @container (max-width: 560px) {
+    .url-form { flex-wrap: wrap }
+    .url-form .btn-lg { width: 100% }
+    .app-head h1 { font-size: 1.3125rem }
+    .doc-head h2 { font-size: 1.1875rem }
+    /* wrap the export actions instead of hiding the view toggle off-screen */
+    .export-bar { flex-wrap: wrap; overflow-x: visible; row-gap: .5rem }
+    .export-bar .vsep, .export-bar .grow { display: none }
+    .export-bar .segmented { margin-left: auto }
+    /* narrow rows wrap often; a dot at the start of a line reads as a bullet */
+    .doc-meta > span ~ span::before { content: none }
+    .doc-meta { column-gap: .875rem }
+  }
+</style>
+
+<header class="sh-bar">
+  <b>proto</b>
+  <label class="sh-control"><span class="sh-control-label">screen</span><select id="sh-screen"></select></label>
+  <span class="sh-spacer"></span>
+  <label class="sh-control"><span class="sh-control-label">state</span><select id="sh-state"></select></label>
+  <button id="sh-vp">vp: full (m)</button>
+</header>
+
+<main class="sh-stage">
+<section data-screen="converter" data-title="URL → Markdown"
+         data-states="변환 중,결과,메타데이터 없는 결과,주소 오류,접근 거부,페이지 없음,가져오기 실패,HTML 아님,본문 없음">
+  <div class="app">
+
+    <header class="app-head">
+      <h1>URL → Markdown</h1>
+      <p>웹 페이지 주소를 붙여넣으면 본문만 Markdown으로 뽑아냅니다. 그대로 복사해 LLM에 넘기세요.</p>
+    </header>
+
+    <form class="url-form" id="form" autocomplete="off">
+      <div class="input-wrap" data-component="Input">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+          <path d="M10 13a5 5 0 0 0 7.5.5l3-3a5 5 0 0 0-7-7l-1.7 1.7"/>
+          <path d="M14 11a5 5 0 0 0-7.5-.5l-3 3a5 5 0 0 0 7 7l1.7-1.7"/>
+        </svg>
+        <input class="field" id="url" type="text" inputmode="url" spellcheck="false"
+               placeholder="https://example.com/article" aria-label="변환할 페이지 주소">
+        <button class="clear" id="clear" type="button" aria-label="지우기" hidden>
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round">
+            <path d="M18 6 6 18M6 6l12 12"/>
+          </svg>
+        </button>
+      </div>
+      <button class="btn btn-primary btn-lg" id="convert" type="submit" data-component="Button" disabled>
+        <span class="spinner" data-when="변환 중"></span>
+        <span id="convert-label">변환</span>
+      </button>
+    </form>
+    <p class="form-hint" data-when="Default">Enter를 눌러도 변환됩니다. 서버에서 페이지를 가져오므로 로그인이 필요한 글은 변환되지 않습니다.</p>
+
+    <!-- 대기: 예시 주소 -->
+    <div class="samples" data-when="Default">
+      <h2>이런 주소로 시험해 보세요</h2>
+      <div class="chips">
+        <button class="chip" type="button" data-fill="https://nextjs.org/blog/next-15">nextjs.org/blog/next-15</button>
+        <button class="chip" type="button" data-fill="https://toss.tech/article/engineering-note-3">toss.tech/article/engineering-note-3</button>
+        <button class="chip" type="button" data-fill="https://en.wikipedia.org/wiki/Markdown">en.wikipedia.org/wiki/Markdown</button>
+      </div>
+    </div>
+
+    <!-- 변환 중 -->
+    <div data-when="변환 중" aria-hidden="true">
+      <div class="sk-head">
+        <div class="sk" style="width:120px;height:13px"></div>
+        <div class="sk" style="width:60%;height:26px;margin-top:12px"></div>
+        <div class="sk" style="width:230px;height:13px;margin-top:14px"></div>
+      </div>
+      <div class="sk-body">
+        <div class="sk" style="height:14px"></div>
+        <div class="sk" style="height:14px"></div>
+        <div class="sk" style="height:14px;width:88%"></div>
+        <div class="sk" style="height:14px;width:94%"></div>
+        <div class="sk" style="height:76px;margin-top:8px"></div>
+        <div class="sk" style="height:14px"></div>
+        <div class="sk" style="height:14px;width:72%"></div>
+      </div>
+    </div>
+
+    <!-- 결과: 메타데이터가 모두 있는 경우 -->
+    <article class="doc result" data-when="결과"
+             data-filename="next-js-15.md"
+             data-markdown="---
+title: &quot;Next.js 15&quot;
+source: &quot;https://nextjs.org/blog/next-15&quot;
+author: &quot;Delba de Oliveira&quot;
+published: &quot;2024-10-21&quot;
+---
+
+Next.js 15 is officially stable and ready for production. This release builds on the updates from both [RC1](https://nextjs.org/blog/next-15-rc) and [RC2](https://nextjs.org/blog/next-15-rc2). We've focused heavily on stability while adding some exciting updates we think you'll love. Try Next.js 15 today:
+
+```
+# Use the new automated upgrade CLI
+npx @next/codemod@canary upgrade latest
+
+# ...or upgrade manually
+npm install next@latest react@rc react-dom@rc
+```
+
+We're also excited to share more about what's coming next at [Next.js Conf](https://nextjs.org/conf) this Thursday, October 24th.
+
+Here's what is new in Next.js 15:
+
+- [**`@next/codemod` CLI:**](#smooth-upgrades-with-nextcodemod-cli) Easily upgrade to the latest Next.js and React versions.
+- [**Async Request APIs (Breaking):**](#async-request-apis-breaking-change) Incremental step towards a simplified rendering and caching model.
+- [**Caching Semantics (Breaking):**](#caching-semantics) `fetch` requests, `GET` Route Handlers, and client navigations are no longer cached by default.
+- [**React 19 Support:**](#react-19) Support for React 19, React Compiler (Experimental), and hydration error improvements.
+- [**Turbopack Dev (Stable):**](#turbopack-dev) Performance and stability improvements.
+
+## Smooth upgrades with @next/codemod CLI
+
+We include codemods (automated code transformations) with every major Next.js release to help automate upgrading breaking changes.
+
+To make upgrades even smoother, we've released an enhanced codemod CLI:
+
+```
+npx @next/codemod@canary upgrade latest
+```
+
+This tool helps you upgrade your codebase to the latest stable or prerelease versions. The CLI will update your dependencies, show available codemods, and guide you through applying them.
+
+## Async Request APIs (Breaking Change)
+
+| API | 15.0 | 이후 |
+| --- | --- | --- |
+| `cookies` | 비동기 전환 | 동기 접근 제거 |
+| `headers` | 비동기 전환 | 동기 접근 제거 |
+| `params` | 비동기 전환 | 동기 접근 제거 |
+
+> Async Request APIs are a breaking change. Use the codemod to migrate automatically.">
+      <div class="doc-head" data-component="Card">
+        <div class="doc-src">
+          <span class="favicon wf-pic" title="파비콘"></span>
+          <span>Next.js</span><span class="dot">·</span><span>nextjs.org</span>
+        </div>
+        <h2>Next.js 15</h2>
+        <div class="doc-meta">
+          <span>Delba de Oliveira</span><span class="dot">·</span>
+          <span>2024년 10월 21일</span><span class="dot">·</span>
+          <span>4,377 단어</span><span class="dot">·</span>
+          <span>약 9분</span>
+        </div>
+        <a class="doc-link" href="#converter">https://nextjs.org/blog/next-15 ↗</a>
+      </div>
+
+      <div class="export-bar">
+        <button class="btn btn-outline" type="button" data-act="copy" data-component="Button">복사하기</button>
+        <button class="btn btn-outline" type="button" data-act="download" data-component="Button">.md 다운로드</button>
+        <span class="vsep"></span>
+        <button class="btn btn-outline" type="button" data-act="send" data-target="ChatGPT" data-component="Button">ChatGPT로 보내기</button>
+        <button class="btn btn-outline" type="button" data-act="send" data-target="Claude" data-component="Button">Claude로 보내기</button>
+        <span class="grow"></span>
+        <div class="segmented" role="group" aria-label="본문 보기 방식" data-component="ToggleGroup">
+          <button type="button" data-view="preview" aria-pressed="true">미리보기</button>
+          <button type="button" data-view="raw" aria-pressed="false">원문</button>
+        </div>
+      </div>
+      <p class="export-notice" hidden></p>
+
+      <div class="prose" data-view-panel="preview">
+        <p>Next.js 15 is officially stable and ready for production. This release builds on the updates from both <a href="#converter">RC1</a> and <a href="#converter">RC2</a>. We've focused heavily on stability while adding some exciting updates we think you'll love. Try Next.js 15 today:</p>
+        <pre><code># Use the new automated upgrade CLI
+npx @next/codemod@canary upgrade latest
+
+# ...or upgrade manually
+npm install next@latest react@rc react-dom@rc</code></pre>
+        <p>We're also excited to share more about what's coming next at <a href="#converter">Next.js Conf</a> this Thursday, October 24th.</p>
+        <p>Here's what is new in Next.js 15:</p>
+        <ul>
+          <li><a href="#converter"><strong><code>@next/codemod</code> CLI:</strong></a> Easily upgrade to the latest Next.js and React versions.</li>
+          <li><a href="#converter"><strong>Async Request APIs (Breaking):</strong></a> Incremental step towards a simplified rendering and caching model.</li>
+          <li><a href="#converter"><strong>Caching Semantics (Breaking):</strong></a> <code>fetch</code> requests, <code>GET</code> Route Handlers, and client navigations are no longer cached by default.</li>
+          <li><a href="#converter"><strong>React 19 Support:</strong></a> Support for React 19, React Compiler (Experimental), and hydration error improvements.</li>
+          <li><a href="#converter"><strong>Turbopack Dev (Stable):</strong></a> Performance and stability improvements.</li>
+        </ul>
+        <h2>Smooth upgrades with @next/codemod CLI</h2>
+        <p>We include codemods (automated code transformations) with every major Next.js release to help automate upgrading breaking changes.</p>
+        <p>To make upgrades even smoother, we've released an enhanced codemod CLI:</p>
+        <pre><code>npx @next/codemod@canary upgrade latest</code></pre>
+        <p>This tool helps you upgrade your codebase to the latest stable or prerelease versions. The CLI will update your dependencies, show available codemods, and guide you through applying them.</p>
+        <h2>Async Request APIs (Breaking Change)</h2>
+        <table>
+          <thead><tr><th>API</th><th>15.0</th><th>이후</th></tr></thead>
+          <tbody>
+            <tr><td><code>cookies</code></td><td>비동기 전환</td><td>동기 접근 제거</td></tr>
+            <tr><td><code>headers</code></td><td>비동기 전환</td><td>동기 접근 제거</td></tr>
+            <tr><td><code>params</code></td><td>비동기 전환</td><td>동기 접근 제거</td></tr>
+          </tbody>
+        </table>
+        <blockquote>Async Request APIs are a breaking change. Use the codemod to migrate automatically.</blockquote>
+      </div>
+      <pre class="raw" data-view-panel="raw" hidden></pre>
+    </article>
+
+    <!-- 결과: 저자·발행일이 없는 경우 (toss.tech 실측) -->
+    <article class="doc result" data-when="메타데이터 없는 결과"
+             data-filename="feign-코드-분석과-서버-성능-개선.md"
+             data-markdown="---
+title: &quot;Feign 코드 분석과 서버 성능 개선&quot;
+source: &quot;https://toss.tech/article/engineering-note-3&quot;
+---
+
+![여러 코드를 다루고 있는 모습](https://static.toss.im/assets/payments/contents/feign-thumb.jpg)
+
+#Server
+
+김성두 · 토스페이먼츠 Server Developer
+
+2023년 11월 22일
+
+얼마 전 토스페이먼츠 서버 모니터링 시스템을 통해 성능 저하 문제를 발견했어요. 약 15,000건 정도의 데이터를 10분 내외로 처리해야 하는 요구사항이 있어 다중 스레드를 활용했는데, 여기서 예상치 못하게 동시성 문제가 생겼습니다.
+
+### 1단계: 문제 이해하기
+
+당시 문제가 되었던 지점의 로그를 함께 살펴볼게요.
+
+```
+[BlockedThread][blocker:http-nio-8080-exec-67][blocked:http-nio-8080-exec-101]
+at java.base@11.0.17/sun.net.www.http.ClientVector.put(KeepAliveCache.java:309) - locked sun.net.www.http.ClientVector@51f75cb3
+at java.base@11.0.17/sun.net.www.http.KeepAliveCache.put(KeepAliveCache.java:172) - locked sun.net.www.http.KeepAliveCache@71a6e252
+```
+
+로그 중간에 눈에 들어오는 부분이 있어요. `locked` 가 보이네요.">
+      <div class="doc-head" data-component="Card">
+        <div class="doc-src">
+          <span class="favicon wf-pic" title="파비콘"></span>
+          <span>toss.tech</span>
+        </div>
+        <h2>Feign 코드 분석과 서버 성능 개선</h2>
+        <div class="doc-meta">
+          <span>2,385 단어</span><span class="dot">·</span>
+          <span>약 5분</span>
+        </div>
+        <a class="doc-link" href="#converter">https://toss.tech/article/engineering-note-3 ↗</a>
+      </div>
+
+      <div class="export-bar">
+        <button class="btn btn-outline" type="button" data-act="copy" data-component="Button">복사하기</button>
+        <button class="btn btn-outline" type="button" data-act="download" data-component="Button">.md 다운로드</button>
+        <span class="vsep"></span>
+        <button class="btn btn-outline" type="button" data-act="send" data-target="ChatGPT" data-component="Button">ChatGPT로 보내기</button>
+        <button class="btn btn-outline" type="button" data-act="send" data-target="Claude" data-component="Button">Claude로 보내기</button>
+        <span class="grow"></span>
+        <div class="segmented" role="group" aria-label="본문 보기 방식" data-component="ToggleGroup">
+          <button type="button" data-view="preview" aria-pressed="true">미리보기</button>
+          <button type="button" data-view="raw" aria-pressed="false">원문</button>
+        </div>
+      </div>
+      <p class="export-notice" hidden></p>
+
+      <div class="prose" data-view-panel="preview">
+        <figure>
+          <div class="wf-pic" style="aspect-ratio:16/9"></div>
+          <figcaption>여러 코드를 다루고 있는 모습</figcaption>
+        </figure>
+        <p>#Server</p>
+        <p>김성두 · 토스페이먼츠 Server Developer</p>
+        <p>2023년 11월 22일</p>
+        <p>얼마 전 토스페이먼츠 서버 모니터링 시스템을 통해 성능 저하 문제를 발견했어요. 약 15,000건 정도의 데이터를 10분 내외로 처리해야 하는 요구사항이 있어 다중 스레드를 활용했는데, 여기서 예상치 못하게 동시성 문제가 생겼습니다.</p>
+        <h3>1단계: 문제 이해하기</h3>
+        <p>당시 문제가 되었던 지점의 로그를 함께 살펴볼게요.</p>
+        <pre><code>[BlockedThread][blocker:http-nio-8080-exec-67][blocked:http-nio-8080-exec-101]
+at java.base@11.0.17/sun.net.www.http.ClientVector.put(KeepAliveCache.java:309) - locked sun.net.www.http.ClientVector@51f75cb3
+at java.base@11.0.17/sun.net.www.http.KeepAliveCache.put(KeepAliveCache.java:172) - locked sun.net.www.http.KeepAliveCache@71a6e252</code></pre>
+        <p>로그 중간에 눈에 들어오는 부분이 있어요. <code>locked</code> 가 보이네요.</p>
+      </div>
+      <pre class="raw" data-view-panel="raw" hidden></pre>
+    </article>
+
+    <!-- 오류 6종 -->
+    <div class="error-card" data-when="주소 오류">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="9"/><path d="M12 8v5M12 16.5v.01"/></svg>
+      <div>
+        <h2>주소를 확인해 주세요</h2>
+        <p>웹 페이지 주소(http/https)만 변환할 수 있습니다. 파일 경로나 내부망 주소는 열 수 없습니다.</p>
+        <p class="url">입력한 주소: localhost:3000/admin</p>
+        <button class="btn btn-outline retry" type="button" data-act="retry">다시 시도</button>
+      </div>
+    </div>
+
+    <div class="error-card" data-when="접근 거부">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="4" y="10" width="16" height="10" rx="2"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/></svg>
+      <div>
+        <h2>페이지가 접근을 거부했습니다</h2>
+        <p>로그인이 필요하거나 자동 수집을 막는 사이트입니다. 브라우저에서 열어 직접 복사해 주세요.</p>
+        <p class="url">https://medium.com/@dvcrn/why-i-still-use-vim-67afd76b4db6 — HTTP 403</p>
+        <button class="btn btn-outline retry" type="button" data-act="retry">다시 시도</button>
+      </div>
+    </div>
+
+    <div class="error-card" data-when="페이지 없음">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
+      <div>
+        <h2>페이지를 찾을 수 없습니다</h2>
+        <p>주소가 바뀌었거나 삭제된 페이지입니다. 주소를 다시 확인해 주세요.</p>
+        <p class="url">https://www.44bits.io/ko/post/what-is-cloud-native — HTTP 404</p>
+        <button class="btn btn-outline retry" type="button" data-act="retry">다시 시도</button>
+      </div>
+    </div>
+
+    <div class="error-card" data-when="가져오기 실패">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 3a9 9 0 1 1-8.5 6"/><path d="M3 3v6h6"/></svg>
+      <div>
+        <h2>페이지를 가져오지 못했습니다</h2>
+        <p>응답이 10초 안에 오지 않았습니다. 사이트가 느리거나 일시적으로 내려간 상태일 수 있습니다.</p>
+        <p class="url">https://blog.example-slow-host.com/2024/03/long-read — 시간 초과</p>
+        <button class="btn btn-outline retry" type="button" data-act="retry">다시 시도</button>
+      </div>
+    </div>
+
+    <div class="error-card" data-when="HTML 아님">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z"/><path d="M14 3v5h5"/></svg>
+      <div>
+        <h2>HTML 페이지가 아닙니다</h2>
+        <p>PDF·이미지·압축 파일 주소는 변환할 수 없습니다. 글이 실린 웹 페이지 주소를 넣어 주세요.</p>
+        <p class="url">https://arxiv.org/pdf/1706.03762 — application/pdf</p>
+        <button class="btn btn-outline retry" type="button" data-act="retry">다시 시도</button>
+      </div>
+    </div>
+
+    <div class="error-card" data-when="본문 없음">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 5h16M4 12h10M4 19h6"/></svg>
+      <div>
+        <h2>본문을 찾지 못했습니다</h2>
+        <p>JavaScript로 그려지는 페이지이거나 글 본문이 없는 주소일 수 있습니다. 글 상세 페이지 주소인지 확인해 주세요.</p>
+        <p class="url">https://d2.naver.com/helloworld/2564557 — 추출된 본문 7단어</p>
+        <button class="btn btn-outline retry" type="button" data-act="retry">다시 시도</button>
+      </div>
+    </div>
+
+  </div>
+</section>
+</main>
+
+<script>
+  const stage = document.querySelector('.sh-stage');
+  const screens = [...stage.querySelectorAll('[data-screen]')];
+  const screenSelect = document.getElementById('sh-screen');
+  const stateSelect = document.getElementById('sh-state');
+  const vpBtn = document.getElementById('sh-vp');
+  let current = null;
+  let currentStates = [];
+
+  screens.forEach(s => {
+    const option = document.createElement('option');
+    option.textContent = s.dataset.title || s.dataset.screen;
+    option.value = s.dataset.screen;
+    screenSelect.append(option);
+  });
+  screenSelect.onchange = () => show(screenSelect.value);
+
+  function show(slug) {
+    current = screens.find(s => s.dataset.screen === slug) || screens[0];
+    screens.forEach(s => s.hidden = s !== current);
+    screenSelect.value = current.dataset.screen;
+    history.replaceState(null, '', '#' + current.dataset.screen);
+    buildStates();
+  }
+
+  function buildStates() {
+    const declared = (current.dataset.states || '').split(',').map(x => x.trim()).filter(Boolean);
+    currentStates = ['Default', ...declared.filter(name => name !== 'Default')];
+    stateSelect.innerHTML = '';
+    currentStates.forEach(name => {
+      const option = document.createElement('option');
+      option.textContent = name;
+      option.value = name;
+      stateSelect.append(option);
+    });
+    applyState('Default');
+  }
+
+  function applyState(name) {
+    const active = currentStates.includes(name) ? name : 'Default';
+    current.querySelectorAll('[data-when]').forEach(el => {
+      el.hidden = !el.dataset.when.split(',').map(x => x.trim()).includes(active);
+    });
+    stateSelect.value = active;
+  }
+  stateSelect.onchange = () => applyState(stateSelect.value);
+
+  window.prototypeShell = {
+    showScreen: show,
+    setState: applyState,
+    getScreen: () => current?.dataset.screen,
+    getState: () => stateSelect.value
+  };
+
+  const VPS = ['full', '390', '768'];
+  let vp = VPS.find(v => document.body.classList.contains('sh-vp-' + v)) || 'full';
+  function applyVp() {
+    VPS.forEach(v => document.body.classList.toggle('sh-vp-' + v, v === vp && v !== 'full'));
+    vpBtn.textContent = 'vp: ' + vp + ' (m)';
+    vpBtn.classList.toggle('on', vp !== 'full');
+  }
+  vpBtn.onclick = () => { vp = VPS[(VPS.indexOf(vp) + 1) % VPS.length]; applyVp(); };
+  applyVp();
+
+  addEventListener('keydown', e => {
+    if (/INPUT|TEXTAREA|SELECT/.test(e.target.tagName)) return;
+    const i = screens.indexOf(current);
+    if (e.key === 'ArrowRight') show(screens[(i + 1) % screens.length].dataset.screen);
+    if (e.key === 'ArrowLeft') show(screens[(i - 1 + screens.length) % screens.length].dataset.screen);
+    if (e.key === 'm') vpBtn.click();
+  });
+
+  addEventListener('hashchange', () => show(location.hash.slice(1)));
+  show(location.hash.slice(1));
+</script>
+
+<script>
+  /* ── product behavior ─────────────────────────────────────────────
+     Deterministic stand-in for the server conversion: the pasted host
+     decides which outcome the reviewer sees. No network, no timers. */
+  const urlField = document.getElementById('url');
+  const clearBtn = document.getElementById('clear');
+  const convertBtn = document.getElementById('convert');
+  const form = document.getElementById('form');
+
+  const OUTCOMES = [
+    [/^\s*$/,                              null],
+    [/^(localhost|127\.|10\.|192\.168\.|file:|data:)/i, '주소 오류'],
+    [/medium\.com/i,                       '접근 거부'],
+    [/44bits\.io|\/404/i,                  '페이지 없음'],
+    [/slow|timeout/i,                      '가져오기 실패'],
+    [/\.(pdf|zip|png|jpg)(\?|$)|\/pdf\//i, 'HTML 아님'],
+    [/d2\.naver\.com/i,                    '본문 없음'],
+    [/toss\.tech/i,                        '메타데이터 없는 결과'],
+  ];
+
+  function looksLikeUrl(v) {
+    return /^([a-z][a-z0-9+.-]*:\/\/)?[^\s/]+\.[^\s/]{2,}/i.test(v.trim());
+  }
+
+  function outcomeFor(value) {
+    for (const [re, state] of OUTCOMES) if (re.test(value)) return state;
+    if (!looksLikeUrl(value)) return '주소 오류';
+    return '결과';
+  }
+
+  function syncInput() {
+    const has = urlField.value.trim().length > 0;
+    clearBtn.hidden = !has;
+    convertBtn.disabled = !has;
+  }
+  urlField.addEventListener('input', syncInput);
+
+  clearBtn.addEventListener('click', () => {
+    urlField.value = '';
+    syncInput();
+    prototypeShell.setState('Default');
+    urlField.focus();
+  });
+
+  form.addEventListener('submit', e => {
+    e.preventDefault();
+    const next = outcomeFor(urlField.value);
+    if (next) prototypeShell.setState(next);
+  });
+
+  document.querySelectorAll('[data-fill]').forEach(chip => {
+    chip.addEventListener('click', () => {
+      urlField.value = chip.dataset.fill;
+      syncInput();
+      urlField.focus();
+    });
+  });
+
+  document.querySelectorAll('[data-act="retry"]').forEach(btn => {
+    btn.addEventListener('click', () => form.requestSubmit());
+  });
+
+  /* 미리보기 / 원문 토글 */
+  document.querySelectorAll('.result').forEach(doc => {
+    const raw = doc.querySelector('[data-view-panel="raw"]');
+    raw.textContent = doc.dataset.markdown;
+
+    doc.querySelectorAll('[data-view]').forEach(tab => {
+      tab.addEventListener('click', () => {
+        const view = tab.dataset.view;
+        doc.querySelectorAll('[data-view]').forEach(t =>
+          t.setAttribute('aria-pressed', String(t.dataset.view === view)));
+        doc.querySelectorAll('[data-view-panel]').forEach(p =>
+          p.hidden = p.dataset.viewPanel !== view);
+      });
+    });
+  });
+
+  /* 내보내기 */
+  function notice(doc, text) {
+    const el = doc.querySelector('.export-notice');
+    el.textContent = text;
+    el.hidden = false;
+    clearTimeout(el._t);
+    el._t = setTimeout(() => { el.hidden = true; }, 3200);
+  }
+
+  function flash(btn, text) {
+    if (btn._t) return;
+    const original = btn.textContent;
+    btn.textContent = text;
+    btn._t = setTimeout(() => { btn.textContent = original; btn._t = null; }, 2000);
+  }
+
+  document.querySelectorAll('[data-act="copy"]').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const doc = btn.closest('.result');
+      navigator.clipboard?.writeText(doc.dataset.markdown).catch(() => {});
+      flash(btn, '복사됨 ✓');
+    });
+  });
+
+  document.querySelectorAll('[data-act="download"]').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const doc = btn.closest('.result');
+      const blob = new Blob([doc.dataset.markdown], { type: 'text/markdown;charset=utf-8' });
+      const a = document.createElement('a');
+      a.href = URL.createObjectURL(blob);
+      a.download = doc.dataset.filename;
+      a.click();
+      URL.revokeObjectURL(a.href);
+      notice(doc, doc.dataset.filename + ' 파일로 저장했습니다.');
+    });
+  });
+
+  document.querySelectorAll('[data-act="send"]').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const doc = btn.closest('.result');
+      navigator.clipboard?.writeText(doc.dataset.markdown).catch(() => {});
+      notice(doc, '복사했습니다. ' + btn.dataset.target + ' 대화창이 새 탭에서 열리면 붙여넣기(⌘V) 하세요.');
+    });
+  });
+
+  /* 변환 중에는 라벨과 입력을 잠근다. 상태 전환은 셸이 스피너의 hidden을 토글해 알려 준다. */
+  const spinner = convertBtn.querySelector('.spinner');
+  const convertLabel = document.getElementById('convert-label');
+  new MutationObserver(() => {
+    const busy = !spinner.hidden;
+    convertLabel.textContent = busy ? '변환 중…' : '변환';
+    urlField.disabled = busy;
+    clearBtn.disabled = busy;
+    convertBtn.disabled = busy || urlField.value.trim().length === 0;
+  }).observe(spinner, { attributes: true, attributeFilter: ['hidden'] });
+
+  /* 프로토타입 안의 링크는 실제로 이동하지 않는다. */
+  document.querySelectorAll('.app a[href^="#"]').forEach(a =>
+    a.addEventListener('click', e => e.preventDefault()));
+
+  syncInput();
+</script>
