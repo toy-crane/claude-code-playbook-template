@@ -1,4 +1,0 @@
-interface:
-  display_name: "Expo Dev Loop"
-  short_description: "Verify Expo changes in a running app"
-  default_prompt: "Use $expo-dev-loop to verify this Expo change in a running app with agent-device."
