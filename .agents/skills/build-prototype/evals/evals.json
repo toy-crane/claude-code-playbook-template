@@ -202,6 +202,45 @@
         "It reports audited coverage and any unverified coordinates or fidelity claims while retaining the full screen, state, interaction, and viewport coverage.",
         "If the reference cannot be inspected, it reports visual equivalence as unverified and limits the extra claim to stronger layout robustness."
       ]
+    },
+    {
+      "id": 15,
+      "prompt": "/build-prototype 승인한 예약 관리 화면을 마무리해줘. 사용자는 예약 목록을 보고 날짜를 바꾸거나 취소할 수 있고, 취소된 예약은 되돌릴 수 없어. 모든 화면과 상태 검토는 끝났고 기존 spec 폴더는 없어. 구현 handoff를 남겨줘.",
+      "expected_output": "The response preserves the approved prototype and creates spec.md as the same stable product contract used by shaping: approved user-visible outcomes, scope, observable acceptance criteria, settled constraints, assumptions, off-limits areas, deferrals, and risks, linked to prototype.html without predicting implementation internals.",
+      "files": [],
+      "expectations": [
+        "It creates docs/specs/<slug>/spec.md and saves the approved surface as linked prototype.html only after review is closed.",
+        "The spec states the approved reservation outcomes and scope rather than merely listing screen decisions.",
+        "The spec includes observable acceptance criteria for viewing, rescheduling, cancelling, and irreversible cancellation.",
+        "It records applicable constraints, assumptions, off-limits areas, deferrals, and risks without inferring behavior from source order or visual proximity.",
+        "It omits predicted files, functions, code structure, technical layers, and step-by-step implementation work."
+      ]
+    },
+    {
+      "id": 16,
+      "prompt": "/build-prototype 승인한 워크스페이스 탈퇴 화면을 마무리해줘. 일반 멤버가 스스로 탈퇴하는 화면과 상태 검토는 끝났어. 다만 마지막 소유자가 탈퇴할 때 소유권과 데이터가 어떻게 되는지는 아직 정하지 않았고 기존 spec 폴더도 없어. 구현 handoff를 남겨줘.",
+      "expected_output": "The response does not silently turn the consequential last-owner policy into settled behavior merely because screen review is closed. It asks one concrete product question with a recommendation, or explicitly defers that branch and records its impact as a remaining risk before claiming an implementation-ready product contract.",
+      "files": [],
+      "expectations": [
+        "It identifies last-owner ownership and data handling as a consequential unresolved product decision outside the approved screen behavior.",
+        "It does not invent transfer, deletion, retention, or blocking behavior as a confirmed outcome, constraint, or acceptance criterion.",
+        "It asks at most one concrete question with a recommendation and rationale, or explicitly defers that exact branch and records its impact.",
+        "It may preserve the approved ordinary-member prototype and settled behavior without reopening unrelated screen review.",
+        "It does not claim the product contract is implementation-ready while the consequential branch is neither settled nor explicitly deferred."
+      ]
+    },
+    {
+      "id": 17,
+      "prompt": "/build-prototype 승인한 활동 기록 화면을 마무리해줘. 화면과 상태 검토는 모두 끝났고, 사용자는 기간과 종류로 기록을 볼 수 있어. 시간대를 따로 고르지 않으면 현재 기기 시간대를 쓰는 건 네가 정한 저비용 기본값이라 사용자가 확정하지 않았지만 나중에 쉽게 바꿀 수 있어. 다른 미정 사항은 없어. 구현 handoff를 남겨줘.",
+      "expected_output": "The response preserves the approved activity-log behavior and prototype, writes the device-time-zone default as an explicitly labeled overridable assumption in spec.md, and does not promote that default to confirmed behavior or omit it from the product contract.",
+      "files": [],
+      "expectations": [
+        "It closes without another product question because the remaining default is cheap, reversible, and explicitly identified as agent-chosen.",
+        "It records the device-time-zone default under explicitly labeled assumptions in spec.md.",
+        "It does not present the device-time-zone default as a confirmed outcome, settled constraint, or observable acceptance criterion.",
+        "It preserves the approved activity-log outcomes, scope, acceptance criteria, and linked prototype.",
+        "It keeps deferrals and remaining risks distinct from the labeled assumption."
+      ]
     }
   ]
 }
