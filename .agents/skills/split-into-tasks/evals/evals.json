@@ -51,7 +51,7 @@
     {
       "id": 5,
       "prompt": "/split-into-tasks 방금 제안한 세 task와 blocker를 승인해. task 파일을 작성해줘.",
-      "expected_output": "The response writes one task file per approved deliverable in dependency order using templates/task.md. Each file carries complete behavior, blocker reasons, pending status, outcome-level acceptance checkboxes, focused verification, any approved risk-based review checkpoint, and minimal execution state. It ends without beginning implementation.",
+      "expected_output": "The response writes one task file per approved deliverable in dependency order using templates/task.md. Each file carries complete behavior, blocker reasons, pending status, outcome-level acceptance checkboxes, focused verification, any approved risk-based review checkpoint, and minimal execution evidence fields. It ends without beginning implementation.",
       "files": [],
       "expectations": [
         "It writes only the approved tasks and preserves their approved boundaries.",
@@ -60,8 +60,8 @@
         "Acceptance criteria verify observable completed behavior instead of naming files, classes, hooks, or implementation steps.",
         "It references an approved prototype when relevant rather than copying its implementation.",
         "It numbers blockers before dependents.",
-        "It uses the task template and preserves pending, in-progress, completed, and blocked as the status vocabulary.",
-        "It initializes only status, verification, and blocker execution state, without commit anchors, correction counters, or a terminal run-completion section.",
+        "It uses the task template and preserves pending, in-progress, completed, blocked, and superseded as the status vocabulary.",
+        "It initializes only status plus verification, blocker, and revision evidence, without commit anchors, correction counters, or a terminal run-completion section.",
         "It includes only review checkpoints approved in the proposed breakdown and does not add a final-review field to task files.",
         "It ends after publishing the approved task files."
       ]
@@ -126,6 +126,45 @@
         "It keeps the replay confirmation constraint in only the operator UI task.",
         "It does not invent backfill, retry limits, retention exceptions, or recovery behavior that the user did not settle.",
         "It ends after updating the spec and task handoff without beginning implementation."
+      ]
+    },
+    {
+      "id": 11,
+      "prompt": "/split-into-tasks docs/specs/commerce/spec.md의 주문, 결제, 환불 결과를 전부 task로 나누고 각 task에서 수정할 파일, 만들 함수, 내부 코드 구조와 구현 순서까지 자세히 적어줘.",
+      "expected_output": "The response proposes the complete shallow task set for all independently deliverable spec outcomes, but declines to predict files, functions, code structure, or a step-by-step implementation sequence inside each outcome. It keeps those details for just-in-time implementation and waits for approval before writing task files.",
+      "files": [],
+      "expectations": [
+        "It covers every independently deliverable outcome in the spec rather than planning only the first task.",
+        "It uses the fewest vertical outcome tasks with observable acceptance and focused verification.",
+        "It records genuine blockers and task-specific constraints where they are known.",
+        "It omits predicted files, functions, code structure, and step-by-step internal implementation instructions.",
+        "It explains that the active outcome's technical approach is derived during implementation and waits for approval before writing files."
+      ]
+    },
+    {
+      "id": 12,
+      "prompt": "/split-into-tasks docs/specs/reading-list/spec.md에는 개인 사용자가 글을 저장하고, 제목을 수정하고, 읽음 표시하거나 삭제하고, 새로고침 뒤에도 목록을 유지하며 전체/읽지 않음/읽음 상태로 보는 하나의 읽기 목록 흐름이 확정돼 있어. 각 기능은 따로 배포해서 쓸 가치가 없고 함께 있어야 기본 흐름으로 사용할 수 있어. task로 나눠줘.",
+      "expected_output": "The response recognizes one coherent reading-list workflow whose capabilities are not independently useful deliverables, creates no task files, and keeps the approved spec as the sole implementation handoff.",
+      "files": [],
+      "expectations": [
+        "It treats the complete reading-list workflow as one coherent deliverable rather than splitting its individual capabilities or states.",
+        "It does not create tasks merely because the workflow contains several observable operations.",
+        "It creates no docs/specs/reading-list/tasks files.",
+        "It keeps the approved spec as the sole handoff for implementation."
+      ]
+    },
+    {
+      "id": 13,
+      "prompt": "/split-into-tasks docs/specs/import/의 Task 01은 과거에 completed였고 검증 증거가 남아 있지만, 통합 회귀로 현재 blocked야. Task 02는 지금 Task 01에 막혀 있어. 방금 승인한 새 breakdown은 Task 01의 결과를 Task 04로 완전히 대체하고, Task 02의 blocker도 Task 04로 옮기기로 했어. task handoff를 갱신해줘.",
+      "expected_output": "The response preserves Task 01 and its completion evidence as explicitly superseded inactive history, records that Task 04 replaces it and why, moves Task 02's blocker reference to Task 04, keeps Task 02 and Task 04 as the current delivery map, and creates no archive.",
+      "files": [],
+      "expectations": [
+        "It preserves the Task 01 file and its earlier completion and regression evidence.",
+        "It gives Task 01 an explicit terminal superseded state rather than leaving it pending, in-progress, blocked, or completed.",
+        "It records Task 04 as the replacement and the approved revision reason in Task 01's revision evidence.",
+        "It moves Task 02's active blocker reference from superseded Task 01 to replacement Task 04.",
+        "It leaves only Task 02 and Task 04 active for future implementation.",
+        "It does not create an archive directory or delete the historically completed Task 01 file."
       ]
     }
   ]

@@ -195,6 +195,32 @@
         "Address change, six-digit paste, and other one-click changes remain product interactions rather than review-state presets.",
         "The response keeps the review open for reactions to the proposed product surface."
       ]
+    },
+    {
+      "id": 16,
+      "prompt": "/shape-idea 감사 로그 내보내기를 정리해줘. 관리자는 기간과 이벤트 종류를 골라 CSV를 내려받을 수 있어야 하고, 자기 조직의 로그만 포함돼야 해. 최대 기간은 90일이고 내보내기 기록은 저장하지 않아. 다른 결정은 없고 바로 구현 가능한 spec으로 마무리해줘.",
+      "expected_output": "The response closes without another question and writes spec.md as the stable product contract: user-visible outcomes, scope, observable acceptance criteria, settled constraints, assumptions, off-limits areas, deferred points, and remaining risks. It records behavior rather than predicted files, functions, code structure, or implementation steps.",
+      "files": [],
+      "expectations": [
+        "It asks no new question because every implementation-relevant product decision is supplied.",
+        "It states the user-visible export outcome and the approved scope, including organization isolation and the 90-day limit.",
+        "It writes observable acceptance criteria that can verify the completed behavior without prescribing implementation internals.",
+        "It records applicable settled constraints, assumptions, off-limits areas, deferred points, and remaining risks in spec.md.",
+        "It does not predict files, functions, code structure, technical layers, or a step-by-step implementation sequence."
+      ]
+    },
+    {
+      "id": 17,
+      "prompt": "/shape-idea 사용자가 워크스페이스에서 스스로 탈퇴할 수 있게 해줘. 그런데 마지막 소유자가 탈퇴할 때 소유권과 데이터가 어떻게 되는지는 아직 정하지 않았어. 일단 나머지는 적당히 채워서 바로 구현 spec으로 끝내줘.",
+      "expected_output": "The response does not silently turn the consequential last-owner policy into settled behavior or acceptance criteria. It asks one concrete question with a recommendation, or explicitly defers the unresolved branch and records its impact as a remaining risk; only cheap reversible defaults may remain labeled assumptions.",
+      "files": [],
+      "expectations": [
+        "It identifies last-owner ownership and data handling as a consequential unresolved product decision.",
+        "It does not invent a last-owner transfer, deletion, retention, or blocking policy as confirmed scope or acceptance criteria.",
+        "It asks at most one concrete question with a recommended answer and rationale, or explicitly defers that exact branch with its impact.",
+        "Any agent-chosen routine detail remains an overridable assumption rather than a settled product constraint.",
+        "It does not claim the product contract is implementation-ready while the consequential branch is neither settled nor explicitly deferred."
+      ]
     }
   ]
 }

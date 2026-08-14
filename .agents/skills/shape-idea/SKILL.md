@@ -66,16 +66,19 @@ Skip review only for an already confirmed pattern, routine presentation details,
 or explicit user delegation. Record the reason and treat only agent-judged
 reasons as assumptions.
 
-## Close autonomously
+## Write the product contract
 
 Stop asking questions when every implementation-relevant decision is resolved
 or explicitly deferred; do not wait for the user to declare completion.
-Translate confirmed product-change requests into required behavior and record
-unresolved requests as deferred points with their possible impact as remaining
-risks.
+Translate confirmed product-change requests into required behavior. Keep cheap
+agent-chosen defaults as overridable assumptions; ask about or explicitly defer
+consequential unsettled behavior and record its possible impact as a remaining
+risk.
 
-Summarize confirmed decisions, rationale, assumptions, off-limits areas and why,
-deferred points, and remaining risks. When ready for implementation, write that
-content to `docs/specs/<slug>/spec.md`, creating the kebab-case folder when
-needed. Record decisions, not implementation instructions. Do not prompt for
-another action after the summary and risks.
+When ready for implementation, write `docs/specs/<slug>/spec.md` as the stable
+product contract, creating the kebab-case folder when needed. Include the
+user-visible outcomes, approved scope, observable acceptance criteria, settled
+constraints and rationale, assumptions, off-limits areas and why, deferred
+points, and remaining risks. Record behavior and decisions without predicting
+files, functions, code structure, technical layers, or implementation steps.
+Summarize the same contract and do not prompt for another action.

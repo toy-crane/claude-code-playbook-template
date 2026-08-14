@@ -1,4 +1,4 @@
 interface:
   display_name: "Build Prototype"
   short_description: "Prototype every screen before implementation"
-  default_prompt: "Use $build-prototype with effort=standard to prototype every screen of this feature in the project's existing style before implementation."
+  default_prompt: "Use $build-prototype with effort=standard to prototype and review every screen in the project's existing style, then preserve the approved surface with its product contract."
