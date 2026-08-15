@@ -20,6 +20,12 @@ session. If it is unavailable, read `GLOSSARY.md` and relevant subjects from
 `docs/decisions/README.md` when present, update confirmed terms, and surface
 terminology or decision conflicts for explicit clarification.
 
+Read root `PRODUCT.md` when it exists before settling the work unit. Treat it as
+the current app-level premise, use only the product constraints relevant to the
+selected work, and surface any mismatch that would require changing that
+premise. Do not create, edit, or copy the whole file into the work-unit spec.
+Missing `PRODUCT.md` does not block shaping.
+
 Resolve what available evidence can answer before asking the user.
 
 For an external-dependency question, check official documentation, issues, and
@@ -81,4 +87,6 @@ user-visible outcomes, approved scope, observable acceptance criteria, settled
 constraints and rationale, assumptions, off-limits areas and why, deferred
 points, and remaining risks. Record behavior and decisions without predicting
 files, functions, code structure, technical layers, or implementation steps.
+Carry only applicable app-level constraints from `PRODUCT.md`; keep the file as
+their canonical product context rather than duplicating its full contents.
 Summarize the same contract and do not prompt for another action.

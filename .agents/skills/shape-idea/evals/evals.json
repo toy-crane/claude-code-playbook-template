@@ -221,6 +221,32 @@
         "Any agent-chosen routine detail remains an overridable assumption rather than a settled product constraint.",
         "It does not claim the product contract is implementation-ready while the consequential branch is neither settled nor explicitly deferred."
       ]
+    },
+    {
+      "id": 18,
+      "prompt": "/shape-idea 첨부한 저장소 루트 PRODUCT.md를 제품 맥락으로 사용해줘. 이번에는 승인 전에 고객이 범위 항목 하나에 질문을 남길 수 있게 하려 해. 동작을 정리해줘.",
+      "expected_output": "The response reads the attached app-level premise before shaping comment behavior, carries its prompt-hidden account-free client and clarity constraints into the work-unit discussion, and leaves PRODUCT.md unchanged rather than duplicating it.",
+      "files": [
+        "evals/fixtures/product-context/PRODUCT.md"
+      ],
+      "expectations": [
+        "It reads the attached PRODUCT.md rather than relying only on product details repeated in the prompt.",
+        "It preserves account-free client participation and unmistakable inclusion and exclusion as constraints when shaping the comment behavior.",
+        "It does not copy the complete product context into the work-unit spec.",
+        "It leaves the attached PRODUCT.md unchanged and does not create another app-level product artifact."
+      ]
+    },
+    {
+      "id": 19,
+      "prompt": "/shape-idea 이 저장소에는 PRODUCT.md가 없어. 기존 관리자 화면에서 멤버 초대 링크의 만료 시간을 24시간으로 바꾸고, 만료된 링크를 열면 새 링크 요청 안내를 보여주려 해. 이 작업을 구현 가능한 spec으로 정리해줘.",
+      "expected_output": "The response proceeds from the concrete work-unit direction without requiring or creating app-level product context and settles only the invitation-link behavior needed for the spec.",
+      "files": [],
+      "expectations": [
+        "It does not block on the missing PRODUCT.md.",
+        "It does not invoke product definition or create PRODUCT.md.",
+        "It shapes the supplied expiration and recovery behavior as a bounded work unit.",
+        "It keeps app-level product definition out of the work-unit contract."
+      ]
     }
   ]
 }

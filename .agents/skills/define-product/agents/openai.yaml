@@ -1,0 +1,4 @@
+interface:
+  display_name: "Define Product"
+  short_description: "Create durable product context for a new app"
+  default_prompt: "Use $define-product to turn this app direction into a concise, durable PRODUCT.md."

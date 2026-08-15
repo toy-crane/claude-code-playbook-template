@@ -1,7 +1,0 @@
-interface:
-  display_name: "Discover Opportunity"
-  short_description: "Find directions in your work and experience"
-  default_prompt: "Use $discover-opportunity to find side-project directions in my existing work and experience."
-
-policy:
-  allow_implicit_invocation: false
