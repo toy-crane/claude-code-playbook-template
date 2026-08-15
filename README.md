@@ -32,13 +32,17 @@ bun dev
 
 ```mermaid
 flowchart LR
-    DO["/discover-opportunity<br/>방향이 없을 때"] --> SI["shape-idea"]
-    SI --> BP["build-prototype"]
+    DP["define-product"] --> PRODUCT[/"PRODUCT.md"/]
+    PRODUCT --> SI["shape-idea"]
     SI --> SPEC[/"docs/specs/&lt;slug&gt;/spec.md"/]
-    BP --> SPEC
-    SPEC --> ST["split-into-tasks<br/>한 세션 초과일 때만"]
-    SPEC --> TDD["tdd"]
-    ST --> TDD
+    SPEC --> ST["split-into-tasks<br/>여러 결과로 나눌 때"]
+    SPEC --> IMP["implement"]
+    ST --> IMP
+    IMP --> HR["human-review<br/>중대한 결과를 검토할 때"]
+    IMP --> PR["pr"]
+    HR --> PR
+    FU[/"docs/follow-ups/*.md"/] --> RF["resolve-follow-ups"]
+    RF --> PR
 ```
 
-파이프라인 밖에서는 `project-knowledge`, `add-stack-context`, `explain-visually`, `compact-decisions`가 각자의 조건에 따라 켜집니다. 남길 만한 지식은 `project-knowledge`가 `GLOSSARY.md`와 `docs/decisions/`에 씁니다.
+파이프라인 밖에서는 `project-knowledge`, `maintain-project-context`, `add-stack-context`, `build-prototype`, `explain-visually`, `tdd`가 각자의 조건에 따라 켜집니다. `project-knowledge`는 `GLOSSARY.md`, `docs/decisions/`, `docs/follow-ups/`에 다음 작업에서도 재사용할 지식과 후속 항목을 남깁니다. Git 작업은 `commit`, `pull`, `push`, `pr`, `merge`가 해당 요청에 맞춰 처리합니다.

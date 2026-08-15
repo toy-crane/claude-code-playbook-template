@@ -40,7 +40,15 @@
     "should_trigger": true
   },
   {
+    "query": "우리가 만드는 제품 방향이 여행자 개인 체크리스트에서 소규모 여행사의 일정 인계로 바뀌었어. 앱 전체의 사용자와 문제를 이 방향에 맞춰 바꿔줘.",
+    "should_trigger": true
+  },
+  {
     "query": "회원가입 화면의 이메일 인증 오류와 재전송 동작을 구현 가능한 spec으로 만들어줘.",
+    "should_trigger": false
+  },
+  {
+    "query": "PRODUCT.md를 참고해서 신규 여행사 온보딩 화면의 동작과 오류 상태를 구현 가능한 spec으로 정리해줘.",
     "should_trigger": false
   },
   {
