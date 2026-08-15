@@ -4,19 +4,21 @@
     {
       "id": 1,
       "prompt": "/define-product 회의 중 말로 흩어진 결정을 바로 정리해 주는 앱을 만들고 싶어. 회의가 끝난 뒤 할 일이 빠지는 문제를 줄이는 방향이야. 아직 사용자를 팀장으로 좁힐지 팀 전체로 볼지는 애매해.",
-      "expected_output": "The response treats the supplied app direction as the seed, proposes a concrete interpretation, and asks exactly one consequential user question with a recommendation before writing the durable product definition.",
+      "expected_output": "The response treats the supplied direction as enough to begin the interview but not enough to write the product definition. Because the actual use scene is still unclear, it asks a neutral scene question before turning the undecided audience into a choice to leave unknown or decide together.",
       "files": [],
       "expectations": [
         "It does not restart from blank-page opportunity discovery or mine personal traces.",
-        "It reflects a concrete candidate product premise from the supplied direction.",
-        "It asks exactly one question about the material user boundary and includes a recommended answer with a concise reason.",
-        "It does not begin feature shaping, architecture selection, or implementation."
+        "It preserves only the product meaning the user actually supplied instead of completing the audience, usage flow, boundaries, or success signals by inference.",
+        "It asks an open, non-leading question about who does what during a real meeting, how decisions and follow-up work are handled today, and where the omission occurs.",
+        "It does not jump straight to choosing between team leads and the full team before learning the actual use scene.",
+        "It offers no recommended audience before the user asks for help making that choice.",
+        "It does not write PRODUCT.md, begin feature shaping, select architecture, or start implementation."
       ]
     },
     {
       "id": 2,
       "prompt": "/define-product 프리랜서 디자이너가 고객과 작업 범위를 합의할 때 쓰는 앱이야. 이메일과 문서에 흩어진 요구를 한 범위 문서로 모으고, 고객이 포함·제외 항목을 확인한 뒤 승인하게 해. 핵심 루프는 요구 수집 → 범위 초안 → 고객 확인 → 승인이고, 성공은 범위 오해로 인한 재작업 감소로 볼 거야. 이 정도면 PRODUCT.md로 정리해줘.",
-      "expected_output": "The response recognizes that the app premise is sufficiently settled, asks no new question, and writes one concise root PRODUCT.md containing every required product-context category while labeling unsupported points as assumptions or unknowns.",
+      "expected_output": "The response recognizes that the app direction and explicit write request are sufficiently complete, asks no new question, and writes one concise root PRODUCT.md containing every required product-context category without adding unsupported product meaning.",
       "files": [],
       "expectations": [
         "It writes the single root PRODUCT.md rather than merely proposing content, returning only prose, or creating a work-unit spec or marketing brief.",
@@ -53,14 +55,14 @@
     },
     {
       "id": 5,
-      "prompt": "/define-product 동네 식당이 매일 남는 재료를 마감 전에 할인 판매하는 앱이야. 근처 손님이 목록을 보고 예약한 뒤 정해진 시간에 찾아가. Next.js와 Supabase를 쓰고 테이블 구조도 PRODUCT.md에 같이 적어줘.",
-      "expected_output": "The response defines the supplied product premise but keeps PRODUCT.md product-only, explicitly leaving stack and data design to their existing technical artifacts.",
+      "prompt": "/define-product 동네 식당이 매일 남는 재료를 마감 전에 할인 판매하는 앱이야. 근처 손님이 목록을 보고 예약한 뒤 정해진 시간에 찾아가. 식당은 버리는 재료를 줄이고 손님은 가까운 곳의 당일 할인을 놓치지 않는 게 핵심이야. 배달과 식당 재고 관리는 범위에서 빼고, 성공은 등록된 재료 중 폐기되는 비율이 줄어드는지로 볼 거야. 이 방향으로 PRODUCT.md를 써줘. Next.js와 Supabase를 쓰고 테이블 구조도 PRODUCT.md에 같이 적어줘.",
+      "expected_output": "The response recognizes the explicit product direction and write request as sufficient confirmation, writes PRODUCT.md, and keeps it product-only by leaving stack and data design to technical artifacts.",
       "files": [],
       "expectations": [
-        "It captures the restaurant, nearby-customer, reservation, and pickup premise.",
+        "It captures the restaurant, nearby-customer, reservation, pickup, no-delivery, no-inventory-management, and reduced-waste premise.",
         "It does not put Next.js, Supabase, tables, architecture, or file structure into PRODUCT.md.",
         "It distinguishes product capabilities from detailed feature requirements.",
-        "It does not turn the document into an implementation plan."
+        "It does not turn the document into an implementation plan or ask a redundant confirmation question."
       ]
     },
     {
@@ -73,6 +75,66 @@
         "It leaves the current audience meaning unchanged pending clarification.",
         "It asks one precise question about whether the intended audience has changed.",
         "It does not silently copy implementation detail into PRODUCT.md."
+      ]
+    },
+    {
+      "id": 7,
+      "prompt": "/define-product 웹 페이지 URL을 Markdown으로 변환해 LLM으로 바로 넘기는 서비스.",
+      "expected_output": "The response recognizes only the stated URL to Markdown to LLM direction, treats it as enough to start an interview rather than enough to define the product, and asks one open usage-scene question before writing anything.",
+      "files": [],
+      "expectations": [
+        "It does not create PRODUCT.md or present a completed product premise from this one-line direction.",
+        "It does not invent a target user, page type, current workaround, product promise, LLM provider, transfer method, product boundary, experience principle, or success signal.",
+        "It asks who encounters what kind of page while doing what, and what they do today to get that content into an LLM, as one closely related usage-scene question.",
+        "It does not recommend an answer, offer leading choices, begin feature shaping, or discuss implementation."
+      ]
+    },
+    {
+      "id": 8,
+      "prompt": "/define-product 지금까지 확인된 방향은 웹 페이지 URL을 Markdown으로 바꿔 LLM으로 넘기는 서비스야. 첫 질문에 답하면, 주 사용자는 긴 기술 문서를 읽다가 LLM에 질문하려는 개발자고 지금은 본문을 골라 복사한 뒤 깨진 형식을 손으로 정리해 붙여 넣어. 이 답을 바탕으로 제품 정의를 계속 진행해줘.",
+      "expected_output": "The response briefly reflects the newly learned user, situation, and current workaround, then asks the next material intent question instead of treating one interview answer as permission to complete PRODUCT.md.",
+      "files": [],
+      "expectations": [
+        "It does not create PRODUCT.md or silently fill every remaining product section after one answer.",
+        "It distinguishes the confirmed usage situation from still-unconfirmed promised change, end state, boundaries, experience priorities, and success signals.",
+        "It asks one next question that can materially change the product definition, such as what must improve over the current workflow or what '넘긴다' means as an end state.",
+        "It does not recommend a solution before the user asks to decide an unresolved choice together."
+      ]
+    },
+    {
+      "id": 9,
+      "prompt": "/define-product 웹 페이지 URL을 Markdown으로 변환해 LLM으로 바로 넘기는 서비스야. 누구를 위한 건지, 왜 필요한지, 지금 어떻게 하는지는 아직 말하지 않았어. 나머지는 네가 적당히 정해서 PRODUCT.md까지 만들어줘.",
+      "expected_output": "The response treats the broad 'decide the rest' request as insufficient authority over all missing product meaning, preserves the stated solution direction, and begins with an actual use-scene question without creating PRODUCT.md.",
+      "files": [],
+      "expectations": [
+        "It does not invent the user, situation, current alternative, promised change, core loop, boundaries, experience principles, or success signals under the broad delegation.",
+        "It explains or demonstrates that delegation must name a specific choice, criteria, and limits.",
+        "It asks one open question about the actual use scene and current behavior.",
+        "It does not create PRODUCT.md."
+      ]
+    },
+    {
+      "id": 10,
+      "prompt": "/define-product 긴 기술 문서를 읽는 개발자가 본문을 복사하고 메뉴·광고를 지우고 깨진 코드 형식을 손으로 고친 뒤 LLM에 붙여 넣는 일을 줄이는 서비스야. URL 입력 → 본문과 코드 구조 확인 → LLM으로 전달 → 질문 계속하기가 핵심 흐름이고, 공개된 단일 페이지에 집중하며 저장함과 사이트 전체 크롤링은 하지 않아. 성공은 전달 전에 수동으로 다시 고치는 비율이 줄어드는지로 볼게. 전달 방식 하나만 네가 정해줘. API 키 없이 기존 LLM 로그인 상태를 쓰고, 최종 전송은 사용자가 통제할 수 있어야 해. 이 선택 외의 제품 결정은 맡기지 않을게. 결정한 이유를 밝히고 PRODUCT.md로 정리해줘.",
+      "expected_output": "The response makes only the explicitly delegated transfer-method choice against the supplied criteria, discloses the choice and reason, and writes PRODUCT.md without extending that authority to other product meaning.",
+      "files": [],
+      "expectations": [
+        "It selects a transfer approach that does not require an API key, can reuse an existing LLM login, and leaves final submission under user control.",
+        "It clearly identifies the transfer approach as a choice made under the user's scoped delegation and gives the reason.",
+        "It does not use that delegation to invent unrelated audiences, capabilities, boundaries, or success signals.",
+        "It writes one root PRODUCT.md using the standard product sections, puts the choice in the section it affects rather than adding a separate provenance section, and asks no redundant approval question."
+      ]
+    },
+    {
+      "id": 11,
+      "prompt": "/define-product 프리랜서 디자이너가 이메일과 문서에 흩어진 고객 요구를 하나의 범위 문서로 모으고, 포함·제외 항목을 함께 확인한 뒤 승인받는 앱이야. 핵심 흐름은 요구 수집 → 범위 초안 → 고객 확인 → 승인이고, 범위 오해로 인한 재작업 감소가 성공 신호야. 고객은 계정을 만들지 않아도 확인할 것이라는 믿음은 아직 검증되지 않았지만 내가 가정으로 두는 데 동의해. 재작업이 얼마나 줄어야 성공인지는 이번에는 미상으로 남길게. 이 내용으로 PRODUCT.md를 써줘.",
+      "expected_output": "The response writes the complete product definition, records only the user-accepted account-free review belief as an assumption and the user-chosen reduction target as an intentional unknown, and does not manufacture more uncertainty.",
+      "files": [],
+      "expectations": [
+        "It writes one root PRODUCT.md without another interview round.",
+        "It records account-free customer review as an assumption rather than a confirmed fact.",
+        "It records the amount of required rework reduction as an intentional unknown.",
+        "It does not add other assumptions, unknowns, delegated decisions, or implementation detail that the user did not supply."
       ]
     }
   ]
