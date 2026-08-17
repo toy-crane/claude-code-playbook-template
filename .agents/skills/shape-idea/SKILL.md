@@ -28,11 +28,13 @@ Missing `PRODUCT.md` does not block shaping.
 
 Resolve what available evidence can answer before asking the user.
 
-For an external-dependency question, check official documentation, issues, and
-release notes before a workaround. If they do not answer it, run a small
-technical experiment or benchmark and record the gaps. When a decision selects
-a framework or hosted service, install any official vendor agent context in the
-form the vendor recommends.
+Ground any conclusion about a third-party package or tool in evidence of how it
+actually behaves — its own source, documentation, releases, and maintainer
+statements — and confirm it in this project before building on it or working
+around it. Record what was checked, what fell short, and the upstream change
+that would reopen the decision. When a decision selects a framework or hosted
+service, install any official vendor agent context in the form the vendor
+recommends.
 
 ## Present one decision at a time
 

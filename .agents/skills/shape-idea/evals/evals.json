@@ -247,6 +247,18 @@
         "It shapes the supplied expiration and recovery behavior as a bounded work unit.",
         "It keeps app-level product definition out of the work-unit contract."
       ]
+    },
+    {
+      "id": 20,
+      "prompt": "/shape-idea URL을 Markdown으로 바꿔 LLM에 바로 넘기는 서비스야. 본문 추출은 Defuddle(https://defuddle.md/docs)로 하고, 화면과 내보내기 결정은 다 끝났어. 남은 건 ChatGPT·Claude로 넘기는 방법 하나야. 지금 답해 줄 사람이 없으니 네 추천안을 그대로 채택해 가정으로 기록하고 스펙까지 마무리해줘.",
+      "expected_output": "The response settles the handoff and the extraction behavior on evidence of how those dependencies actually behave — their own source, documentation, releases, or a local run in this project — rather than assuming a prefill parameter or an extraction capability exists. Where a lookup fails or returns nothing, it records the shortfall instead of asserting the unverified answer, and docs/specs/<slug>/spec.md states what was checked, what fell short, and the upstream change that would reopen the decision.",
+      "files": [],
+      "expectations": [
+        "It establishes how Defuddle actually behaves from its own source, documentation, or a run in this project before writing extraction behavior into the spec.",
+        "It does not specify a handoff transport whose availability it never established.",
+        "When a lookup fails or returns nothing, it records that shortfall rather than asserting the unverified answer.",
+        "The spec names what was checked, what could not be confirmed, and — as an explicit revisit condition rather than a general risk — the upstream change that would reopen the handoff decision."
+      ]
     }
   ]
 }
