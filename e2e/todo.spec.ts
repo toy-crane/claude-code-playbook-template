@@ -141,15 +141,15 @@ test("삭제 버튼을 실수로 연타해도 한 항목만 사라진다", async
   await expect(page.getByRole("listitem")).toHaveText([/2번/, /1번/]);
 });
 
-test("의도적으로 이어서 누르면 여러 항목을 차례로 지울 수 있다", async ({
+test("별개의 클릭으로 누르면 여러 항목을 차례로 지울 수 있다", async ({
   page,
 }) => {
   await add(page, "1번");
   await add(page, "2번");
   await add(page, "3번");
 
+  // 한 번의 더블클릭 제스처가 아니라 각각의 클릭이면 그대로 삭제된다.
   await page.getByRole("button", { name: "3번 삭제" }).click();
-  await page.waitForTimeout(600);
   await page.getByRole("button", { name: "2번 삭제" }).click();
 
   await expect(page.getByRole("listitem")).toHaveText([/1번/]);
@@ -189,4 +189,24 @@ test("편집 내용이 여러 줄로 접혀도 아래 항목의 체크박스가 
   await page.getByRole("checkbox", { name: "아래 항목" }).click();
 
   await expect(page.getByRole("checkbox", { name: "아래 항목" })).toBeChecked();
+});
+
+test("편집 내용이 여러 줄로 접혀도 아래 항목을 더블클릭해 바로 편집할 수 있다", async ({
+  page,
+}) => {
+  await add(page, "아래 항목");
+  await add(page, "위 항목");
+
+  await page.getByText("위 항목").dblclick();
+  await page
+    .getByRole("textbox", { name: "할 일 수정" })
+    .fill(
+      "위 항목을 아주 길게 고쳐서 한 줄에 담기지 않고 두 줄 이상으로 접히도록 만든다 — 편집창이 글자로 바뀌면 행 높이가 커진다"
+    );
+  await page.getByText("아래 항목").dblclick();
+
+  await expect(page.getByRole("textbox", { name: "할 일 수정" })).toHaveValue(
+    "아래 항목"
+  );
+  await expect(page.getByText("두 줄 이상으로 접히도록")).toBeVisible();
 });

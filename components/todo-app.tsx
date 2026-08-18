@@ -75,6 +75,7 @@ export function TodoApp() {
   }
 
   function startEdit(todo: Todo) {
+    saveEdit();
     setEditingId(todo.id);
     setEditDraft(todo.text);
   }
@@ -171,9 +172,14 @@ export function TodoApp() {
                     todo.done && "text-muted-foreground line-through"
                   )}
                   onMouseDown={(event) => {
-                    // 드래그해서 복사하는 것은 그대로 두고, 편집을 여는 두 번째
-                    // 클릭이 글자를 선택해 번쩍이는 것만 막는다.
-                    if (event.detail > 1) event.preventDefault();
+                    // 다른 항목을 편집 중이면 포커스를 뺏지 않는다. 편집이
+                    // 저장되며 행 높이가 커지면 두 번째 클릭이 엉뚱한 곳에
+                    // 떨어져 편집이 열리지 않는다.
+                    // 편집 중이 아닐 때는 드래그해서 복사하는 것을 막지 않고,
+                    // 편집을 여는 두 번째 클릭의 글자 선택만 막는다.
+                    if (editingId !== null || event.detail > 1) {
+                      event.preventDefault();
+                    }
                   }}
                   onDoubleClick={() => startEdit(todo)}
                 >
