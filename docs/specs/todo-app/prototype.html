@@ -1,0 +1,443 @@
+<!--
+  prototype shell: the review chrome every prototype starts from.
+
+  Keep this comment in the prototype you grow from here: it is the contract,
+  and later turns work from that file rather than from this one.
+
+  Contract (extend product screens; keep the review shell):
+  - Product:  .sh-stage contains only end-user product UI. Keep review notes,
+               rationale, instructions, and approval controls in conversation.
+  - Screens:  <section data-screen="slug" data-title="Label"> inside .sh-stage.
+               The selector, arrow keys, and #hash routing build themselves.
+               Use one option per product destination or distinct surface,
+               named by its product role. Keep baselines, variants, comparison
+               labels, steps, indexes, and progress out of names and states.
+               Links may use href="#slug".
+  - States:   "Default" is automatic. A screen declares only representative
+               presets in data-states="Empty,Error". Use natural, screen-specific
+               names. Reserve presets for important multi-step results, forced
+               data or errors, or materially different structure; keep one-click
+               and transient states as interactions. Use data-when="Empty" on
+               preset-only elements. Call prototypeShell.setState("Name") on
+               entry and setState("Default") on exit, including when repeated
+               actions cross a preset condition.
+  - Viewport: "vp (m)" cycles full / 390 / 768. The 390 preset is a
+               fixed-height, internally scrolling phone frame. Start a
+               mobile-first prototype by adding class="sh-vp-390" to <body>
+               (or a bootstrap classList.add before the chrome script runs).
+  - Pinning:  keep in-frame bars (tab bars, CTAs) inside the phone with
+               position: sticky; position: fixed pins to the browser window.
+  - Tokens:   replace the project-tokens block with project tokens copied
+               verbatim. Map differing names to --background, --foreground, and
+               --font afterwards; replace network fonts with a system stack and
+               note that substitution. Without a design system, keep this
+               palette as the finished style.
+  - Placeholders: .wf-pic stands in for pictures the prototype has no real
+               files for. Use real text everywhere text belongs.
+
+  - Chrome:   Keep exactly the screen selector, selected-screen state selector,
+               and viewport cycle. Chrome that needs explaining has failed.
+
+  Self-contained by design: no build, no framework, no network.
+-->
+<meta charset="utf-8">
+<title>할 일 앱 프로토타입</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<style>
+  /* ── project tokens: copied verbatim from app/globals.css :root ── */
+  :root {
+    --background: oklch(1 0 0);
+    --foreground: oklch(0.145 0 0);
+    --card: oklch(1 0 0);
+    --card-foreground: oklch(0.145 0 0);
+    --popover: oklch(1 0 0);
+    --popover-foreground: oklch(0.145 0 0);
+    --primary: oklch(0.205 0 0);
+    --primary-foreground: oklch(0.985 0 0);
+    --secondary: oklch(0.97 0 0);
+    --secondary-foreground: oklch(0.205 0 0);
+    --muted: oklch(0.97 0 0);
+    --muted-foreground: oklch(0.556 0 0);
+    --accent: oklch(0.97 0 0);
+    --accent-foreground: oklch(0.205 0 0);
+    --destructive: oklch(0.577 0.245 27.325);
+    --border: oklch(0.922 0 0);
+    --input: oklch(0.922 0 0);
+    --ring: oklch(0.708 0 0);
+    --radius: 0.625rem;
+  }
+  /* ── mapping: radius scale derived from the project's @theme inline block;
+        next/font (Inter, Geist) replaced with a system stack, so type metrics
+        differ slightly from the real app ── */
+  :root {
+    --radius-sm: calc(var(--radius) * 0.6);
+    --radius-md: calc(var(--radius) * 0.8);
+    --radius-lg: var(--radius);
+    --font: ui-sans-serif, system-ui, -apple-system, "Apple SD Gothic Neo",
+            "Pretendard", "Malgun Gothic", sans-serif;
+  }
+
+  /* ── review chrome (sh-*): keep; extend product styles elsewhere ── */
+  * { box-sizing: border-box }
+  body {
+    margin: 0; padding: 0 0 40px;
+    background: var(--background, #f6f6f6); color: var(--foreground, #3a3a3a);
+    font-family: var(--font, system-ui, sans-serif);
+  }
+  .sh-bar {
+    position: sticky; top: 0; z-index: 999;
+    display: flex; gap: 10px; align-items: center; flex-wrap: wrap;
+    padding: 8px 12px; background: #191a1c; color: #d7d7d7;
+    font: 12px/1.5 ui-monospace, SFMono-Regular, Menlo, monospace;
+  }
+  .sh-bar b, .sh-control-label { color: #8a8f98; font-weight: 500 }
+  .sh-control { display: inline-flex; gap: 5px; align-items: center }
+  .sh-bar button {
+    border: 1px solid #3a3d42; background: none; color: inherit;
+    font: inherit; padding: 2px 9px; border-radius: 99px; cursor: pointer;
+  }
+  .sh-bar select {
+    width: 170px; border: 1px solid #3a3d42; background: #232428; color: inherit;
+    font: inherit; padding: 3px 28px 3px 9px; border-radius: 7px; cursor: pointer;
+    color-scheme: dark;
+  }
+  #sh-screen { width: 190px }
+  .sh-bar button.on { background: #d7d7d7; color: #191a1c; border-color: #d7d7d7 }
+  .sh-spacer { flex: 1 }
+  .sh-stage { max-width: 960px; margin: 0 auto; padding: 12px 16px 0 }
+  [hidden] { display: none !important }
+
+  /* viewport presets */
+  .sh-vp-390 .sh-stage {
+    max-width: 390px; background: var(--background, #f6f6f6);
+    border: 10px solid #191a1c; border-radius: 28px;
+    padding: 16px 12px; height: min(844px, calc(100dvh - 52px));
+    overflow-y: auto; margin-top: 12px;
+  }
+  .sh-vp-768 .sh-stage {
+    max-width: 768px; border: 1px solid #c4c4c4; border-radius: 12px;
+    padding: 16px; margin-top: 12px;
+  }
+
+  /* placeholders */
+  .wf-pic  { border-radius: 4px; background:
+             repeating-linear-gradient(45deg, #e9e9e9, #e9e9e9 6px, #f2f2f2 6px, #f2f2f2 12px) }
+
+  /* ── product styles ── */
+  .app {
+    max-width: 560px; margin: 0 auto;
+    padding: clamp(28px, 6vw, 56px) 0 72px;
+  }
+  .app-title {
+    margin: 0 0 20px; font-size: 24px; line-height: 1.3;
+    font-weight: 600; letter-spacing: -0.015em; color: var(--foreground);
+  }
+
+  .new-todo {
+    display: block; width: 100%; height: 44px; padding: 0 14px;
+    font: inherit; font-size: 15px; color: var(--foreground);
+    background: var(--background);
+    border: 1px solid var(--input); border-radius: var(--radius-md);
+    outline: none; transition: border-color .15s, box-shadow .15s;
+  }
+  .new-todo::placeholder { color: var(--muted-foreground) }
+  .new-todo:focus {
+    border-color: var(--ring);
+    box-shadow: 0 0 0 3px color-mix(in oklch, var(--ring) 45%, transparent);
+  }
+
+  .list { list-style: none; margin: 8px 0 0; padding: 0 }
+  .item {
+    display: flex; align-items: flex-start; gap: 12px;
+    padding: 13px 2px; border-bottom: 1px solid var(--border);
+  }
+  .item:last-child { border-bottom: none }
+
+  .check {
+    flex: none; width: 18px; height: 18px; margin-top: 2px; padding: 0;
+    display: grid; place-items: center; cursor: pointer;
+    background: var(--background);
+    border: 1px solid color-mix(in oklch, var(--foreground) 30%, transparent);
+    border-radius: var(--radius-sm);
+    outline: none; transition: background-color .15s, border-color .15s;
+  }
+  .check:focus-visible {
+    border-color: var(--ring);
+    box-shadow: 0 0 0 3px color-mix(in oklch, var(--ring) 45%, transparent);
+  }
+  .check svg { width: 12px; height: 12px; stroke: var(--primary-foreground); opacity: 0 }
+  .item.done .check { background: var(--primary); border-color: var(--primary) }
+  .item.done .check svg { opacity: 1 }
+
+  .text {
+    flex: 1; min-width: 0; font-size: 15px; line-height: 1.55;
+    color: var(--foreground); cursor: text; overflow-wrap: anywhere;
+    -webkit-user-select: none; user-select: none;
+  }
+  .item.done .text { color: var(--muted-foreground); text-decoration: line-through }
+
+  .edit {
+    flex: 1; min-width: 0; margin: -4px 0; padding: 3px 9px;
+    font: inherit; font-size: 15px; line-height: 1.55;
+    color: var(--foreground); background: var(--background);
+    border: 1px solid var(--ring); border-radius: var(--radius-sm);
+    outline: none;
+    box-shadow: 0 0 0 3px color-mix(in oklch, var(--ring) 45%, transparent);
+  }
+
+  .del {
+    flex: none; width: 30px; height: 30px; margin: -3px -6px -3px 0; padding: 0;
+    display: grid; place-items: center; cursor: pointer;
+    color: var(--muted-foreground); background: none;
+    border: 1px solid transparent; border-radius: var(--radius-sm);
+    outline: none; transition: background-color .15s, color .15s;
+  }
+  .del svg { width: 15px; height: 15px }
+  .del:hover { background: var(--muted); color: var(--destructive) }
+  .del:focus-visible {
+    border-color: var(--ring);
+    box-shadow: 0 0 0 3px color-mix(in oklch, var(--ring) 45%, transparent);
+  }
+
+  .empty {
+    display: flex; flex-direction: column; align-items: center; gap: 12px;
+    padding: 64px 20px; text-align: center;
+  }
+  .empty svg { width: 26px; height: 26px; stroke: var(--muted-foreground) }
+  .empty-title { font-size: 15px; font-weight: 500; color: var(--foreground) }
+  .empty-body { margin: -6px 0 0; font-size: 14px; line-height: 1.6; color: var(--muted-foreground) }
+</style>
+
+<header class="sh-bar">
+  <b>proto</b>
+  <label class="sh-control"><span class="sh-control-label">screen</span><select id="sh-screen"></select></label>
+  <span class="sh-spacer"></span>
+  <label class="sh-control"><span class="sh-control-label">state</span><select id="sh-state"></select></label>
+  <button id="sh-vp">vp: full (m)</button>
+</header>
+
+<main class="sh-stage">
+  <section data-screen="todos" data-title="할 일" data-states="빈 목록">
+    <div class="app" data-component="new:TodoApp">
+      <h1 class="app-title">할 일</h1>
+
+      <input
+        id="new-todo"
+        class="new-todo"
+        data-component="Input"
+        type="text"
+        autocomplete="off"
+        placeholder="할 일을 입력하고 Enter">
+
+      <ul id="list" class="list" data-component="new:TodoList" data-when="Default"></ul>
+
+      <div class="empty" data-component="new:EmptyState" data-when="빈 목록">
+        <svg viewBox="0 0 24 24" fill="none" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <path d="m3 17 2 2 4-4"/><path d="m3 7 2 2 4-4"/>
+          <path d="M13 6h8"/><path d="M13 12h8"/><path d="M13 18h8"/>
+        </svg>
+        <div class="empty-title">할 일이 없습니다</div>
+        <p class="empty-body">위 입력창에 할 일을 적고 Enter를 누르세요.</p>
+      </div>
+    </div>
+  </section>
+</main>
+
+<script>
+  const stage = document.querySelector('.sh-stage');
+  const screens = [...stage.querySelectorAll('[data-screen]')];
+  const screenSelect = document.getElementById('sh-screen');
+  const stateSelect = document.getElementById('sh-state');
+  const vpBtn = document.getElementById('sh-vp');
+  let current = null;
+  let currentStates = [];
+
+  screens.forEach(s => {
+    const option = document.createElement('option');
+    option.textContent = s.dataset.title || s.dataset.screen;
+    option.value = s.dataset.screen;
+    screenSelect.append(option);
+  });
+  screenSelect.onchange = () => show(screenSelect.value);
+
+  function show(slug) {
+    current = screens.find(s => s.dataset.screen === slug) || screens[0];
+    screens.forEach(s => s.hidden = s !== current);
+    screenSelect.value = current.dataset.screen;
+    history.replaceState(null, '', '#' + current.dataset.screen);
+    buildStates();
+  }
+
+  function buildStates() {
+    const declared = (current.dataset.states || '').split(',').map(x => x.trim()).filter(Boolean);
+    currentStates = ['Default', ...declared.filter(name => name !== 'Default')];
+    stateSelect.innerHTML = '';
+    currentStates.forEach(name => {
+      const option = document.createElement('option');
+      option.textContent = name;
+      option.value = name;
+      stateSelect.append(option);
+    });
+    applyState('Default');
+  }
+
+  function applyState(name) {
+    const active = currentStates.includes(name) ? name : 'Default';
+    current.querySelectorAll('[data-when]').forEach(el => {
+      el.hidden = !el.dataset.when.split(',').map(x => x.trim()).includes(active);
+    });
+    stateSelect.value = active;
+  }
+  stateSelect.onchange = () => applyState(stateSelect.value);
+
+  window.prototypeShell = {
+    showScreen: show,
+    setState: applyState,
+    getScreen: () => current?.dataset.screen,
+    getState: () => stateSelect.value
+  };
+
+  const VPS = ['full', '390', '768'];
+  let vp = VPS.find(v => document.body.classList.contains('sh-vp-' + v)) || 'full';
+  function applyVp() {
+    VPS.forEach(v => document.body.classList.toggle('sh-vp-' + v, v === vp && v !== 'full'));
+    vpBtn.textContent = 'vp: ' + vp + ' (m)';
+    vpBtn.classList.toggle('on', vp !== 'full');
+  }
+  vpBtn.onclick = () => { vp = VPS[(VPS.indexOf(vp) + 1) % VPS.length]; applyVp(); };
+  applyVp();
+
+  addEventListener('keydown', e => {
+    if (/INPUT|TEXTAREA|SELECT/.test(e.target.tagName)) return;
+    const i = screens.indexOf(current);
+    if (e.key === 'ArrowRight') show(screens[(i + 1) % screens.length].dataset.screen);
+    if (e.key === 'ArrowLeft') show(screens[(i - 1 + screens.length) % screens.length].dataset.screen);
+    if (e.key === 'm') vpBtn.click();
+  });
+
+  addEventListener('hashchange', () => show(location.hash.slice(1)));
+  show(location.hash.slice(1));
+</script>
+
+<script>
+  /* ── product behavior (dummy data only; no storage, no network) ── */
+  (function () {
+    const SEED = [
+      { id: 1, text: '팀 온보딩 문서에서 로컬 개발 환경 세팅 섹션 다시 쓰기 — Node 버전 안내가 오래됐고 스크린샷도 전부 교체해야 함', done: false },
+      { id: 2, text: '금요일 회고 미팅 아젠다 초안 공유하기', done: false },
+      { id: 3, text: '전세 계약 갱신 확정일자 재확인', done: false },
+      { id: 4, text: '치과 스케일링 예약 (6개월 지남)', done: false },
+      { id: 5, text: '노트북 백업 디스크 정리 — 남은 용량 12GB', done: true },
+      { id: 6, text: '주민센터 전입신고 처리', done: true }
+    ];
+
+    const listEl = document.getElementById('list');
+    const newEl = document.getElementById('new-todo');
+    const CHECK = '<svg viewBox="0 0 24 24" fill="none" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg>';
+    const TRASH = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 6h18"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6"/><path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/><path d="M10 11v6"/><path d="M14 11v6"/></svg>';
+
+    let items = SEED.map(t => ({ ...t }));
+    let stash = [];
+    let seq = 100;
+    let editingId = null;
+
+    function render() {
+      listEl.replaceChildren(...items.map(buildItem));
+      prototypeShell.setState(items.length ? 'Default' : '빈 목록');
+    }
+
+    function buildItem(todo) {
+      const li = document.createElement('li');
+      li.className = 'item' + (todo.done ? ' done' : '');
+      li.dataset.component = 'new:TodoItem';
+
+      const check = document.createElement('button');
+      check.className = 'check';
+      check.dataset.component = 'Checkbox';
+      check.type = 'button';
+      check.setAttribute('role', 'checkbox');
+      check.setAttribute('aria-checked', String(todo.done));
+      check.setAttribute('aria-label', todo.done ? '완료 해제' : '완료로 표시');
+      check.innerHTML = CHECK;
+      check.onclick = () => {
+        items = items.map(t => (t.id === todo.id ? { ...t, done: !t.done } : t));
+        render();
+      };
+      li.append(check);
+
+      if (editingId === todo.id) {
+        const input = document.createElement('input');
+        input.className = 'edit';
+        input.dataset.component = 'Input';
+        input.type = 'text';
+        input.value = todo.text;
+        input.setAttribute('aria-label', '할 일 수정');
+        input.addEventListener('keydown', e => {
+          if (e.key === 'Enter') { e.preventDefault(); commit(todo.id, input.value, 'save'); }
+          else if (e.key === 'Escape') { e.preventDefault(); commit(todo.id, input.value, 'cancel'); }
+        });
+        input.addEventListener('blur', () => commit(todo.id, input.value, 'save'));
+        li.append(input);
+        queueMicrotask(() => {
+          input.focus();
+          input.setSelectionRange(input.value.length, input.value.length);
+        });
+      } else {
+        const text = document.createElement('span');
+        text.className = 'text';
+        text.textContent = todo.text;
+        text.ondblclick = () => { editingId = todo.id; render(); };
+        li.append(text);
+      }
+
+      const del = document.createElement('button');
+      del.className = 'del';
+      del.dataset.component = 'Button';
+      del.type = 'button';
+      del.setAttribute('aria-label', '삭제');
+      del.innerHTML = TRASH;
+      del.onclick = () => {
+        items = items.filter(t => t.id !== todo.id);
+        if (editingId === todo.id) editingId = null;
+        render();
+      };
+      li.append(del);
+
+      return li;
+    }
+
+    function commit(id, value, mode) {
+      if (editingId !== id) return;
+      editingId = null;
+      const next = value.trim();
+      if (mode === 'save' && next) {
+        items = items.map(t => (t.id === id ? { ...t, text: next } : t));
+      }
+      render();
+    }
+
+    newEl.addEventListener('keydown', e => {
+      if (e.key !== 'Enter') return;
+      e.preventDefault();
+      const text = newEl.value.trim();
+      if (!text) return;
+      items = [{ id: ++seq, text, done: false }, ...items];
+      newEl.value = '';
+      render();
+    });
+
+    /* keep the declared preset and the data in sync in both directions */
+    stateSelect.addEventListener('change', e => {
+      if (e.target.value === '빈 목록') {
+        if (items.length) { stash = items; items = []; }
+      } else if (!items.length) {
+        items = stash.length ? stash : SEED.map(t => ({ ...t }));
+        stash = [];
+      }
+      editingId = null;
+      render();
+    });
+
+    render();
+  })();
+</script>
