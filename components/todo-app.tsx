@@ -1,6 +1,6 @@
 "use client"
 
-import { useEffect, useRef, useState } from "react"
+import { useEffect, useState } from "react"
 
 import { TodoItem } from "@/components/todo-item"
 import { Input } from "@/components/ui/input"
@@ -16,7 +16,6 @@ export function TodoApp() {
   const [todos, setTodos] = useState<Todo[]>([])
   const [text, setText] = useState("")
   const [editingId, setEditingId] = useState<string | null>(null)
-  const isInitialSave = useRef(true)
 
   useEffect(() => {
     // localStorage는 서버에 없는 외부 소스라 마운트 후에만 읽을 수 있다.
@@ -24,37 +23,30 @@ export function TodoApp() {
     setTodos(loadTodos())
   }, [])
 
-  useEffect(() => {
-    // 이 이펙트의 첫 실행은 초기 state([])를 저장해 방금 불러온 데이터를
-    // 덮어쓰므로 건너뛴다. 이후 실행부터는 실제 변경 사항을 저장한다.
-    if (isInitialSave.current) {
-      isInitialSave.current = false
-      return
-    }
-    saveTodos(todos)
-  }, [todos])
+  function commit(next: Todo[]) {
+    setTodos(next)
+    saveTodos(next)
+  }
 
   function handleAdd() {
     const trimmed = text.trim()
     if (!trimmed) return
-    setTodos((prev) => [{ id: createId(), text: trimmed, completed: false }, ...prev])
+    commit([{ id: createId(), text: trimmed, completed: false }, ...todos])
     setText("")
   }
 
   function handleToggle(id: string) {
-    setTodos((prev) =>
-      prev.map((todo) => (todo.id === id ? { ...todo, completed: !todo.completed } : todo))
-    )
+    commit(todos.map((todo) => (todo.id === id ? { ...todo, completed: !todo.completed } : todo)))
   }
 
   function handleDelete(id: string) {
-    setTodos((prev) => prev.filter((todo) => todo.id !== id))
+    commit(todos.filter((todo) => todo.id !== id))
   }
 
   function handleCommitEdit(id: string, nextText: string) {
     const trimmed = nextText.trim()
-    setTodos((prev) =>
-      prev.map((todo) => (todo.id === id ? { ...todo, text: trimmed || todo.text } : todo))
+    commit(
+      todos.map((todo) => (todo.id === id ? { ...todo, text: trimmed || todo.text } : todo))
     )
     setEditingId(null)
   }
