@@ -19,10 +19,9 @@ function isTodo(value: unknown): value is Todo {
 export function loadTodos(): Todo[] {
   if (typeof window === "undefined") return [];
 
-  const raw = window.localStorage.getItem(STORAGE_KEY);
-  if (!raw) return [];
-
   try {
+    const raw = window.localStorage.getItem(STORAGE_KEY);
+    if (!raw) return [];
     const parsed: unknown = JSON.parse(raw);
     if (!Array.isArray(parsed)) return [];
     return parsed.filter(isTodo);
@@ -33,5 +32,9 @@ export function loadTodos(): Todo[] {
 
 export function saveTodos(todos: Todo[]): void {
   if (typeof window === "undefined") return;
-  window.localStorage.setItem(STORAGE_KEY, JSON.stringify(todos));
+  try {
+    window.localStorage.setItem(STORAGE_KEY, JSON.stringify(todos));
+  } catch {
+    // 저장 공간이 없거나(private mode 등) 접근이 차단된 경우 조용히 무시한다.
+  }
 }

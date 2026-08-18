@@ -1,4 +1,4 @@
-import { beforeEach, describe, expect, it } from "vitest";
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
 import { loadTodos, saveTodos, type Todo } from "@/lib/todos";
 
@@ -47,5 +47,27 @@ describe("loadTodos/saveTodos", () => {
     );
 
     expect(loadTodos()).toEqual([{ id: "1", text: "정상 항목", completed: false }]);
+  });
+
+  describe("localStorage 접근 자체가 차단된 경우", () => {
+    afterEach(() => {
+      vi.restoreAllMocks();
+    });
+
+    it("getItem이 예외를 던져도 빈 배열로 시작한다", () => {
+      vi.spyOn(window.localStorage, "getItem").mockImplementation(() => {
+        throw new Error("SecurityError");
+      });
+
+      expect(loadTodos()).toEqual([]);
+    });
+
+    it("setItem이 예외를 던져도 앱이 멈추지 않는다", () => {
+      vi.spyOn(window.localStorage, "setItem").mockImplementation(() => {
+        throw new Error("QuotaExceededError");
+      });
+
+      expect(() => saveTodos([{ id: "1", text: "우유 사기", completed: false }])).not.toThrow();
+    });
   });
 });
