@@ -16,14 +16,14 @@ export function TodoApp() {
   const [todos, setTodos] = useState<Todo[]>([])
   const [text, setText] = useState("")
   const [editingId, setEditingId] = useState<string | null>(null)
-  // 편집 대상을 다른 항목으로 바꾸거나 편집을 끝내면, 방금 언마운트된
-  // 입력 필드에서 지연된 blur가 뒤늦게 도착해 이미 버려진 초안을 다시
-  // 커밋하려 할 수 있다. 렌더와 무관하게 항상 최신값을 가리키는 ref로
-  // 그 지연된 커밋을 걸러낸다.
-  const editingIdRef = useRef<string | null>(null)
+  // 편집을 시작/종료할 때마다 늘어나는 세션 번호. 언마운트된 입력
+  // 필드에서 지연된 blur가 뒤늦게 도착했을 때, 그 사이 같은 항목을
+  // 다시 편집하기 시작했더라도(id는 같아도 세션은 다름) 지연된
+  // 커밋을 정확히 구분해 걸러낸다.
+  const editSessionRef = useRef(0)
 
   function setEditing(id: string | null) {
-    editingIdRef.current = id
+    editSessionRef.current += 1
     setEditingId(id)
   }
 
@@ -53,10 +53,10 @@ export function TodoApp() {
     commit(todos.filter((todo) => todo.id !== id))
   }
 
-  function handleCommitEdit(id: string, nextText: string) {
-    // 이 항목이 더 이상 활성 편집 대상이 아니면, 언마운트로 인한
+  function handleCommitEdit(id: string, nextText: string, session: number) {
+    // 이 호출을 만든 편집 세션이 더 이상 최신이 아니면, 언마운트로 인한
     // 지연된 blur 호출이므로 무시한다 (버려진 초안을 저장하지 않는다).
-    if (editingIdRef.current !== id) return
+    if (session !== editSessionRef.current) return
 
     const trimmed = nextText.trim()
     commit(
@@ -72,7 +72,7 @@ export function TodoApp() {
         value={text}
         onValueChange={setText}
         onKeyDown={(event) => {
-          if (event.key === "Enter") handleAdd()
+          if (event.key === "Enter" && !event.nativeEvent.isComposing) handleAdd()
         }}
         placeholder="할 일을 입력하고 Enter를 누르세요"
         aria-label="새 할 일"
@@ -89,7 +89,7 @@ export function TodoApp() {
               onToggle={() => handleToggle(todo.id)}
               onDelete={() => handleDelete(todo.id)}
               onStartEdit={() => setEditing(todo.id)}
-              onCommitEdit={(nextText) => handleCommitEdit(todo.id, nextText)}
+              onCommitEdit={(nextText) => handleCommitEdit(todo.id, nextText, editSessionRef.current)}
               onCancelEdit={() => setEditing(null)}
             />
           ))}

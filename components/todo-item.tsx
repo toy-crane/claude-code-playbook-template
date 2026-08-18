@@ -53,7 +53,7 @@ export function TodoItem({
           value={draft}
           onValueChange={setDraft}
           onKeyDown={(event) => {
-            if (event.key === "Enter") onCommitEdit(draft)
+            if (event.key === "Enter" && !event.nativeEvent.isComposing) onCommitEdit(draft)
             if (event.key === "Escape") cancelEditing()
           }}
           onBlur={() => onCommitEdit(draft)}
