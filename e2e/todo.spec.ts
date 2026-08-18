@@ -128,3 +128,29 @@ test("긴 내용과 공백 없는 URL이 화면을 가로로 밀지 않는다", 
   );
   expect(overflow).toBeLessThanOrEqual(0);
 });
+
+test("삭제 버튼을 실수로 연타해도 한 항목만 사라진다", async ({ page }) => {
+  await add(page, "1번");
+  await add(page, "2번");
+  await add(page, "3번");
+
+  // 첫 클릭으로 행이 사라지면 아래 항목이 커서 자리로 올라온다. 같은 더블클릭
+  // 제스처의 두 번째 클릭이 그 항목을 지우면 되돌릴 방법이 없다.
+  await page.getByRole("button", { name: "3번 삭제" }).dblclick();
+
+  await expect(page.getByRole("listitem")).toHaveText([/2번/, /1번/]);
+});
+
+test("의도적으로 이어서 누르면 여러 항목을 차례로 지울 수 있다", async ({
+  page,
+}) => {
+  await add(page, "1번");
+  await add(page, "2번");
+  await add(page, "3번");
+
+  await page.getByRole("button", { name: "3번 삭제" }).click();
+  await page.waitForTimeout(600);
+  await page.getByRole("button", { name: "2번 삭제" }).click();
+
+  await expect(page.getByRole("listitem")).toHaveText([/1번/]);
+});

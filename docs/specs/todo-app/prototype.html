@@ -401,7 +401,10 @@
       del.setAttribute('aria-label', '삭제');
       del.innerHTML = TRASH;
       del.onmousedown = e => e.preventDefault();
-      del.onclick = () => {
+      del.onclick = e => {
+        // 한 항목을 지우면 아래 항목이 커서 자리로 올라온다. 같은 더블클릭
+        // 제스처의 두 번째 클릭까지 받으면 의도하지 않은 항목이 사라진다.
+        if (e.detail > 1) return;
         if (editingId === todo.id) editingId = null;
         else commitPending();
         items = items.filter(t => t.id !== todo.id);

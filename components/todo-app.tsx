@@ -172,7 +172,13 @@ export function TodoApp() {
                 size="icon-sm"
                 className="-mt-0.5 -mr-1.5 text-muted-foreground hover:text-destructive"
                 aria-label={`${todo.text} 삭제`}
-                onClick={() => remove(todo.id)}
+                onClick={(event) => {
+                  // 한 항목을 지우면 아래 항목이 커서 자리로 올라온다. 같은
+                  // 더블클릭 제스처의 두 번째 클릭까지 받으면 의도하지 않은
+                  // 항목이 사라지고, 되돌릴 방법이 없다.
+                  if (event.detail > 1) return;
+                  remove(todo.id);
+                }}
               >
                 <Trash2Icon />
               </Button>
