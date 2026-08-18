@@ -154,3 +154,39 @@ test("의도적으로 이어서 누르면 여러 항목을 차례로 지울 수 
 
   await expect(page.getByRole("listitem")).toHaveText([/1번/]);
 });
+
+test("편집 내용이 여러 줄로 접혀도 아래 항목의 첫 클릭이 삼켜지지 않는다", async ({
+  page,
+}) => {
+  await add(page, "아래 항목");
+  await add(page, "위 항목");
+
+  // 편집창은 한 줄이지만 저장된 글자는 여러 줄로 접힌다. 저장 시 행이 높아지며
+  // 아래 항목이 밀려나, 클릭이 원래 버튼에 도달하지 못할 수 있다.
+  await page.getByText("위 항목").dblclick();
+  await page
+    .getByRole("textbox", { name: "할 일 수정" })
+    .fill(
+      "위 항목을 아주 길게 고쳐서 한 줄에 담기지 않고 두 줄 이상으로 접히도록 만든다 — 편집창이 글자로 바뀌면 행 높이가 커진다"
+    );
+  await page.getByRole("button", { name: "아래 항목 삭제" }).click();
+
+  await expect(page.getByRole("listitem")).toHaveText([/두 줄 이상으로 접히도록/]);
+});
+
+test("편집 내용이 여러 줄로 접혀도 아래 항목의 체크박스가 한 번에 눌린다", async ({
+  page,
+}) => {
+  await add(page, "아래 항목");
+  await add(page, "위 항목");
+
+  await page.getByText("위 항목").dblclick();
+  await page
+    .getByRole("textbox", { name: "할 일 수정" })
+    .fill(
+      "위 항목을 아주 길게 고쳐서 한 줄에 담기지 않고 두 줄 이상으로 접히도록 만든다 — 편집창이 글자로 바뀌면 행 높이가 커진다"
+    );
+  await page.getByRole("checkbox", { name: "아래 항목" }).click();
+
+  await expect(page.getByRole("checkbox", { name: "아래 항목" })).toBeChecked();
+});

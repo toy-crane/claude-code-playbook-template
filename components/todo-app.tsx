@@ -1,6 +1,7 @@
 "use client";
 
 import { ListChecksIcon, Trash2Icon } from "lucide-react";
+import type React from "react";
 import { useEffect, useRef, useState, useSyncExternalStore } from "react";
 
 import { Button } from "@/components/ui/button";
@@ -11,6 +12,12 @@ import { cn } from "@/lib/utils";
 
 // 하이드레이션이 끝났는지만 알려주는 최소 저장소. 서버와 하이드레이션 렌더에서는
 // false, 그 뒤로는 true 다. 참조가 매 렌더 바뀌지 않도록 모듈 수준에 둔다.
+// 편집 중에 조작 버튼을 누르면 편집창이 포커스를 잃고, 저장된 글자가 여러 줄로
+// 접히면서 행 높이가 커진다. 그러면 눌린 버튼이 아래로 밀려 click 이 도달하지
+// 못한다. mousedown 의 기본 동작을 막아 포커스를 유지하고, 편집 확정은 각
+// 클릭 처리기가 직접 한다.
+const preventFocusSteal = (event: React.MouseEvent) => event.preventDefault();
+
 const subscribeNothing = () => () => {};
 const onClient = () => true;
 const onServer = () => false;
@@ -49,6 +56,7 @@ export function TodoApp() {
   }
 
   function toggle(id: string) {
+    saveEdit();
     setTodos((previous) =>
       previous.map((todo) =>
         todo.id === id ? { ...todo, done: !todo.done } : todo
@@ -57,7 +65,12 @@ export function TodoApp() {
   }
 
   function remove(id: string) {
-    if (editingId === id) setEditingId(null);
+    if (editingId === id) {
+      // 저장할 대상이 사라지므로 편집 내용은 남기지 않는다.
+      setEditingId(null);
+    } else {
+      saveEdit();
+    }
     setTodos((previous) => previous.filter((todo) => todo.id !== id));
   }
 
@@ -128,6 +141,7 @@ export function TodoApp() {
                 className="mt-0.5 size-[18px]"
                 checked={todo.done}
                 onCheckedChange={() => toggle(todo.id)}
+                onMouseDown={preventFocusSteal}
                 aria-label={todo.text}
               />
 
@@ -172,6 +186,7 @@ export function TodoApp() {
                 size="icon-sm"
                 className="-mt-0.5 -mr-1.5 text-muted-foreground hover:text-destructive"
                 aria-label={`${todo.text} 삭제`}
+                onMouseDown={preventFocusSteal}
                 onClick={(event) => {
                   // 한 항목을 지우면 아래 항목이 커서 자리로 올라온다. 같은
                   // 더블클릭 제스처의 두 번째 클릭까지 받으면 의도하지 않은
