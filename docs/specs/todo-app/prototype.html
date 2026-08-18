@@ -359,7 +359,11 @@
       check.setAttribute('aria-checked', String(todo.done));
       check.setAttribute('aria-label', todo.done ? '완료 해제' : '완료로 표시');
       check.innerHTML = CHECK;
+      // 편집 중에 눌러도 첫 클릭이 삼켜지지 않도록, 포커스 이동을 막아 blur 재렌더를
+      // 미루고 클릭 핸들러 안에서 편집을 먼저 확정한다.
+      check.onmousedown = e => e.preventDefault();
       check.onclick = () => {
+        commitPending();
         items = items.map(t => (t.id === todo.id ? { ...t, done: !t.done } : t));
         render();
       };
@@ -396,14 +400,23 @@
       del.type = 'button';
       del.setAttribute('aria-label', '삭제');
       del.innerHTML = TRASH;
+      del.onmousedown = e => e.preventDefault();
       del.onclick = () => {
-        items = items.filter(t => t.id !== todo.id);
         if (editingId === todo.id) editingId = null;
+        else commitPending();
+        items = items.filter(t => t.id !== todo.id);
         render();
       };
       li.append(del);
 
       return li;
+    }
+
+    /* 편집 중이면 현재 입력값을 저장한다. 버튼 클릭이 편집을 끝내는 경우에 쓴다. */
+    function commitPending() {
+      if (editingId === null) return;
+      const input = listEl.querySelector('.edit');
+      if (input) commit(editingId, input.value, 'save');
     }
 
     function commit(id, value, mode) {
