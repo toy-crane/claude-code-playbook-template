@@ -81,18 +81,25 @@ export function TodoApp() {
         <p className="text-sm text-muted-foreground">할 일이 없습니다.</p>
       ) : (
         <ul className="flex flex-col gap-2">
-          {todos.map((todo) => (
-            <TodoItem
-              key={todo.id}
-              todo={todo}
-              isEditing={editingId === todo.id}
-              onToggle={() => handleToggle(todo.id)}
-              onDelete={() => handleDelete(todo.id)}
-              onStartEdit={() => setEditing(todo.id)}
-              onCommitEdit={(nextText) => handleCommitEdit(todo.id, nextText, editSessionRef.current)}
-              onCancelEdit={() => setEditing(null)}
-            />
-          ))}
+          {todos.map((todo) => {
+            // 클로저 안에서 editSessionRef.current를 직접 참조하면 호출 시점에
+            // (뒤늦게 도착한 blur라도) 항상 "최신" 값을 읽어버려 가드가
+            // 무력화된다. 이 렌더 시점의 값을 별도 상수로 스냅샷해 닫아야
+            // 나중에 handleCommitEdit이 최신 값과 비교할 수 있다.
+            const session = editSessionRef.current
+            return (
+              <TodoItem
+                key={todo.id}
+                todo={todo}
+                isEditing={editingId === todo.id}
+                onToggle={() => handleToggle(todo.id)}
+                onDelete={() => handleDelete(todo.id)}
+                onStartEdit={() => setEditing(todo.id)}
+                onCommitEdit={(nextText) => handleCommitEdit(todo.id, nextText, session)}
+                onCancelEdit={() => setEditing(null)}
+              />
+            )
+          })}
         </ul>
       )}
     </div>
