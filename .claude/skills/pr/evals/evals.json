@@ -1,0 +1,83 @@
+{
+  "skill_name": "pr",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "detached worktree에서 끝낸 검색 기능을 PR로 올려줘. 변경은 아직 커밋하지 않았어.",
+      "expected_output": "The response creates a named branch, commits the in-scope change, rebases, publishes, and opens a ready PR.",
+      "files": [],
+      "expectations": [
+        "It preserves the detached work by creating a suitable branch.",
+        "It commits only the search feature as logical Conventional Commits.",
+        "It bases the branch on the fetched advertised remote default without losing the change.",
+        "It creates a ready-for-review PR and reports its URL."
+      ]
+    },
+    {
+      "id": 2,
+      "prompt": "현재 브랜치 PR 올려줘. 이 head branch로 이미 OPEN 상태의 PR이 하나 있어.",
+      "expected_output": "The response updates and reuses the existing PR rather than creating a duplicate.",
+      "files": [],
+      "expectations": [
+        "It discovers the existing PR for the head branch.",
+        "It reuses that PR.",
+        "It reports the existing URL and current outstanding checks."
+      ]
+    },
+    {
+      "id": 3,
+      "prompt": "PR 만들어줘. 확인해보니 이 브랜치의 변경은 어제 PR #42로 이미 main에 머지됐어.",
+      "expected_output": "The response reports the already completed remote outcome without opening another PR.",
+      "files": [],
+      "expectations": [
+        "It checks remote main and existing PR state.",
+        "It does not create a duplicate branch or PR.",
+        "It reports PR #42 and the merged state."
+      ]
+    },
+    {
+      "id": 4,
+      "prompt": "checkout 변경으로 PR 올려줘. worktree에는 다른 agent의 admin.ts와 내 .env도 같이 있어.",
+      "expected_output": "The response publishes only the checkout change while preserving unrelated and sensitive files.",
+      "files": [],
+      "expectations": [
+        "It leaves admin.ts out because its ownership is outside the request.",
+        "It keeps .env out of history.",
+        "It creates a PR whose commits and summary cover only checkout."
+      ]
+    },
+    {
+      "id": 5,
+      "prompt": "PR 올려줘. origin/main rebase 중 가격 계산 정책 충돌이 생겼고 어느 쪽이 맞는지 문서에도 없어.",
+      "expected_output": "The response preserves the work and requests the missing policy decision instead of publishing a guessed resolution.",
+      "files": [],
+      "expectations": [
+        "It identifies the unresolved product-policy conflict.",
+        "It does not invent a price rule or bypass the conflict.",
+        "It leaves the work recoverable and asks for only the required intent."
+      ]
+    },
+    {
+      "id": 6,
+      "prompt": "리뷰 받을 PR을 만들어줘. draft로 만들거나 merge까지 하지는 마.",
+      "expected_output": "The response creates a ready-for-review PR and stops before merge.",
+      "files": [],
+      "expectations": [
+        "It creates the PR in ready-for-review state.",
+        "Its title and body describe the actual outcome and validation.",
+        "It does not merge the PR."
+      ]
+    },
+    {
+      "id": 7,
+      "prompt": "기본 브랜치가 master인 저장소야. base를 따로 말하지 않았으니 현재 변경을 리뷰 가능한 PR로 올려줘.",
+      "expected_output": "The response resolves master as the remote default and opens the pull request against it.",
+      "files": [],
+      "expectations": [
+        "It resolves the advertised remote default instead of assuming main.",
+        "It bases the change and pull request on master.",
+        "It reports master as the pull request base."
+      ]
+    }
+  ]
+}

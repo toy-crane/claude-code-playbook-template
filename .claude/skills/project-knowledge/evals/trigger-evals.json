@@ -1,0 +1,118 @@
+[
+  {
+    "query": "지금 플랜 모드로 정리 중인데, 이미지 저장을 S3로 갈지 Supabase Storage로 갈지 계획에서 정해야 해. 지금 스택 기준으로 장단점 비교해서 계획 확정하자.",
+    "should_trigger": true
+  },
+  {
+    "query": "논의 끝에 결제는 토스페이먼츠 단독으로 가기로 했어. 아임포트 연동은 안 하는 걸로. 이렇게 정리하고 다음 얘기로 넘어가자.",
+    "should_trigger": true
+  },
+  {
+    "query": "코드에서는 구독 취소를 cancel이라고 부르는데 기획 문서에는 해지로 되어 있고 GLOSSARY.md에는 terminate로 정의돼 있네. 헷갈리니까 오늘 안에 하나로 통일하자.",
+    "should_trigger": true
+  },
+  {
+    "query": "무료 체험이 끝났는데 결제 수단을 아직 안 넣은 사용자 상태를 부르는 말이 필요해. grace period도 아니고 churned도 아닌데, 이 상태를 뭐라고 부를지 정하자.",
+    "should_trigger": true
+  },
+  {
+    "query": "알아보니 Next.js 미들웨어에서는 Prisma를 직접 못 쓰더라. 엣지 호환 문제래. 세션 검증을 미들웨어에서 하지 말고 각 서버 액션에서 하는 걸로 방침을 바꾸자.",
+    "should_trigger": true
+  },
+  {
+    "query": "플랜모드에서 캐시전략 짜는중. redis 붙일지 그냥 인메모리 lru로 버틸지 여기서 정하고 넘어가야됨. 트래픽은 아직 낮음",
+    "should_trigger": true
+  },
+  {
+    "query": "리뷰하다 보니 정했어야 할 게 나왔어. 다국어 처리를 라이브러리 없이 자체 딕셔너리로 가는 안이랑 next-intl 도입하는 안 중에서 오늘 결정하고 넘어가자.",
+    "should_trigger": true
+  },
+  {
+    "query": "PR 설명 쓰다 보니 우리가 '워크스페이스'랑 '프로젝트'를 섞어 쓰고 있더라. 사용자한테 보이는 화면에서도 왔다갔다 해. 어느 쪽으로 통일할지 지금 정하자.",
+    "should_trigger": true
+  },
+  {
+    "query": "in plan mode rn — need to pick between drizzle and prisma for the new service before I start building. lean towards drizzle since we're on the edge runtime. let's settle this in the plan",
+    "should_trigger": true
+  },
+  {
+    "query": "구현하다 보니 스펙에 없는 갈림길이 나왔어. 웹훅 재시도를 큐로 뺄지 인라인 재시도로 갈지 지금 정해야 하는데, 어떻게 생각해?",
+    "should_trigger": true
+  },
+  {
+    "query": "날짜와 시간의 저장 형식처럼 이후 작업을 계속 구속하는 선택은 앞으로 네가 맡아. 여러 시간대에서 비교와 정렬이 일관되게 되도록 방식을 정하고 프로젝트 결정으로 남겨줘.",
+    "should_trigger": true
+  },
+  {
+    "query": "스펙 문서 쓰는 중인데 GLOSSARY.md 열어서 우리가 확정 구독자를 뭐라고 부르기로 했는지 확인하고, 그 용어 그대로 써줘.",
+    "should_trigger": false
+  },
+  {
+    "query": "아까 승인한 계획대로 구현 시작하자. 결정된 대로 drizzle 스키마부터 만들고 마이그레이션 돌려줘. 새로 정할 건 없어.",
+    "should_trigger": false
+  },
+  {
+    "query": "이 함수 이름 fetchUserData로 할지 getUserData로 할지 아무거나 골라서 리팩토링 마저 해줘.",
+    "should_trigger": false
+  },
+  {
+    "query": "docs/decisions/ 에 기록이 30개 넘게 쌓였는데 겹치는 것도 보이고 인덱스도 안 맞아. 한번 정리 좀 해줘.",
+    "should_trigger": false
+  },
+  {
+    "query": "새로 합류한 분한테 공유하게 docs/decisions/README.md 요약해줘. 우리가 왜 이벤트 소싱을 택했는지도 기록 찾아서 설명해줘.",
+    "should_trigger": false
+  },
+  {
+    "query": "결제 모듈 구현 끝났으니까 커밋 메시지 정리해서 커밋하고 PR 올려줘. PR 설명에는 토스페이먼츠 쓰기로 한 결정도 언급해줘.",
+    "should_trigger": false
+  },
+  {
+    "query": "prettier 세팅 바꿔서 세미콜론 없는 걸로 통일해줘. 팀 컨벤션 문서는 나중에 내가 고칠게.",
+    "should_trigger": false
+  },
+  {
+    "query": "quick one - what did we decide to call users who downgraded but still keep pro features until end of billing period? check the glossary and just use that term in this email draft",
+    "should_trigger": false
+  },
+  {
+    "query": "docs/specs/checkout-v2/spec.md 대로 장바구니 검증 로직 구현해줘. 스펙에 있는 결정 그대로 가고, 새로운 판단이 필요해지면 멈추고 물어봐.",
+    "should_trigger": false
+  },
+  {
+    "query": "왜 우리가 Postgres 대신 SQLite로 시작하기로 했는지 이해가 안 돼. 결정 기록 찾아보고 나한테 설명해줘.",
+    "should_trigger": false
+  },
+  {
+    "query": "iOS에서 만든 Metro 변환 캐시가 남아서 Android 번들에도 127.0.0.1이 들어갔어. 일단 캐시만 비우고 검증은 이어갔는데, 왜 플랫폼별로 캐시가 안 갈리는지는 아직 못 봤어.",
+    "should_trigger": true
+  },
+  {
+    "query": "결제 붙이다가 탈퇴 API가 소프트 삭제가 아니라 하드 삭제하는 걸 봤어. 로그로 확인했고, 이번 작업 범위는 아니라서 지금 고치진 않을 거야.",
+    "should_trigger": true
+  },
+  {
+    "query": "CI에서만 간헐적으로 죽길래 재시도 붙여서 일단 넘어갔어. 로컬에선 재현이 안 되고 진짜 원인은 아직 몰라.",
+    "should_trigger": true
+  },
+  {
+    "query": "had to pin the transitive dep to an old version to get the build green. the real fix is upstream's peer range but I'm not touching that today.",
+    "should_trigger": true
+  },
+  {
+    "query": "라이브러리 버그라서 patch-package로 임시로 덮어놓고 진행했어. 업스트림에 이슈는 아직 안 올렸고 다음에 제대로 봐야 해.",
+    "should_trigger": true
+  },
+  {
+    "query": "빌드 깨진 건 lock 파일 다시 생성해서 해결했고 이번 커밋에 같이 넣었어. 더 볼 건 없어.",
+    "should_trigger": false
+  },
+  {
+    "query": "이 라이브러리 왠지 나중에 발목 잡을 것 같은 느낌이야. 특별히 뭘 본 건 아니고 그냥 감이야.",
+    "should_trigger": false
+  },
+  {
+    "query": "테스트 돌려보니 반올림이 틀려서 방금 고쳤어. 이번 변경에 포함해서 커밋해줘.",
+    "should_trigger": false
+  }
+]
