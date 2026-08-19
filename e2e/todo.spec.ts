@@ -148,7 +148,10 @@ test("별개의 클릭으로 누르면 여러 항목을 차례로 지울 수 있
   await add(page, "2번");
   await add(page, "3번");
 
-  // 한 번의 더블클릭 제스처가 아니라 각각의 클릭이면 그대로 삭제된다.
+  // Playwright 의 click() 은 CDP 에 clickCount 1 을 명시해 보내므로 연속 호출도
+  // 브라우저가 같은 제스처로 세지 않는다. 위 테스트의 dblclick() 이 clickCount 2
+  // 를 만들어 가드를 검증하고, 이 테스트는 그 가드가 평범한 클릭을 막지 않는지
+  // 본다.
   await page.getByRole("button", { name: "3번 삭제" }).click();
   await page.getByRole("button", { name: "2번 삭제" }).click();
 
@@ -253,4 +256,38 @@ test("저장된 값을 읽기만 하고 사용자가 조작하지 않으면 저�
   expect(
     await page.evaluate(() => localStorage.getItem("todo-app.todos"))
   ).toBe(RAW);
+});
+
+test("편집을 확정해도 행 높이가 변하지 않아 아래 항목이 밀리지 않는다", async ({
+  page,
+}) => {
+  await add(page, "아래 항목");
+  await add(page, "위 항목");
+
+  const rowHeight = (index: number) =>
+    page.evaluate(
+      (i) => document.querySelectorAll("li")[i].getBoundingClientRect().height,
+      index
+    );
+  const rowTop = (index: number) =>
+    page.evaluate(
+      (i) => document.querySelectorAll("li")[i].getBoundingClientRect().top,
+      index
+    );
+
+  await page.getByText("위 항목").dblclick();
+  await page
+    .getByRole("textbox", { name: "할 일 수정" })
+    .fill(
+      "위 항목을 아주 길게 고쳐서 한 줄에 담기지 않고 두 줄 이상으로 접히도록 만든다 — 편집창도 같이 늘어나야 한다"
+    );
+  const heightWhileEditing = await rowHeight(0);
+  const topBelowWhileEditing = await rowTop(1);
+
+  await page.keyboard.press("Enter");
+
+  // 편집창과 글자가 같은 높이여야, 확정 순간 아래 항목이 밀려 클릭이 엉뚱한
+  // 곳에 떨어지는 일이 생기지 않는다.
+  expect(Math.abs((await rowHeight(0)) - heightWhileEditing)).toBeLessThan(1);
+  expect(Math.abs((await rowTop(1)) - topBelowWhileEditing)).toBeLessThan(1);
 });
