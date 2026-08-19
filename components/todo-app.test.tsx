@@ -249,3 +249,18 @@ test("한글 조합을 확정하는 Enter로는 항목이 추가되지 않는다
   fireEvent.keyDown(input, { key: "Enter" });
   expect(screen.getByRole("listitem")).toHaveTextContent("장보기");
 });
+
+test("isComposing 을 채우지 않는 브라우저의 조합 확정 Enter 도 걸러낸다", async () => {
+  const user = userEvent.setup();
+  render(<TodoApp />);
+
+  const input = screen.getByRole("textbox", { name: "새 할 일" });
+  await user.type(input, "장보기");
+
+  // 일부 브라우저는 조합 중임을 keyCode 229 로만 알린다.
+  fireEvent.keyDown(input, { key: "Enter", keyCode: 229 });
+  expect(screen.queryByRole("listitem")).not.toBeInTheDocument();
+
+  fireEvent.keyDown(input, { key: "Enter" });
+  expect(screen.getByRole("listitem")).toHaveTextContent("장보기");
+});

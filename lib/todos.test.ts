@@ -85,3 +85,30 @@ describe("createTodo", () => {
     expect(first.id).not.toBe(second.id);
   });
 });
+
+describe("중복 식별자", () => {
+  it("저장값에 같은 id 가 둘이면 첫 항목만 남긴다", () => {
+    // 같은 id 가 둘이면 삭제 버튼 한 번에 두 항목이 사라지고 되돌릴 수 없다.
+    localStorage.setItem(
+      STORAGE_KEY,
+      JSON.stringify([
+        { id: "a", text: "먼저 온 항목", done: false },
+        { id: "a", text: "같은 id 를 쓴 항목", done: true },
+        { id: "b", text: "다른 항목", done: false },
+      ])
+    );
+
+    expect(readTodos()).toEqual([
+      { id: "a", text: "먼저 온 항목", done: false },
+      { id: "b", text: "다른 항목", done: false },
+    ]);
+  });
+
+  it("새로 만든 항목의 식별자는 서로 겹치지 않는다", () => {
+    const ids = new Set(
+      Array.from({ length: 500 }, () => createTodo("장보기").id)
+    );
+
+    expect(ids.size).toBe(500);
+  });
+});

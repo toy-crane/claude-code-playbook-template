@@ -8,14 +8,22 @@ const STORAGE_KEY = "todo-app.todos";
 
 let sequence = 0;
 
-/** 브라우저 안에서 항목을 구분할 수 있을 만큼만 고유한 식별자를 만든다. */
-export function createTodo(text: string): Todo {
+/**
+ * 항목을 구분할 식별자를 만든다.
+ * 같은 id 가 둘이면 삭제 버튼 한 번에 두 항목이 사라지므로 충돌은 허용되지 않는다.
+ * randomUUID 는 보안 컨텍스트에서만 있으므로, 없을 때를 위한 대비를 둔다.
+ */
+function createId(): string {
+  if (typeof crypto !== "undefined" && typeof crypto.randomUUID === "function") {
+    return crypto.randomUUID();
+  }
   sequence += 1;
-  return {
-    id: `${Date.now().toString(36)}-${sequence.toString(36)}`,
-    text,
-    done: false,
-  };
+  const noise = Math.random().toString(36).slice(2, 10);
+  return `${Date.now().toString(36)}-${sequence.toString(36)}-${noise}`;
+}
+
+export function createTodo(text: string): Todo {
+  return { id: createId(), text, done: false };
 }
 
 /**
@@ -30,7 +38,13 @@ export function readTodos(): Todo[] {
     const parsed: unknown = JSON.parse(raw);
     if (!Array.isArray(parsed)) return [];
 
-    return parsed.filter(isTodo);
+    // 같은 id 가 둘이면 한 번의 삭제로 두 항목이 사라지고 되돌릴 수 없다.
+    const seen = new Set<string>();
+    return parsed.filter(isTodo).filter((todo) => {
+      if (seen.has(todo.id)) return false;
+      seen.add(todo.id);
+      return true;
+    });
   } catch {
     return [];
   }

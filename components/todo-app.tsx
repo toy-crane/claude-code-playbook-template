@@ -1,6 +1,7 @@
 "use client";
 
 import { ListChecksIcon, Trash2Icon } from "lucide-react";
+import type React from "react";
 import { useEffect, useRef, useState, useSyncExternalStore } from "react";
 
 import { Button } from "@/components/ui/button";
@@ -23,6 +24,11 @@ const onServer = () => false;
 // 편집창이 16px 미만이면 iOS Safari 가 포커스 시 화면을 확대하기 때문이다.
 const TEXT_BOX =
   "min-w-0 flex-1 whitespace-pre-wrap wrap-anywhere text-base/relaxed md:text-[15px]/relaxed";
+
+/** IME 조합 중에 눌린 키인지 본다. */
+function isComposingKey(event: React.KeyboardEvent): boolean {
+  return event.nativeEvent.isComposing || event.nativeEvent.keyCode === 229;
+}
 
 export function TodoApp() {
   // 서버에는 저장된 목록이 없다. 하이드레이션 렌더까지는 목록도 빈 목록 안내도
@@ -143,7 +149,8 @@ export function TodoApp() {
         onKeyDown={(event) => {
           // 한글 등 IME 조합 중의 Enter 는 조합을 확정하는 키다. 이것을 제출로
           // 처리하면 확정된 글자가 입력창에 남아 같은 항목이 두 번 들어간다.
-          if (event.key !== "Enter" || event.nativeEvent.isComposing) return;
+          // keyCode 229 는 isComposing 을 채우지 않는 브라우저를 위한 대비다.
+          if (event.key !== "Enter" || isComposingKey(event)) return;
           event.preventDefault();
           add();
         }}
@@ -192,7 +199,7 @@ export function TodoApp() {
                   }
                   onBlur={saveEdit}
                   onKeyDown={(event) => {
-                    if (event.nativeEvent.isComposing) return;
+                    if (isComposingKey(event)) return;
                     if (event.key === "Enter") {
                       event.preventDefault();
                       saveEdit();
@@ -206,7 +213,8 @@ export function TodoApp() {
                 <span
                   className={cn(
                     TEXT_BOX,
-                    "cursor-text",
+                    // 더블탭이 브라우저 확대 제스처에 소비되지 않게 한다.
+                    "cursor-text touch-manipulation",
                     todo.done && "text-muted-foreground line-through"
                   )}
                   onMouseDown={(event) => {
