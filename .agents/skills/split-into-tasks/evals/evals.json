@@ -113,7 +113,8 @@
         "It states the cumulative diff scope and permission risk for the reviewer.",
         "It does not prescribe a fresh implementation or repair context.",
         "It does not add another intermediate review without separate material risk.",
-        "It waits for approval before writing files."
+        "It waits for approval before writing files.",
+        "It describes the checkpoint as one bounded review pass over that scope rather than a round repeated until nothing is reported."
       ]
     },
     {

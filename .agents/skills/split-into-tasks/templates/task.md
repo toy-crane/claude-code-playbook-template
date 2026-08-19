@@ -22,7 +22,8 @@
 
 ## Review checkpoint
 
-<`None.`, or `Required after this task.` followed by cumulative scope and risk.>
+<`None.`, or `One review pass after this task.` followed by cumulative scope and
+risk.>
 
 ## Status
 

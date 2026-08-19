@@ -49,5 +49,6 @@ critical paths and complex logic instead of trying to test everything.
   pass it. Do not anticipate future tests or add speculative features.
 - **One slice at a time.** Use one seam, one test, and one minimal implementation
   per cycle.
-- **Refactor after green.** Refactor in a separate review stage with the
-  code-review tooling available in the current harness.
+- **Refactor after green.** Keep the tests green through the refactor. This loop
+  opens no review of its own: reviewing the finished diff belongs to whatever
+  workflow owns it, or to a review the user runs.

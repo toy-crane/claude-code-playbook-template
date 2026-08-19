@@ -37,7 +37,9 @@ Add an intermediate review checkpoint only when a material error could compound
 through substantial dependent work, or when deterministic checks cannot
 adequately settle a material risk such as security, data, permission, migration,
 recovery, or an external contract. Name its cumulative scope and concrete risk.
-The implementation phase owns the final integrated review.
+A checkpoint buys one review pass over that scope, not a round that repeats
+until it reports nothing. The implementation phase owns the single final review
+over the whole diff.
 
 Present the complete proposal and iterate until the user approves it. Write no
 task files before that approval.
