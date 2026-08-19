@@ -141,21 +141,52 @@ test("삭제 버튼을 실수로 연타해도 한 항목만 사라진다", async
   await expect(page.getByRole("listitem")).toHaveText([/2번/, /1번/]);
 });
 
-test("별개의 클릭으로 누르면 여러 항목을 차례로 지울 수 있다", async ({
+test("같은 자리에서 이어 누른 두 번째 클릭은 같은 제스처로 취급해 삼킨다", async ({
   page,
 }) => {
   await add(page, "1번");
   await add(page, "2번");
   await add(page, "3번");
 
-  // Playwright 의 click() 은 CDP 에 clickCount 1 을 명시해 보내므로 연속 호출도
-  // 브라우저가 같은 제스처로 세지 않는다. 위 테스트의 dblclick() 이 clickCount 2
-  // 를 만들어 가드를 검증하고, 이 테스트는 그 가드가 평범한 클릭을 막지 않는지
-  // 본다.
-  await page.getByRole("button", { name: "3번 삭제" }).click();
-  await page.getByRole("button", { name: "2번 삭제" }).click();
+  // Playwright 의 click() 은 항상 clickCount 1 을 보내므로 브라우저의 클릭 계수가
+  // 개입하지 않는다. 실제 사용자의 연타를 재현하려면 clickCount 를 직접 준다.
+  const button = page.getByRole("button", { name: "3번 삭제" });
+  const box = (await button.boundingBox())!;
+  const x = box.x + box.width / 2;
+  const y = box.y + box.height / 2;
 
-  await expect(page.getByRole("listitem")).toHaveText([/1번/]);
+  await page.mouse.move(x, y);
+  await page.mouse.down({ clickCount: 1 });
+  await page.mouse.up({ clickCount: 1 });
+  await page.mouse.down({ clickCount: 2 });
+  await page.mouse.up({ clickCount: 2 });
+
+  // 실수로 두 항목이 사라지는 것을 막는 대신, 같은 자리에서 곧바로 이어 누른
+  // 삭제는 무시된다. 되돌리기가 없으므로 잃는 쪽을 막는 절충이다.
+  await expect(page.getByRole("listitem")).toHaveText([/2번/, /1번/]);
+});
+
+test("자리를 옮겨 누르면 여러 항목을 차례로 지울 수 있다", async ({ page }) => {
+  await add(page, "1번");
+  await add(page, "2번");
+  await add(page, "3번");
+
+  // 다른 행의 삭제 버튼으로 포인터가 옮겨 가면 브라우저가 클릭 계수를 되돌린다.
+  const first = (await page
+    .getByRole("button", { name: "3번 삭제" })
+    .boundingBox())!;
+  await page.mouse.move(first.x + first.width / 2, first.y + first.height / 2);
+  await page.mouse.down({ clickCount: 1 });
+  await page.mouse.up({ clickCount: 1 });
+
+  const second = (await page
+    .getByRole("button", { name: "1번 삭제" })
+    .boundingBox())!;
+  await page.mouse.move(second.x + second.width / 2, second.y + second.height / 2);
+  await page.mouse.down({ clickCount: 1 });
+  await page.mouse.up({ clickCount: 1 });
+
+  await expect(page.getByRole("listitem")).toHaveText([/2번/]);
 });
 
 test("편집 내용이 여러 줄로 접혀도 아래 항목의 첫 클릭이 삼켜지지 않는다", async ({
