@@ -210,3 +210,47 @@ test("편집 내용이 여러 줄로 접혀도 아래 항목을 더블클릭해 
   );
   await expect(page.getByText("두 줄 이상으로 접히도록")).toBeVisible();
 });
+
+test("편집 중 다른 항목의 글자를 한 번 클릭하면 편집 내용이 저장된다", async ({
+  page,
+}) => {
+  await add(page, "아래 항목");
+  await add(page, "위 항목");
+
+  await page.getByText("위 항목").dblclick();
+  await page.getByRole("textbox", { name: "할 일 수정" }).fill("위 항목 고침");
+  await page.getByText("아래 항목").click();
+
+  await expect(page.getByRole("textbox", { name: "할 일 수정" })).toHaveCount(0);
+  await expect(page.getByRole("listitem")).toHaveText([
+    /위 항목 고침/,
+    /아래 항목/,
+  ]);
+});
+
+test("편집 중이 아닐 때 체크박스를 클릭하면 포커스를 받는다", async ({
+  page,
+}) => {
+  await add(page, "장보기");
+
+  await page.getByRole("checkbox", { name: "장보기" }).click();
+
+  await expect(page.getByRole("checkbox", { name: "장보기" })).toBeFocused();
+});
+
+test("저장된 값을 읽기만 하고 사용자가 조작하지 않으면 저장소를 덮어쓰지 않는다", async ({
+  page,
+}) => {
+  // 모양이 맞지 않는 항목이 섞여 있어도, 페이지를 열기만 해서 원본이 사라지면 안 된다.
+  const RAW = JSON.stringify([
+    { id: "a", text: "정상 항목", done: false },
+    { id: "b", text: "완료 값이 문자열", done: "true" },
+  ]);
+  await page.evaluate((raw) => localStorage.setItem("todo-app.todos", raw), RAW);
+  await page.reload();
+
+  await expect(page.getByRole("listitem")).toHaveText([/정상 항목/]);
+  expect(
+    await page.evaluate(() => localStorage.getItem("todo-app.todos"))
+  ).toBe(RAW);
+});

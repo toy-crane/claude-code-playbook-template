@@ -11,16 +11,14 @@ import { createTodo, readTodos, writeTodos, type Todo } from "@/lib/todos";
 import { cn } from "@/lib/utils";
 
 // 하이드레이션이 끝났는지만 알려주는 최소 저장소. 서버와 하이드레이션 렌더에서는
-// false, 그 뒤로는 true 다. 참조가 매 렌더 바뀌지 않도록 모듈 수준에 둔다.
-// 편집 중에 조작 버튼을 누르면 편집창이 포커스를 잃고, 저장된 글자가 여러 줄로
-// 접히면서 행 높이가 커진다. 그러면 눌린 버튼이 아래로 밀려 click 이 도달하지
-// 못한다. mousedown 의 기본 동작을 막아 포커스를 유지하고, 편집 확정은 각
-// 클릭 처리기가 직접 한다.
-const preventFocusSteal = (event: React.MouseEvent) => event.preventDefault();
-
+// false, 그 뒤로는 true 다. useSyncExternalStore 는 인자의 참조가 바뀌면 다시
+// 구독하므로, 세 함수를 모듈 수준에 두어 매 렌더 같은 참조를 넘긴다.
 const subscribeNothing = () => () => {};
 const onClient = () => true;
 const onServer = () => false;
+
+// 한 번의 클릭인지 더블클릭의 첫 클릭인지 갈리기를 기다리는 시간.
+const DOUBLE_CLICK_GRACE_MS = 300;
 
 export function TodoApp() {
   // 서버에는 저장된 목록이 없다. 하이드레이션 렌더까지는 목록도 빈 목록 안내도
@@ -34,11 +32,28 @@ export function TodoApp() {
   const [editingId, setEditingId] = useState<string | null>(null);
   const [editDraft, setEditDraft] = useState("");
   const editRef = useRef<HTMLInputElement>(null);
+  const pendingSave = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const latestSaveEdit = useRef<() => void>(undefined);
 
+  // 사용자가 조작하기 전에는 저장소를 건드리지 않는다. 마운트 직후에 쓰면
+  // 페이지를 열기만 해도 저장된 원본이 정규화된 값으로 덮어써진다.
+  const savedTodos = useRef<Todo[] | null>(null);
   useEffect(() => {
     if (!hydrated) return;
+    if (savedTodos.current === null) {
+      savedTodos.current = todos;
+      return;
+    }
+    if (savedTodos.current === todos) return;
+    savedTodos.current = todos;
     writeTodos(todos);
   }, [hydrated, todos]);
+
+  useEffect(() => {
+    latestSaveEdit.current = saveEdit;
+  });
+
+  useEffect(() => cancelPendingSave, []);
 
   useEffect(() => {
     const input = editRef.current;
@@ -74,7 +89,22 @@ export function TodoApp() {
     setTodos((previous) => previous.filter((todo) => todo.id !== id));
   }
 
+  // 편집 중에 조작 요소를 누르면 편집창이 포커스를 잃는다. 그때 저장이 일어나
+  // 글자가 여러 줄로 접히면 행 높이가 커지고, 눌린 요소가 밀려 click 이 도달하지
+  // 못한다. 편집 중에만 기본 동작을 막아 포커스를 지키고, 편집 확정은 각 처리기가
+  // 직접 한다. 편집 중이 아닐 때는 막지 않아 클릭한 요소가 정상적으로 포커스를 받는다.
+  function preventFocusStealWhileEditing(event: React.MouseEvent) {
+    if (editingId !== null) event.preventDefault();
+  }
+
+  function cancelPendingSave() {
+    if (pendingSave.current === null) return;
+    clearTimeout(pendingSave.current);
+    pendingSave.current = null;
+  }
+
   function startEdit(todo: Todo) {
+    cancelPendingSave();
     saveEdit();
     setEditingId(todo.id);
     setEditDraft(todo.text);
@@ -142,7 +172,7 @@ export function TodoApp() {
                 className="mt-0.5 size-[18px]"
                 checked={todo.done}
                 onCheckedChange={() => toggle(todo.id)}
-                onMouseDown={preventFocusSteal}
+                onMouseDown={preventFocusStealWhileEditing}
                 aria-label={todo.text}
               />
 
@@ -172,14 +202,22 @@ export function TodoApp() {
                     todo.done && "text-muted-foreground line-through"
                   )}
                   onMouseDown={(event) => {
-                    // 다른 항목을 편집 중이면 포커스를 뺏지 않는다. 편집이
-                    // 저장되며 행 높이가 커지면 두 번째 클릭이 엉뚱한 곳에
-                    // 떨어져 편집이 열리지 않는다.
                     // 편집 중이 아닐 때는 드래그해서 복사하는 것을 막지 않고,
                     // 편집을 여는 두 번째 클릭의 글자 선택만 막는다.
                     if (editingId !== null || event.detail > 1) {
                       event.preventDefault();
                     }
+                  }}
+                  onClick={() => {
+                    if (editingId === null || editingId === todo.id) return;
+                    // 편집 중 바깥을 클릭했으니 저장해야 한다. 다만 이 클릭이
+                    // 더블클릭의 첫 클릭이면, 지금 저장해 행 높이가 바뀌는 순간
+                    // 두 번째 클릭이 엉뚱한 곳에 떨어진다. 갈릴 때까지 기다린다.
+                    cancelPendingSave();
+                    pendingSave.current = setTimeout(() => {
+                      pendingSave.current = null;
+                      latestSaveEdit.current?.();
+                    }, DOUBLE_CLICK_GRACE_MS);
                   }}
                   onDoubleClick={() => startEdit(todo)}
                 >
@@ -192,7 +230,7 @@ export function TodoApp() {
                 size="icon-sm"
                 className="-mt-0.5 -mr-1.5 text-muted-foreground hover:text-destructive"
                 aria-label={`${todo.text} 삭제`}
-                onMouseDown={preventFocusSteal}
+                onMouseDown={preventFocusStealWhileEditing}
                 onClick={(event) => {
                   // 한 항목을 지우면 아래 항목이 커서 자리로 올라온다. 같은
                   // 더블클릭 제스처의 두 번째 클릭까지 받으면 의도하지 않은
