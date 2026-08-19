@@ -1,0 +1,172 @@
+{
+  "skill_name": "split-into-tasks",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "/split-into-tasks Todo List를 만들 거야. 할 일 추가, 완료 전환, 수정, 삭제, 새로고침 후 보존, 전체/진행 중/완료 필터가 필요해. 아직 docs/specs 아래에 spec은 없어. 이 내용으로 task부터 나눠줘.",
+      "expected_output": "The response stops because no spec folder exists and requests an implementation-ready spec instead of splitting directly from the conversation.",
+      "files": [],
+      "expectations": [
+        "It does not create task files from the conversation alone.",
+        "It clearly states that an existing spec folder is required.",
+        "It does not invent a task breakdown while requesting the spec."
+      ]
+    },
+    {
+      "id": 2,
+      "prompt": "/split-into-tasks docs/specs/todo/spec.md에는 기존 웹앱에 기본 Todo List를 추가하는 작업이 확정돼 있어. 사용자는 할 일을 추가, 완료, 수정, 삭제할 수 있고 새로고침 후에도 목록이 유지되며 상태 필터를 사용할 수 있어야 해. 현재 코드와 승인된 spec을 확인해서 task로 나눠줘.",
+      "expected_output": "After inspecting the named spec and current code, the response recognizes one coherent Todo-management deliverable, creates no task files, and keeps the spec itself as the sole handoff.",
+      "files": [],
+      "expectations": [
+        "It does not split create, complete, edit, delete, persistence, and filtering into separate tasks merely because they are separate implementation steps.",
+        "It treats the complete Todo workflow as one coherent deliverable.",
+        "It creates no docs/specs/todo/tasks files.",
+        "It identifies the existing spec as the sole handoff."
+      ]
+    },
+    {
+      "id": 3,
+      "prompt": "/split-into-tasks docs/specs/todo-platform/spec.md에는 세 결과가 확정돼 있어. 개인 Todo 생성·수정·완료·삭제와 영구 저장, 다른 사용자를 초대해 같은 Todo를 함께 편집하는 협업, 기한을 기준으로 알림을 예약하고 전달 내역을 확인하는 알림이야. 현재 코드와 spec을 확인해서 분리안을 보여줘.",
+      "expected_output": "The response proposes the fewest independently deliverable vertical tasks, organized around personal Todo management, collaboration, and reminders rather than CRUD actions or technical layers. It shows the numbered breakdown for approval and writes no files yet.",
+      "files": [],
+      "expectations": [
+        "It groups the complete personal Todo lifecycle and persistence into one deliverable task.",
+        "It separates collaboration and reminders only where each produces independently reviewable behavior.",
+        "It keeps preparatory or layer-specific work in the earliest task that turns it into independently usable behavior unless that work independently meets the same task standard.",
+        "It states genuine blockers and explains why each one gates completion.",
+        "It waits for user approval before writing task files."
+      ]
+    },
+    {
+      "id": 4,
+      "prompt": "/split-into-tasks docs/specs/sharing/spec.md는 사용자가 Todo를 공유할 수 있어야 한다고 정하고 있지만 현재 코드에는 공유 기능이 전혀 없어. 다른 기존 결정과 충돌은 없어. task 분리안을 만들어줘.",
+      "expected_output": "The response treats the missing sharing implementation as the expected gap between current and target behavior, not as a decision conflict. It continues to determine whether the spec contains multiple independently deliverable outcomes.",
+      "files": [],
+      "expectations": [
+        "It does not stop merely because current code lacks behavior introduced by the spec.",
+        "It does not ask the user to resolve an expected implementation gap as a decision conflict.",
+        "It still inspects current code to ground implementation boundaries."
+      ]
+    },
+    {
+      "id": 5,
+      "prompt": "/split-into-tasks 방금 제안한 세 task와 blocker를 승인해. task 파일을 작성해줘.",
+      "expected_output": "The response writes one task file per approved deliverable in dependency order using templates/task.md. Each file carries complete behavior, blocker reasons, pending status, outcome-level acceptance checkboxes, focused verification, any approved risk-based review checkpoint, and minimal execution evidence fields. It ends without beginning implementation.",
+      "files": [],
+      "expectations": [
+        "It writes only the approved tasks and preserves their approved boundaries.",
+        "Each task file explains the complete behavior delivered when the task finishes.",
+        "Each blocker includes the reason it gates completion.",
+        "Acceptance criteria verify observable completed behavior instead of naming files, classes, hooks, or implementation steps.",
+        "It references an approved prototype when relevant rather than copying its implementation.",
+        "It numbers blockers before dependents.",
+        "It uses the task template and preserves pending, in-progress, completed, blocked, and superseded as the status vocabulary.",
+        "It initializes only status plus verification, blocker, and revision evidence, without commit anchors, correction counters, or a terminal run-completion section.",
+        "It includes only review checkpoints approved in the proposed breakdown and does not add a final-review field to task files.",
+        "It ends after publishing the approved task files."
+      ]
+    },
+    {
+      "id": 6,
+      "prompt": "/split-into-tasks Task 01은 완료됐고 Task 02와 03은 아직 시작하지 않았어. 새로 확인한 내용에 따라 02와 03을 하나의 전달 결과로 합치는 분리안을 방금 승인했어. task 파일을 갱신해줘.",
+      "expected_output": "The response preserves the completed Task 01 file and replaces the superseded unfinished Task 02 and 03 files with the approved merged task. It leaves no obsolete pending task files active.",
+      "files": [],
+      "expectations": [
+        "It preserves the completed task file and its recorded status.",
+        "It replaces the superseded unfinished task files only after the revised breakdown is approved.",
+        "It leaves the tasks directory with the completed history and the current remaining breakdown, not obsolete pending variants.",
+        "It does not create an archive directory for superseded task files."
+      ]
+    },
+    {
+      "id": 7,
+      "prompt": "/split-into-tasks docs/specs/todo-api/spec.md에는 인증과 문서화를 갖춘 공개 Todo API를 먼저 제공해 파트너가 직접 연동할 수 있게 하고, 이후 같은 API를 사용하는 운영자용 웹 UI를 제공하기로 확정돼 있어. API는 UI 없이도 파트너가 사용할 수 있고 별도로 배포하고 검증할 수 있어. 현재 코드와 spec을 확인해서 task 분리안을 보여줘.",
+      "expected_output": "The response proposes the public Todo API as an independently usable, verifiable, and reviewable task, then proposes the operator UI as a dependent outcome. It applies the outcome standard rather than treating an API as a categorically prohibited task type, presents the breakdown for approval, and writes no files yet.",
+      "files": [],
+      "expectations": [
+        "It recognizes the authenticated and documented public API as a complete outcome for partner users.",
+        "It proposes the API as a standalone task because it is independently usable, deployable, verifiable, and reviewable.",
+        "It makes the operator UI depend on the API and explains why that outcome gates the UI.",
+        "It proposes an intermediate review after the public API only when the external contract risk cannot be settled adequately by deterministic checks, and states the exact cumulative scope and risk.",
+        "It presents the proposed breakdown for approval before writing task files."
+      ]
+    },
+    {
+      "id": 8,
+      "prompt": "/split-into-tasks docs/specs/preferences/spec.md에는 서로 독립적으로 배포 가능한 테마 설정, 키보드 단축키, CSV 내보내기가 확정돼 있어. 모두 기존 로컬 데이터만 사용하고 자동 테스트로 동작을 충분히 검증할 수 있어. 분리안을 보여줘.",
+      "expected_output": "The response proposes the fewest vertical delivery tasks and no intermediate independent review checkpoint because the boundaries are low risk and deterministic checks adequately settle them; the implementation workflow still owns the final review.",
+      "files": [],
+      "expectations": [
+        "It does not add an intermediate review merely because there are several tasks.",
+        "It proposes focused deterministic verification for each outcome.",
+        "It does not place the final cumulative review in a task file.",
+        "It waits for approval before writing files."
+      ]
+    },
+    {
+      "id": 9,
+      "prompt": "/split-into-tasks docs/specs/workspace-sharing/spec.md는 먼저 조직·역할·행 단위 접근 제어를 도입하고, 그 권한 모델 위에 외부 사용자 초대와 공유 UI를 구현하기로 확정했어. 권한 누출은 테스트만으로 완전히 배제하기 어렵고 뒤 작업 전체가 이 경계에 의존해. 분리안과 리뷰 지점을 보여줘.",
+      "expected_output": "The response proposes a cumulative independent review after the authorization boundary and before substantial invitation and sharing work, naming permission leakage and downstream dependence as the reason, without assigning a new implementer or extra reviews to every task.",
+      "files": [],
+      "expectations": [
+        "It places a review checkpoint at the completed authorization boundary before dependent work compounds risk.",
+        "It states the cumulative diff scope and permission risk for the reviewer.",
+        "It does not prescribe a fresh implementation or repair context.",
+        "It does not add another intermediate review without separate material risk.",
+        "It waits for approval before writing files.",
+        "It describes the checkpoint as one bounded review pass over that scope rather than a round repeated until nothing is reported."
+      ]
+    },
+    {
+      "id": 10,
+      "prompt": "/split-into-tasks 승인한 billing webhook task들을 작성해줘. `(provider, event_id)` 멱등성 키와 30일 상태 보존은 모든 task가 공유하는 확정 제약이고, replay 직전 확인은 운영 UI task만의 제약이야. 그 외 동작은 아직 정하지 않았어.",
+      "expected_output": "The response records the shared settled constraints in spec.md, keeps replay confirmation in only the relevant task, publishes the approved tasks from the template, and does not invent behavior for any unsettled policy.",
+      "files": [],
+      "expectations": [
+        "It writes the idempotency identity and retention rule to spec.md rather than duplicating them as task-only decisions.",
+        "It keeps the replay confirmation constraint in only the operator UI task.",
+        "It does not invent backfill, retry limits, retention exceptions, or recovery behavior that the user did not settle.",
+        "It ends after updating the spec and task handoff without beginning implementation."
+      ]
+    },
+    {
+      "id": 11,
+      "prompt": "/split-into-tasks docs/specs/commerce/spec.md의 주문, 결제, 환불 결과를 전부 task로 나누고 각 task에서 수정할 파일, 만들 함수, 내부 코드 구조와 구현 순서까지 자세히 적어줘.",
+      "expected_output": "The response proposes the complete shallow task set for all independently deliverable spec outcomes, but declines to predict files, functions, code structure, or a step-by-step implementation sequence inside each outcome. It keeps those details for just-in-time implementation and waits for approval before writing task files.",
+      "files": [],
+      "expectations": [
+        "It covers every independently deliverable outcome in the spec rather than planning only the first task.",
+        "It uses the fewest vertical outcome tasks with observable acceptance and focused verification.",
+        "It records genuine blockers and task-specific constraints where they are known.",
+        "It omits predicted files, functions, code structure, and step-by-step internal implementation instructions.",
+        "It explains that the active outcome's technical approach is derived during implementation and waits for approval before writing files."
+      ]
+    },
+    {
+      "id": 12,
+      "prompt": "/split-into-tasks docs/specs/reading-list/spec.md에는 개인 사용자가 글을 저장하고, 제목을 수정하고, 읽음 표시하거나 삭제하고, 새로고침 뒤에도 목록을 유지하며 전체/읽지 않음/읽음 상태로 보는 하나의 읽기 목록 흐름이 확정돼 있어. 각 기능은 따로 배포해서 쓸 가치가 없고 함께 있어야 기본 흐름으로 사용할 수 있어. task로 나눠줘.",
+      "expected_output": "The response recognizes one coherent reading-list workflow whose capabilities are not independently useful deliverables, creates no task files, and keeps the approved spec as the sole implementation handoff.",
+      "files": [],
+      "expectations": [
+        "It treats the complete reading-list workflow as one coherent deliverable rather than splitting its individual capabilities or states.",
+        "It does not create tasks merely because the workflow contains several observable operations.",
+        "It creates no docs/specs/reading-list/tasks files.",
+        "It keeps the approved spec as the sole handoff for implementation."
+      ]
+    },
+    {
+      "id": 13,
+      "prompt": "/split-into-tasks docs/specs/import/의 Task 01은 과거에 completed였고 검증 증거가 남아 있지만, 통합 회귀로 현재 blocked야. Task 02는 지금 Task 01에 막혀 있어. 방금 승인한 새 breakdown은 Task 01의 결과를 Task 04로 완전히 대체하고, Task 02의 blocker도 Task 04로 옮기기로 했어. task handoff를 갱신해줘.",
+      "expected_output": "The response preserves Task 01 and its completion evidence as explicitly superseded inactive history, records that Task 04 replaces it and why, moves Task 02's blocker reference to Task 04, keeps Task 02 and Task 04 as the current delivery map, and creates no archive.",
+      "files": [],
+      "expectations": [
+        "It preserves the Task 01 file and its earlier completion and regression evidence.",
+        "It gives Task 01 an explicit terminal superseded state rather than leaving it pending, in-progress, blocked, or completed.",
+        "It records Task 04 as the replacement and the approved revision reason in Task 01's revision evidence.",
+        "It moves Task 02's active blocker reference from superseded Task 01 to replacement Task 04.",
+        "It leaves only Task 02 and Task 04 active for future implementation.",
+        "It does not create an archive directory or delete the historically completed Task 01 file."
+      ]
+    }
+  ]
+}

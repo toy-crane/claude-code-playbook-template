@@ -1,0 +1,77 @@
+{
+  "skill_name": "explain-visually",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "/explain-visually 이 저장소에 발행된 스킬들이 서로 어떻게 이어지는지 모르겠어. 설명해줘.",
+      "expected_output": "The response draws the pipeline instead of describing it, and draws it with a renderer the session actually has rather than fenced ASCII. It works from this repo's real skills and files.",
+      "files": [],
+      "expectations": [
+        "It invokes a rendering tool available in the session — an inline visual, a rendered page, or an image — instead of settling for fenced ASCII or a markdown table.",
+        "The form it chooses shows structure, such as a diagram or graph, rather than a run of paragraphs.",
+        "It names skills and files that actually exist in this repo.",
+        "Its prose comments on the drawing rather than duplicating it in text."
+      ]
+    },
+    {
+      "id": 2,
+      "prompt": "/explain-visually 왜 shape-idea야? write-spec이 아니고. 잘 이해가 안 돼.",
+      "expected_output": "The response places the two names side by side with a renderer and grounds the reasoning in this repo's current skill-naming decision contract.",
+      "files": [],
+      "expectations": [
+        "It invokes a rendering tool rather than settling for fenced ASCII or a markdown table.",
+        "The form places the alternatives side by side rather than narrating one and then the other.",
+        "It cites the current skill-naming decision contract instead of reasoning from the names alone.",
+        "It does not answer in prose only."
+      ]
+    },
+    {
+      "id": 3,
+      "prompt": "/explain-visually 이 저장소가 두 경로로 배포된다는데, 그게 어떻게 도는 건지 모르겠어.",
+      "expected_output": "The response traces both distribution channels with a renderer, carrying this repo's real paths and counts.",
+      "files": [],
+      "expectations": [
+        "It invokes a rendering tool rather than settling for fenced ASCII or a markdown table.",
+        "It traces the two channels with concrete values — real directory paths, the manifest array, the number of published skills.",
+        "It distinguishes the .claude/skills symlinks from the two distribution paths.",
+        "It does not answer in prose only."
+      ]
+    },
+    {
+      "id": 4,
+      "prompt": "/explain-visually GLOSSARY.md에 있는 'Comprehension gap'이 무슨 뜻이야?",
+      "expected_output": "A term the user has not met is a definition, so the response answers in a few sentences and stops. Nothing is drawn and no renderer is invoked.",
+      "files": [],
+      "expectations": [
+        "It answers in prose and stops, producing no diagram at all — ASCII art and comparison tables included.",
+        "It does not invoke a rendering tool.",
+        "It points at where the term is defined.",
+        "It stays short rather than expanding into the surrounding decision history."
+      ]
+    },
+    {
+      "id": 5,
+      "prompt": "/explain-visually .claude/skills/ 에 있는 심링크들은 왜 커밋돼 있는 거야?",
+      "expected_output": "The answer is one sentence — committing the links carries them into every clone and worktree — so the response says that and stops, despite the directory layout sitting behind it.",
+      "files": [],
+      "expectations": [
+        "It answers in prose and stops, producing no diagram at all — ASCII art and comparison tables included.",
+        "It does not invoke a rendering tool.",
+        "It gives the reason: committed links reach every clone and worktree.",
+        "It does not draw merely because three skill directories and two distribution channels sit behind the answer."
+      ]
+    },
+    {
+      "id": 6,
+      "prompt": "/explain-visually plugin.json의 version은 왜 손으로 올려야 돼?",
+      "expected_output": "The answer is one sentence — there is no changeset or CI automation — so the response says that and stops.",
+      "files": [],
+      "expectations": [
+        "It answers in prose and stops, producing no diagram at all — ASCII art and comparison tables included.",
+        "It does not invoke a rendering tool.",
+        "It gives the reason: versioning is manual, with no changeset or CI automation.",
+        "It does not draw merely because the two distribution channels sit behind the answer."
+      ]
+    }
+  ]
+}

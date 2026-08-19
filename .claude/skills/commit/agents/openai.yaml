@@ -1,0 +1,4 @@
+interface:
+  display_name: "Commit Changes"
+  short_description: "Commit in-scope changes as logical units"
+  default_prompt: "Use $commit to commit the current request's in-scope changes as logical Conventional Commits."

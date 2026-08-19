@@ -1,0 +1,17 @@
+<!doctype html>
+<meta charset="utf-8" />
+<title>Quiet Tasks after</title>
+<h1>Quiet Tasks</h1>
+<ul id="tasks">
+  <li><label><input type="checkbox" checked /> Send proposal</label></li>
+  <li><label><input type="checkbox" /> Book research call</label></li>
+</ul>
+<button id="clear">Clear completed</button>
+<script>
+  const saved = JSON.parse(localStorage.getItem("quiet-tasks") || "null");
+  document.querySelector("#clear").addEventListener("click", () => {
+    document.querySelectorAll("input:checked").forEach((input) => input.closest("li").remove());
+    localStorage.setItem("quiet-tasks", JSON.stringify([...document.querySelectorAll("li")].map((item) => item.textContent.trim())));
+  });
+  if (saved) console.log("restored", saved);
+</script>

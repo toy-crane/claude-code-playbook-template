@@ -1,0 +1,14 @@
+[
+  {"query":"현재 브랜치 origin에 push해줘.","should_trigger":true},
+  {"query":"방금 만든 커밋들을 remote branch에 올려줘. dirty 파일은 빼고.","should_trigger":true},
+  {"query":"publish this git branch and set its upstream","should_trigger":true},
+  {"query":"rebase 끝났어. remote 상태 확인하고 안전하게 force-with-lease로 푸시해.","should_trigger":true},
+  {"query":"detached HEAD 커밋을 적절한 이름의 브랜치로 만들어 origin에 올려줘.","should_trigger":true},
+  {"query":"feature/cart의 로컬 커밋을 GitHub 원격 브랜치에 게시해줘.","should_trigger":true},
+  {"query":"iOS 앱에 푸시 알림을 추가하고 APNs 토큰을 저장해줘.","should_trigger":false},
+  {"query":"Docker 이미지를 ghcr.io에 push하는 CI workflow를 작성해줘.","should_trigger":false},
+  {"query":"현재 변경사항을 commit만 해줘. 원격에는 올리지 마.","should_trigger":false},
+  {"query":"브랜치를 올리고 ready-for-review PR까지 만들어줘.","should_trigger":false},
+  {"query":"이 PR을 main에 merge하고 worktree도 정리해줘.","should_trigger":false},
+  {"query":"git push --force와 --force-with-lease 차이를 설명해줘.","should_trigger":false}
+]

@@ -1,0 +1,4 @@
+interface:
+  display_name: "TDD"
+  short_description: "Implement one red-green slice at a time"
+  default_prompt: "Use $tdd to implement this change test-first."

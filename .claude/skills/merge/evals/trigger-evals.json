@@ -1,0 +1,16 @@
+[
+  {"query":"현재 브랜치를 PR로 만들고 main에 머지한 다음 worktree까지 정리해줘.","should_trigger":true},
+  {"query":"이 변경 머지해줘. PR이 없으면 만들고 체크 통과 후 합쳐.","should_trigger":true},
+  {"query":"merge this work into main through a pull request and clean up the checkout","should_trigger":true},
+  {"query":"PR #72를 확인해서 아직 안 합쳐졌으면 merge하고 로컬 브랜치 정리해줘.","should_trigger":true},
+  {"query":"작업 끝났으니 PR 만들고 바로 머지까지 진행해.","should_trigger":true},
+  {"query":"이미 머지됐는지 먼저 확인하고 됐다면 남은 worktree만 안전하게 치워줘.","should_trigger":true},
+  {"query":"여러 의미 있는 커밋을 보존해서 main에 합치고 싶어. PR부터 마무리까지 해줘.","should_trigger":true},
+  {"query":"두 JSON 배열을 id 기준으로 merge해서 새 파일로 저장해줘.","should_trigger":false},
+  {"query":"feature 브랜치를 로컬 main에 merge commit으로 합쳐줘. GitHub PR은 쓰지 마.","should_trigger":false},
+  {"query":"리뷰 받을 PR만 만들어줘. merge는 내가 나중에 할게.","should_trigger":false},
+  {"query":"현재 브랜치를 최신 origin/main에 rebase해줘.","should_trigger":false},
+  {"query":"변경사항을 conventional commit으로 저장만 해줘.","should_trigger":false},
+  {"query":"PR의 merge conflict 원인을 분석해서 해결 방법만 설명해줘.","should_trigger":false},
+  {"query":"PDF 두 개를 하나로 병합하고 페이지 순서를 유지해줘.","should_trigger":false}
+]
