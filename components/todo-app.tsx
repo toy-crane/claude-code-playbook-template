@@ -62,9 +62,19 @@ export function TodoApp() {
   useEffect(() => {
     const input = editRef.current;
     if (!input) return;
+
     // 내용에 맞춰 높이를 늘려, 저장했을 때의 글자 높이와 같게 유지한다.
-    input.style.height = "auto";
-    input.style.height = `${input.scrollHeight}px`;
+    const fit = () => {
+      input.style.height = "auto";
+      input.style.height = `${input.scrollHeight}px`;
+    };
+    fit();
+
+    // 화면 폭이 바뀌면 줄바꿈 위치가 달라진다. 다시 맞추지 않으면 넘친 글자가
+    // overflow-hidden 에 가려 보이지도 스크롤되지도 않는다.
+    const observer = new ResizeObserver(fit);
+    observer.observe(input);
+    return () => observer.disconnect();
   }, [editingId, editDraft]);
 
   function add() {
@@ -174,7 +184,12 @@ export function TodoApp() {
                   )}
                   aria-label="할 일 수정"
                   value={editDraft}
-                  onChange={(event) => setEditDraft(event.target.value)}
+                  onChange={(event) =>
+                    // 할 일은 추가 입력창으로 만들 수 있는 것과 같게 한 줄이다.
+                    // 붙여넣기로 들어온 줄바꿈을 그대로 두면 저장 시 다듬어지며
+                    // 행 높이가 줄어, 아래 항목을 누르던 클릭이 어긋난다.
+                    setEditDraft(event.target.value.replace(/[\r\n\t]+/g, " "))
+                  }
                   onBlur={saveEdit}
                   onKeyDown={(event) => {
                     if (event.nativeEvent.isComposing) return;

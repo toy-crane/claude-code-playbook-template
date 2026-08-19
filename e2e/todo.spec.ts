@@ -291,3 +291,49 @@ test("편집을 확정해도 행 높이가 변하지 않아 아래 항목이 밀
   expect(Math.abs((await rowHeight(0)) - heightWhileEditing)).toBeLessThan(1);
   expect(Math.abs((await rowTop(1)) - topBelowWhileEditing)).toBeLessThan(1);
 });
+
+test("편집창에 줄바꿈이 든 값을 붙여넣어도 한 줄로 저장되고 행 높이가 유지된다", async ({
+  page,
+}) => {
+  await add(page, "아래 항목");
+  await add(page, "위 항목");
+
+  const rowHeight = (index: number) =>
+    page.evaluate(
+      (i) => document.querySelectorAll("li")[i].getBoundingClientRect().height,
+      index
+    );
+
+  await page.getByText("위 항목").dblclick();
+  // 붙여넣기로 들어올 수 있는 값. 할 일은 추가 입력창으로 만들 수 있는 것과
+  // 같게 한 줄이어야 한다.
+  await page
+    .getByRole("textbox", { name: "할 일 수정" })
+    .fill("첫 줄\n둘째 줄\n");
+  const heightWhileEditing = await rowHeight(0);
+  await page.getByRole("heading", { level: 1 }).click();
+
+  await expect(page.getByRole("listitem").first()).toHaveText("첫 줄 둘째 줄");
+  expect(Math.abs((await rowHeight(0)) - heightWhileEditing)).toBeLessThan(1);
+});
+
+test("편집 중 화면 폭이 바뀌어도 편집창이 글자를 가리지 않는다", async ({
+  page,
+}) => {
+  await add(
+    page,
+    "폭을 줄이면 여러 줄로 접혀야 하는 제법 긴 할 일 항목이다 — 창 크기를 바꿔 본다"
+  );
+
+  await page.getByText(/폭을 줄이면/).dblclick();
+  await page.setViewportSize({ width: 420, height: 900 });
+
+  await expect
+    .poll(async () =>
+      page.evaluate(() => {
+        const area = document.querySelector("textarea")!;
+        return area.scrollHeight - area.getBoundingClientRect().height;
+      })
+    )
+    .toBeLessThan(1);
+});
