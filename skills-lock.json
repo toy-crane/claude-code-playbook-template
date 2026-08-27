@@ -31,6 +31,12 @@
       "skillPath": "skills/workflow/explain-visually/SKILL.md",
       "computedHash": "35b45440595c394bfc9742324512c1c91b2235d2a35d7e6da8dc6cafda66add8"
     },
+    "find-skills": {
+      "source": "vercel-labs/skills",
+      "sourceType": "github",
+      "skillPath": "skills/find-skills/SKILL.md",
+      "computedHash": "b146008599c31057cef1c145774cea5d5afb30e8f43fa802e47a4b461419aaaf"
+    },
     "human-review": {
       "source": "toy-crane/skills",
       "sourceType": "github",
@@ -90,6 +96,12 @@
       "sourceType": "github",
       "skillPath": "skills/workflow/resolve-follow-ups/SKILL.md",
       "computedHash": "45b768dd4b7ace140c6df65e0e1986a6c7acba113900dd6e5881682f0774ab3b"
+    },
+    "shadcn": {
+      "source": "shadcn-ui/ui",
+      "sourceType": "github",
+      "skillPath": "skills/shadcn/SKILL.md",
+      "computedHash": "c1a68ee06a668aced9ab2b5fbdea5f989864123794eb2e056b339a072dbb7f10"
     },
     "shape-idea": {
       "source": "toy-crane/skills",
