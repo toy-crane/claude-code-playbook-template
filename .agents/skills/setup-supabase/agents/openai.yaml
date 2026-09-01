@@ -1,0 +1,4 @@
+interface:
+  display_name: "Setup Supabase"
+  short_description: "Set up minimal Supabase Cloud and optional Auth"
+  default_prompt: "Use $setup-supabase to connect this app to Supabase Cloud and guide me through the minimal Auth choices."
