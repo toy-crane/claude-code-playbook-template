@@ -404,6 +404,78 @@
         "It runs the review exactly once.",
         "It does not treat runtime verification as a reason to skip the review pass."
       ]
+    },
+    {
+      "id": 33,
+      "prompt": "/implement docs/specs/search-filters/를 구현해줘. 로컬 웹 서버와 조작 가능한 브라우저는 있지만 이 프레임워크용 runtime-verification skill은 설치되어 있지 않아.",
+      "expected_output": "The response treats verification-method selection as part of implementation authority, inspects the repository and current environment, constructs the strongest usable browser-and-runtime check without asking for approval, and proves the changed filter flow with exact runtime evidence.",
+      "files": [],
+      "expectations": [
+        "It does not ask the user to approve a verification method merely because no matching skill is installed.",
+        "It inspects the repository-supported runtime and available browser capabilities instead of treating the missing skill as the blocker.",
+        "It exercises the changed search-filter flow in the running product and asserts its observable result.",
+        "It records the exact runtime observations rather than replacing them with build, type-check, test, screenshot-only, or code-inspection evidence."
+      ]
+    },
+    {
+      "id": 34,
+      "prompt": "/implement docs/specs/reminder-toggle/를 끝내줘. Expo 화면 변경이고 expo-dev-loop와 expo-smoke-test가 둘 다 설치되어 있어. PRODUCT.md의 core loop는 리마인더를 추가하고 오늘 목록에서 확인하는 것이야. 결과는 iOS와 Android 둘 다 지원한다고 전달해야 해.",
+      "expected_output": "The response uses expo-dev-loop for focused verification while editing, then uses expo-smoke-test before completion to re-drive the changed toggle flow and the PRODUCT.md core loop on iOS and Android, with separate runtime evidence for each platform.",
+      "files": [],
+      "expectations": [
+        "It uses expo-dev-loop for the focused inner loop rather than postponing all runtime checks until the end.",
+        "It uses expo-smoke-test for the final changed-flow and core-loop regression rather than treating the focused pass as delivery evidence.",
+        "It drives both the changed flow and the PRODUCT.md core loop on each platform.",
+        "It requires separate iOS and Android evidence and does not infer platform parity from one target."
+      ]
+    },
+    {
+      "id": 35,
+      "prompt": "/implement docs/specs/cli-preview/를 구현해줘. PRODUCT.md와 전문 runtime-verification skill은 없지만 저장소가 제공하는 미리보기 서버에서 변경 흐름을 실행할 수 있어.",
+      "expected_output": "The response autonomously verifies the changed flow through the repository preview runtime, re-runs that flow before completion, reports that no PRODUCT.md core-loop regression coverage exists, and neither invents a journey nor edits PRODUCT.md.",
+      "files": [],
+      "expectations": [
+        "It constructs and runs the repository-supported preview verification without asking for method approval.",
+        "It re-verifies the changed flow before final completion.",
+        "It reports the missing core-loop regression coverage while leaving PRODUCT.md absent.",
+        "It does not invent a product journey to make the report look complete."
+      ]
+    },
+    {
+      "id": 36,
+      "prompt": "/implement docs/specs/offline-sync/를 끝내줘. iOS와 Android 양쪽 지원을 약속했지만 현재 실제 오프라인 동기화 흐름은 iOS에서만 통과했고 Android 에뮬레이터는 시작할 수 없어. 빌드와 모든 테스트는 통과했어.",
+      "expected_output": "The response preserves the observed iOS evidence, leaves the claimed Android behavior incomplete, names the Android runtime gate and prerequisite, and does not infer two-platform support from static checks or the iOS run.",
+      "files": [],
+      "expectations": [
+        "It records the iOS result as direct evidence without overstating it.",
+        "It requires separate Android runtime evidence for the two-platform claim.",
+        "It leaves Android coverage incomplete and names the failed runtime gate and prerequisite.",
+        "It does not substitute the passing build and tests or infer Android parity from iOS."
+      ]
+    },
+    {
+      "id": 37,
+      "prompt": "/implement docs/specs/faster-dashboard/를 구현해줘. 이 작업은 대시보드 첫 표시가 30% 빨라졌다는 결과까지 전달해야 해. 화면이 보이는 것과 타입 검사는 이미 통과했어.",
+      "expected_output": "The response treats the 30% improvement as a performance-layer claim, measures that layer in a representative running environment against a comparable baseline, and does not infer the result from visible output or static checks.",
+      "files": [],
+      "expectations": [
+        "It identifies the performance claim as requiring performance-layer runtime evidence.",
+        "It compares a representative current measurement with a comparable baseline before claiming 30%.",
+        "It does not use a visible page, screenshot, type check, or successful build as evidence for the performance percentage.",
+        "If the measurement cannot be obtained, it leaves the performance claim unverified rather than weakening the claim silently."
+      ]
+    },
+    {
+      "id": 38,
+      "prompt": "/implement docs/specs/reminders/의 구현, 결정적 검증, iOS와 Android 최종 스모크, 자동 리뷰 1회까지 끝냈어. 리뷰가 일반 경로의 저장 결함을 찾아서 제품 코드를 고쳤고 관련 저장 검증도 다시 통과했어. 이제 마무리해줘.",
+      "expected_output": "The response treats the executable review repair as invalidating the pre-review runtime evidence, re-runs the changed flow and PRODUCT.md core loop on both iOS and Android against the repaired revision, and does not invoke the automated reviewer again.",
+      "files": [],
+      "expectations": [
+        "It does not hand off the repaired executable revision using only the runtime evidence collected before that repair.",
+        "It re-drives the changed flow and the PRODUCT.md core loop on both claimed platforms after the repair.",
+        "It preserves separate iOS and Android runtime evidence for the repaired revision.",
+        "It does not run a second automated review over the repair."
+      ]
     }
   ]
 }

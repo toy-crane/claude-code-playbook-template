@@ -1,8 +1,0 @@
-[
-  {"query":"이 checkout의 결과를 팀이 리뷰할 수 있도록 GitHub 링크까지 만들어줘. 합치지는 마.","should_trigger":true},
-  {"query":"같은 head branch의 열린 review request가 있으면 갱신하고 주소 알려줘.","should_trigger":true},
-  {"query":"detached 상태의 변경을 적절한 브랜치에 담아 main 대상 pull request로 게시해줘.","should_trigger":true},
-  {"query":"PR description 초안만 Markdown으로 써줘. GitHub 상태는 바꾸지 마.","should_trigger":false},
-  {"query":"PR #44의 unresolved review threads에 답변하고 코드를 수정해줘.","should_trigger":false},
-  {"query":"승인된 pull request를 squash merge하고 브랜치를 정리해줘.","should_trigger":false}
-]
