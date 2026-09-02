@@ -17,8 +17,8 @@ silently choosing one. Use current terms in test names and public interfaces.
 Test behavior through public interfaces so internal refactoring does not break
 tests. Use specification-style names that state the capability under test.
 
-See [tests.md](tests.md) for examples and [mocking.md](mocking.md) for mocking
-guidelines.
+Mock only at system boundaries such as external APIs, time, and randomness;
+prefer a real test database over a mocked one.
 
 ## Seams
 

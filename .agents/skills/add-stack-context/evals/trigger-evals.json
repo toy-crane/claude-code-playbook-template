@@ -12,7 +12,7 @@
     "should_trigger": true
   },
   {
-    "query": "에이전트 워크플로를 이 프로젝트에 처음 도입하려고 해. 현재 스택에 공식 skill이나 llms.txt가 있으면 권장 방식대로 설치해줘.",
+    "query": "에이전트 워크플로를 이 프로젝트에 처음 도입하려고 해. 현재 스택에 공식 skill이나 llms.txt가 있으면 최신 상태로 활용할 수 있게 준비해줘.",
     "should_trigger": true
   },
   {

@@ -1,0 +1,4 @@
+interface:
+  display_name: "Sync Toycrane Skills"
+  short_description: "Reconcile Toycrane skills and companion agents"
+  default_prompt: "Use $sync-toycrane-skills to reconcile this project's Toycrane-managed skills and companion agents for Claude Code and Codex."

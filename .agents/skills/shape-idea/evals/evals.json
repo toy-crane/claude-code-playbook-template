@@ -259,6 +259,32 @@
         "When a lookup fails or returns nothing, it records that shortfall rather than asserting the unverified answer.",
         "The spec names what was checked, what could not be confirmed, and — as an explicit revisit condition rather than a general risk — the upstream change that would reopen the handoff decision."
       ]
+    },
+    {
+      "id": 21,
+      "prompt": "/shape-idea 새 앱의 데이터 계층으로 Supabase를 쓰기로 확정했어. add-stack-context skill도 설치돼 있어. 나머지 제품 결정을 이어가기 전에 공식 agent context까지 갖춰줘.",
+      "expected_output": "The response invokes add-stack-context once for the newly settled hosted service and lets that skill own discovery, acceptance, installation, live vendor-document routing, and accounting before shaping continues.",
+      "files": [],
+      "expectations": [
+        "It invokes add-stack-context for Supabase rather than duplicating a project-wide stack audit inside shape-idea.",
+        "It delegates the context outcome once and does not also run an independent second installation path.",
+        "It keeps product shaping separate from the stack-context implementation details.",
+        "It continues shaping only after the selected technology has an accounted context outcome."
+      ]
+    },
+    {
+      "id": 22,
+      "prompt": "/shape-idea 새 앱은 NovaJS를 쓰기로 확정했지만 add-stack-context skill은 설치돼 있지 않아. find-skills에는 Nova 공식 skill과 인기 커뮤니티 skill이 있고, 공식 문서는 변경되는 llms.txt도 제공해. 이 선택을 반영하고 계속 진행해줘.",
+      "expected_output": "The response retains a concise standalone context outcome without reproducing the full audit: it discovers the official skill, approval-gates the community candidate, and preserves a live repository route to the changing llms.txt instead of copying it.",
+      "files": [],
+      "expectations": [
+        "It does not stop solely because add-stack-context is unavailable.",
+        "It uses find-skills when available and independently verifies vendor control before installing the official skill.",
+        "It does not install the community skill without explicit approval.",
+        "It does not copy the llms.txt body into the repository.",
+        "It preserves a bounded AGENTS.md or CLAUDE.md instruction to retrieve the current official source during relevant work.",
+        "It accounts for NovaJS before continuing the shaping decisions."
+      ]
     }
   ]
 }

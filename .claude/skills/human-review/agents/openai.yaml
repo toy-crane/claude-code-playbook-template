@@ -1,4 +1,0 @@
-interface:
-  display_name: "Human Review"
-  short_description: "Focus human attention on consequential changes"
-  default_prompt: "Use $human-review to show a completed repository change in a minimal visual review and isolate any judgment that remains for me."

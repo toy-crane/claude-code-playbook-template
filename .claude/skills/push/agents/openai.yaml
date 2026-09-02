@@ -1,4 +1,0 @@
-interface:
-  display_name: "Push Branch"
-  short_description: "Publish the current branch without losing work"
-  default_prompt: "Use $push to publish the current branch while preserving local and remote work."

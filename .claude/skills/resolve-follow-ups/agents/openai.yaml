@@ -1,4 +1,0 @@
-interface:
-  display_name: "Resolve Follow-ups"
-  short_description: "Resolve verified follow-ups in isolated pull requests"
-  default_prompt: "Use $resolve-follow-ups to sweep the repository follow-ups into isolated, verified pull requests."

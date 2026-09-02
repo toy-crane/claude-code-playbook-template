@@ -1,4 +1,4 @@
 interface:
   display_name: "Implement"
-  short_description: "Implement with per-outcome reconciliation and one review pass"
-  default_prompt: "Use $implement to implement this spec folder one outcome at a time, reload current repository evidence and reconcile observed behavior with the product contract and active unfinished tasks after each outcome, treat superseded tasks only as implicated history, then complete verification, review the whole diff once and triage what it returns, and give a runnable handoff when available."
+  short_description: "Implement with active runtime proof and one review pass"
+  default_prompt: "Use $implement to implement this spec folder one outcome at a time, actively prove changed behavior with a matching runtime skill or the strongest usable runtime path, reconcile observed behavior with the product contract and active unfinished tasks, re-verify the changed flow and PRODUCT.md core loop on every claimed platform, then review the whole diff once, triage what it returns, repeat the runtime gate after any executable repair, and give a runnable handoff when available."

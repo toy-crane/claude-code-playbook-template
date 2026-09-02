@@ -1,0 +1,29 @@
+{
+  "skill_name": "sync-toycrane-skills",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "Use $sync-toycrane-skills in this Expo project. Its skills-lock.json already manages expo-smoke-test from toy-crane/skills, but upstream now also publishes sync-toycrane-skills and expo-smoke-test carries an expo-smoke-runner custom agent. Keep our local-reviewer agent and our third-party skills unchanged.",
+      "expected_output": "The response refreshes every current Toycrane-managed skill, installs the new universal sync skill, then runs the installed companion synchronizer so expo-smoke-runner is present in both native agent formats with durable ownership while unrelated skills and local-reviewer remain unchanged.",
+      "files": [],
+      "expectations": [
+        "It reads skills-lock.json ownership and uses one explicit skills add call for current managed skills plus eligible new skills, targeting codex and claude-code without global installation.",
+        "It runs .agents/skills/sync-toycrane-skills/scripts/sync_companion_agents.py after skills.sh so companion payloads come from the refreshed project copies.",
+        "It installs .claude/agents/expo-smoke-runner.md and .codex/agents/expo-smoke-runner.toml and records the name in .agents/toycrane-agents-lock.json.",
+        "It preserves local-reviewer and third-party skills, and updates both shared_skills and shared_agents only when .agent-sync/manifest.json already exists.",
+        "It finishes with both inventory checks, the companion --check command, repository-required validation, and the repository's commit policy."
+      ]
+    },
+    {
+      "id": 2,
+      "prompt": "Use $sync-toycrane-skills. This project already has a hand-written .claude/agents/expo-smoke-runner.md but no Toycrane agent lock. Do the update, but don't overwrite anything that belongs to the project.",
+      "expected_output": "The response updates eligible skills, then the companion synchronization stops on the unowned expo-smoke-runner collision, identifies the path, and asks for explicit adoption approval instead of overwriting it or recording ownership after the fact.",
+      "files": [],
+      "expectations": [
+        "It treats the existing agent as unowned because .agents/toycrane-agents-lock.json does not prove ownership, even if its contents happen to match upstream.",
+        "It shows the colliding name and path and does not run --adopt without explicit user approval for expo-smoke-runner.",
+        "It preserves the existing file, other agent definitions, and project-local skills while reporting the incomplete companion reconciliation."
+      ]
+    }
+  ]
+}

@@ -1,4 +1,4 @@
 interface:
   display_name: "Add Stack Context"
-  short_description: "Install official AI context for your stack"
-  default_prompt: "Use $add-stack-context to audit this project's stack and install any missing official agent context."
+  short_description: "Keep stack agent context current"
+  default_prompt: "Use $add-stack-context to audit this project's stack, discover official skills, and keep vendor guidance current."

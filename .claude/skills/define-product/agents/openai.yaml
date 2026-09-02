@@ -1,4 +1,0 @@
-interface:
-  display_name: "Define Product"
-  short_description: "Draw out and preserve product meaning"
-  default_prompt: "Use $define-product to interview me about this app direction and create PRODUCT.md after I confirm the product meaning."

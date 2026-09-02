@@ -47,6 +47,45 @@
         "It summarizes installed and already-present items separately.",
         "For installed context, it includes the documented update path when one exists."
       ]
+    },
+    {
+      "id": 5,
+      "prompt": "/add-stack-context 이 프로젝트는 AcmeDB를 직접 사용해. find-skills로 찾아보니 Acme 공식 조직의 acmedb skill과 설치 수가 더 많은 커뮤니티 acmedb-pro skill이 함께 나왔어. 현재 컨텍스트를 갖춰줘.",
+      "expected_output": "The response uses find-skills for discovery but retains source acceptance itself: it verifies and may install the vendor-controlled skill, while presenting the more popular community skill only as an approval-gated candidate.",
+      "files": [],
+      "expectations": [
+        "It uses find-skills as the normal skill-discovery capability.",
+        "It independently verifies which candidate is controlled by the Acme vendor rather than treating search rank or install count as proof.",
+        "It may install the official Acme skill through its documented method.",
+        "It reports the community skill as an optional candidate and does not install it without explicit user approval.",
+        "It does not let the community skill substitute for the official-context audit result."
+      ]
+    },
+    {
+      "id": 6,
+      "prompt": "/add-stack-context find-skills skill이 설치되지 않은 저장소야. 직접 사용하는 Orbit 프레임워크의 agent context를 점검해줘. Skills 생태계에는 공식 skill이 없고, Orbit 공식 문서에는 AGENTS.md codemod가 있어.",
+      "expected_output": "The response treats the missing helper skill as a fallback condition rather than a blocker, performs equivalent current skill discovery, and still installs the vendor's official non-skill context through its documented codemod.",
+      "files": [],
+      "expectations": [
+        "It does not classify Orbit as unavailable or blocked solely because find-skills is absent.",
+        "It searches the current Skills ecosystem through an available CLI or equivalent source under the same official-source policy.",
+        "It continues beyond skill search and recognizes the official AGENTS.md codemod as valid vendor context.",
+        "It applies only the codemod's documented changes and reports its supported update path."
+      ]
+    },
+    {
+      "id": 7,
+      "prompt": "/add-stack-context NovaJS가 공식 llms.txt를 제공해. 이 저장소의 AGENTS.md에는 사용자 규칙이 있고 CLAUDE.md는 AGENTS.md를 가리키는 심볼릭 링크야. llms.txt 내용을 프로젝트에 저장해서 다음 에이전트가 읽게 해줘.",
+      "expected_output": "The response refuses the stale snapshot mechanism while still completing the context outcome: it preserves the shared instruction structure and user rules, then adds a bounded instruction that retrieves the current official llms.txt when NovaJS work begins and reconciles it with the installed version.",
+      "files": [],
+      "expectations": [
+        "It does not copy the llms.txt body into the repository.",
+        "It preserves the existing user-authored AGENTS.md content.",
+        "It preserves CLAUDE.md as a link to AGENTS.md rather than creating a second independently maintained copy.",
+        "It adds or updates only a bounded managed instruction for NovaJS.",
+        "The instruction tells later agents to retrieve the current official source when relevant work begins and compare it with the installed version.",
+        "It reports task-time retrieval as the context's update path."
+      ]
     }
   ]
 }
