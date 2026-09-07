@@ -1,0 +1,41 @@
+{
+  "skill_name": "update-project-skills",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "Use $update-project-skills in this Expo project. skills-lock.json manages commit, tdd, and expo-smoke-test from toy-crane/skills plus emil-design-eng from emilkowalski/skills, and expo-smoke-test carries an expo-smoke-runner custom agent. Upstream toy-crane/skills now also publishes update-project-skills. Keep our local-reviewer agent untouched.",
+      "expected_output": "The response updates every locked skill from every source with one project-scoped skills update call, installs the newly published Toycrane skill for codex and claude-code, then runs the installed companion synchronizer so expo-smoke-runner exists in both native formats with recorded ownership, while emil-design-eng is refreshed but neither removed nor joined by other emilkowalski skills and local-reviewer stays unchanged.",
+      "files": [],
+      "expectations": [
+        "It runs npx skills update -p -y once to refresh every locked skill in place, including the third-party one, instead of re-adding the managed Toycrane skills by name.",
+        "It installs only the newly published Toycrane skill through one explicit skills add call targeting codex and claude-code without global installation.",
+        "It runs .agents/skills/update-project-skills/scripts/sync_companion_agents.py after the update so companion payloads come from the refreshed project copies, installing .claude/agents/expo-smoke-runner.md and .codex/agents/expo-smoke-runner.toml and recording the name in .agents/toycrane-agents-lock.json.",
+        "It leaves local-reviewer alone and updates shared_skills and shared_agents only when .agent-sync/manifest.json already exists.",
+        "It finishes with the inventory check, the companion --check command, a per-skill account of what changed, and the repository's commit policy."
+      ]
+    },
+    {
+      "id": 2,
+      "prompt": "Use $update-project-skills. This project already has a hand-written .claude/agents/expo-smoke-runner.md but no Toycrane agent lock. Do the update, but don't overwrite anything that belongs to the project.",
+      "expected_output": "The response updates the locked skills, then the companion synchronization stops on the unowned expo-smoke-runner collision, identifies the path, and asks for explicit adoption approval instead of overwriting it or recording ownership after the fact.",
+      "files": [],
+      "expectations": [
+        "It treats the existing agent as unowned because .agents/toycrane-agents-lock.json does not prove ownership, even if its contents happen to match upstream.",
+        "It shows the colliding name and path and does not run --adopt without explicit user approval for expo-smoke-runner.",
+        "It preserves the existing file, other agent definitions, and project-local skills while reporting the incomplete companion reconciliation."
+      ]
+    },
+    {
+      "id": 3,
+      "prompt": "Use $update-project-skills. The lock has shape-idea and shape-release from toy-crane/skills, seo-audit from coreyhaines31/marketingskills, and a shadcn entry installed before skillPath tracking. Upstream toy-crane/skills no longer publishes shape-release, and the update reports seo-audit as deleted upstream.",
+      "expected_output": "The response refreshes what the CLI can update in place, retires shape-release from the whole project because it is Toycrane-managed and unpublished, reports the shadcn entry as skipped with the CLI's reinstall hint and seo-audit as deleted upstream without removing either, and installs no additional third-party skills.",
+      "files": [],
+      "expectations": [
+        "It removes shape-release with an unscoped skills remove call and passes --retired-skill shape-release to the companion synchronizer.",
+        "It does not remove seo-audit or reinstall shadcn on its own; both appear in the report as items for the user to decide.",
+        "It does not add any skill from coreyhaines31/marketingskills or another third-party source.",
+        "It keeps every change project-local and commits the lock, updated skills, and agent files together per the repository's commit policy."
+      ]
+    }
+  ]
+}

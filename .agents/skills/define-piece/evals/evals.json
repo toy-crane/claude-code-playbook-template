@@ -1,0 +1,86 @@
+{
+  "skill_name": "define-piece",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "/define-piece 첨부한 docs/publications/blog.md가 우리 블로그 전제야. 이번 글감은 '저장소의 tally 스크립트로 문서 폴더 줄 수 세기'. 방향은 스크립트를 처음 보는 개발자가 한 번에 따라 하게 하는 것.",
+      "expected_output": "The response opens with a one-sentence thesis, title candidates, and an outline of section headings for the user to correct, asks at most one consequential question with a recommended answer, and writes no brief or prose yet.",
+      "files": [
+        "evals/fixtures/blog/docs/publications/blog.md"
+      ],
+      "expectations": [
+        "It presents a thesis, two or three title candidates, and an outline rather than a list of questions.",
+        "It asks at most one question, with a recommended answer and reason.",
+        "It does not write body paragraphs.",
+        "It does not create docs/briefs/ before the decisions are confirmed."
+      ]
+    },
+    {
+      "id": 2,
+      "prompt": "/define-piece 블로그 전제는 docs/publications/blog.md고 뉴스레터 전제는 docs/publications/newsletter.md야. 글감은 '온보딩에서 사용자가 빠져나가는 지점'. 어디에 실을지도 같이 정하자.",
+      "expected_output": "The response recommends one publication from the topic with a one-line reason and confirms it before proposing the thesis and outline.",
+      "files": [],
+      "expectations": [
+        "It recommends one of the two publications with a reason.",
+        "It waits for confirmation of the publication before settling piece-level decisions, or bundles that confirmation into the single question it asks.",
+        "It does not write a brief yet."
+      ]
+    },
+    {
+      "id": 3,
+      "prompt": "/define-piece 논지, 독자, 범위, 개요 다 확정했어. 독자 질문은 '왜 중요한가?' 하나면 충분하지 않아? 이대로 브리프 써줘.",
+      "expected_output": "The response reworks the vague reader question toward checkable answers and asks for or proposes three to five questions before writing the brief.",
+      "files": [],
+      "expectations": [
+        "It explains that a question a vague draft could satisfy is not usable as evidence.",
+        "It proposes concrete reader questions whose answers could be judged right or wrong from the piece.",
+        "It writes the brief only with three to five reader questions."
+      ]
+    },
+    {
+      "id": 4,
+      "prompt": "/define-piece 백업 글을 기획 중이야. 기존의 짧은 소제목 원칙은 유지하면서 앞으로 이 블로그의 소제목에는 절의 주장이 보여야 해. “백업의 중요성”은 목차에서 내용을 알 수 없어서 밋밋해. “복원해 봐야 백업을 믿을 수 있다”를 채택할게. 이번에는 이 결정만 반영해줘.",
+      "expected_output": "Merges the confirmed reusable criterion and sample during planning without drafting body prose.",
+      "files": [
+        "evals/fixtures/writing-feedback"
+      ],
+      "expectations": [
+        "It strengthens the existing short-heading rule with a claim requirement, rationale, blog scope and confirming choice.",
+        "It saves the accepted example in the owning decision and preserves the existing brevity rationale.",
+        "It writes the actual repository record even without project-knowledge installed.",
+        "It does not duplicate criteria into the brief or write content/posts/."
+      ]
+    },
+    {
+      "id": 5,
+      "prompt": "/define-piece 이번에는 데이터 중복 제거에 관한 글을 기획하자. 같은 파일인지 크기만 보고 지우면 내용이 다른 파일을 지울 수 있다는 경험을 설명하려고 해. 개인 개발자에게 크기만으로 중복을 판단하지 말아야 한다는 점이 드러나면 돼.",
+      "expected_output": "In a fresh session after feedback case 4, the new outline uses the recorded criterion without copying backup content.",
+      "files": [
+        "evals/fixtures/writing-feedback"
+      ],
+      "expectations": [
+        "Starting from only repository records, it proposes short headings expressing claims on the new topic.",
+        "It uses the current decision and accepted example as writing guidance, not as backup subject matter.",
+        "It presents correctable candidates and waits without drafting the whole brief."
+      ],
+      "setup": {
+        "write": {
+          "docs/decisions/writing.md": "# 글쓰기 기준\n\n## 소제목\n\n이 블로그의 소제목은 짧아도 절의 주장을 드러내는 문장으로 쓴다. 휴대폰에서 목차를 훑어보기 쉬워야 하고, 주제 이름만 있으면 목차만 읽어서는 내용을 알 수 없기 때문이다.\n\n- 바꾸기 전: 백업의 중요성\n- 채택한 예문: 복원해 봐야 백업을 믿을 수 있다\n- 확인 근거: 사용자가 앞으로 이 블로그 소제목에 주장을 드러내도록 지시하고 위 예문을 선택했다. 길이를 줄여도 그 원칙을 유지하라고 확인했다.\n- 범위: 이 블로그. 다른 매체에는 적용하기로 정하지 않았다.\n"
+        }
+      }
+    },
+    {
+      "id": 6,
+      "prompt": "/define-piece 앞서 보여 준 문장 “자동 저장을 켜 두니 같은 문서를 다시 쓸 일이 줄었다”로 이번 도입부를 바꿔줘.",
+      "expected_output": "Applies a local choice without promoting an inferred author-wide rule.",
+      "files": [
+        "evals/fixtures/writing-feedback"
+      ],
+      "expectations": [
+        "It keeps the current decision contracts unchanged unless reuse is explicitly settled.",
+        "If it proposes broader reuse, it asks a focused question and leaves that candidate outside current rules.",
+        "It does not put body prose into the brief."
+      ]
+    }
+  ]
+}
