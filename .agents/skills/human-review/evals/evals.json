@@ -3,20 +3,20 @@
   "evals": [
     {
       "id": 1,
-      "prompt": "/human-review 첨부한 요청과 Todo 앱 전후 결과를 검토해줘. 완료 항목 정리와 로컬 저장이 구현됐는데 diff 전체는 못 보겠어. 실제 결과와 내가 소유해야 할 판단만 보여줘.",
-      "expected_output": "The response produces a minimal local visual handoff from the attached runnable HTML. Its first screen gives a whole-change summary including established excluded scope, routes the irreversible clear-completed consequence to the human, and opens the question on actual captured product states rather than a redrawn mock. It runs the finished review HTML using a method supported by the current harness and shares an address the user can open.",
+      "prompt": "/human-review 첨부한 요청과 Todo 앱 전후 결과를 검토해줘. 완료 항목 정리와 로컬 저장이 구현됐다고 들었는데 실제로 어떻게 바뀌었는지 이해하고 싶어. 전후 결과와 관련 코드를 살펴볼 수 있는 리뷰 HTML로 보여줘.",
+      "expected_output": "The review reconnects to the local-only tidy-up request and explains clearing and reload behavior with actual before/after observations. It discovers that the fixture writes storage but never restores the DOM, keeps that defect distinct from the intended deletion policy, and provides a runnable HTML review when requested.",
       "files": [
         "evals/fixtures/todo-request.md",
         "evals/fixtures/todo-before.html",
         "evals/fixtures/todo-after.html"
       ],
       "expectations": [
-        "The first screen uses three to five plain-language summary lines and explicitly states that team sharing and server sync did not change.",
+        "The opening reconnects to the tidy-up request, preserves the no-accounts/no-sync scope, and shows the failed restoration without implying the work is complete.",
         "It does not display review-time estimates, severity labels, scores, confidence, or file, line, and test counts.",
         "It shows the actual Todo result or a truthful captured replay before asking the reviewer to accept a consequence.",
         "It preserves the named source files, route, and observation environment with the evidence instead of hand-drawing the Todo UI.",
-        "Its evidence path accounts for local persistence and irreversible clearing even if only one becomes a human question.",
-        "Commands, checks, and implementation details stay behind one quiet evidence path.",
+        "It actually reloads after clearing: completed tasks reappear. It distinguishes writing localStorage from restoring the visible list, and does not claim irreversible persistent deletion was demonstrated.",
+        "Each behavior has nearby evidence and remains accessible even when it does not need a product decision.",
         "It runs the finished HTML using a method supported by the current harness and shares an address the user can open; a bare temporary file path is not the completed handoff.",
         "It does not add the temporary artifact to the product repository."
       ]
@@ -24,12 +24,12 @@
     {
       "id": 2,
       "prompt": "/human-review 첨부한 주문 응답 변경을 최종 검토해줘. 외부 파트너 계약과 내부 nullable 컬럼을 파일 유형이 아니라 실제 영향으로 나눠서 보여줘.",
-      "expected_output": "The review routes the public response commitment to the human and presents the attached observed request and response values. It accounts for the schema work but does not elevate the harmless nullable internal column merely because it is a database change.",
+      "expected_output": "The review routes the public response behavior to the human and presents the attached observed request and response values. It accounts for the schema work but does not elevate the harmless nullable internal column merely because it is a database change.",
       "files": [
         "evals/fixtures/orders-change.md"
       ],
       "expectations": [
-        "It selects questions by consequential commitment rather than by API and database file categories.",
+        "It selects questions by consequential behavior rather than by API and database file categories.",
         "It shows concrete before-and-after request and response values before explaining the contract risk.",
         "It shows representative migrated data and the observed rollback result in evidence when making migration claims.",
         "It does not ask for human judgment on the nullable internal column unless repository evidence reveals another consequence."
@@ -38,7 +38,7 @@
     {
       "id": 3,
       "prompt": "/human-review 첨부한 문서 내보내기 권한 테스트 결과를 실제 접근 경계부터 검토해줘.",
-      "expected_output": "The review treats the permission boundary as a human-owned commitment and opens the question on an observed principal-by-action access table before asking whether the boundary is acceptable.",
+      "expected_output": "The review shows the supplied principal-by-action access results and asks whether the resulting permission rule matches the intended product behavior. It distinguishes observed access from inferred intent.",
       "files": [
         "evals/fixtures/permissions-observed.csv"
       ],
@@ -52,7 +52,7 @@
     {
       "id": 4,
       "prompt": "/human-review 첨부한 invoice 리팩터링 replay를 보고 사람이 따로 결정할 게 있는지 보여줘.",
-      "expected_output": "The handoff summarizes the refactor and verified behavioral equivalence, then presents a truthful zero-question state instead of inventing a human decision solely because the diff is large.",
+      "expected_output": "The review explains how the refactor changes the calculation structure while preserving outputs. Supplied replay evidence remains accessible even with no unresolved product decision; the explanation does not end at a zero-question state.",
       "files": [
         "evals/fixtures/refactor-replay.md",
         "evals/fixtures/refactor-before.js",
@@ -61,7 +61,8 @@
       "expectations": [
         "It says that no unresolved product judgment remains when repository evidence supports equivalence.",
         "It keeps the replay and golden-test evidence available on demand.",
-        "It does not turn code size, complexity, or model uncertainty into a human review card."
+        "It does not turn code size, complexity, or model uncertainty into a human review card.",
+        "It shows a coherent before/after mechanism and allows independent inspection even though product intent is settled."
       ]
     },
     {
@@ -74,7 +75,7 @@
       "expectations": [
         "It treats the AI-authored completion statement as an unverified claim.",
         "It clearly separates directly observed local behavior from unavailable production evidence.",
-        "It records review disposition separately from evidence status for each changed commitment.",
+        "It records what needs explanation, a product choice, or repair separately from evidence status for each changed behavior.",
         "It does not ask the human to decide whether an unobserved factual behavior occurred; any human question instead concerns product intent or explicit release-risk acceptance.",
         "It does not fabricate a screenshot, delivery result, or passing end-to-end test.",
         "It states the missing evidence in the summary when it materially limits the outcome."
@@ -89,9 +90,9 @@
       ],
       "expectations": [
         "It presents no more than three active review questions in the current set.",
-        "It names every commitment deferred beyond the first three instead of using only an anonymous count.",
-        "It makes clear that deferred commitments come forward after earlier questions are resolved.",
-        "Each card asks one independent decision rather than bundling multiple commitments.",
+        "It names each product decision deferred beyond the first three while keeping all behavior explanations accessible.",
+        "It brings deferred decisions forward after earlier questions settle.",
+        "Each question concerns one independent choice rather than bundling unrelated decisions.",
         "The ordering is based on cost of error, reversibility, and limits of automated verification."
       ]
     },
@@ -106,7 +107,7 @@
         "It presents zero human questions because the intended product behavior is settled.",
         "It prominently states that the named change is not ready because the duplicate-charge defect is confirmed.",
         "It does not treat successful browser verification of the review surface as evidence that the product change is release-ready.",
-        "It classifies the defect as a mechanical issue in the coverage disposition rather than asking a human to accept it."
+        "It classifies the defect as a mechanical issue in the change list rather than asking a human to accept it."
       ]
     },
     {
@@ -126,7 +127,7 @@
       "expected_output": "The response does not present an incomplete template. It removes unused screens and patterns, replaces all placeholders, removes the template guard only after completion, and verifies the rendered artifact before claiming it is ready.",
       "files": [],
       "expectations": [
-        "The final artifact does not contain data-template=true or bracketed template placeholders.",
+        "The final HTML has no unfinished-template guard or bracketed placeholders.",
         "It does not claim browser verification before the browser checks actually run.",
         "It does not preserve unused inert result patterns in the delivered artifact."
       ]
@@ -134,7 +135,7 @@
     {
       "id": 10,
       "prompt": "/human-review 첨부한 계정 비활성화 변경을 검토해줘. 스펙에 적힌 목표뿐 아니라 구현이 새로 결정한 결과와 증거가 부족한 사실을 구분해서, 내가 판단할 것만 실제 결과부터 보여줘.",
-      "expected_output": "The review treats session revocation and permanent draft deletion as unresolved implementation-introduced commitments rather than consent implied by specification silence. It separates review disposition from evidence status, keeps the missing audit event mechanical, and does not turn unverified production propagation into a factual question for the human.",
+      "expected_output": "The review explains account deactivation and identifies session revocation and permanent draft deletion as choices the request left open. It keeps the missing audit event separate as a defect and production propagation separate as unverified behavior.",
       "files": [
         "evals/fixtures/account-deactivation-spec-gap.md"
       ],
@@ -143,8 +144,39 @@
         "It routes immediate session revocation and permanent draft deletion to independent human questions because the request left those material consequences open.",
         "It marks production SSO propagation unverified without asking the human to decide whether propagation occurred.",
         "It reports the missing audit event as a mechanical issue rather than an approval question.",
-        "Its coverage path records a review disposition and a separate evidence status for every changed commitment.",
+        "For every changed behavior it states what needs explanation, a product choice, or repair, separately from what was observed, inferred, or unverified.",
         "It shows observed results before asking the human to accept or change the unresolved consequences."
+      ]
+    },
+    {
+      "id": 11,
+      "prompt": "/human-review 다른 작업을 보고 돌아왔어. 첨부한 리뷰 기록과 그 뒤 변경을 보고 아까 하던 데서 이어가자. 짧게 설명해줘.",
+      "files": [
+        "evals/fixtures/export-review-return.md"
+      ],
+      "expected_output": "The response resumes at the download-link expiry question, shows the newly changed access rule, and carries over the unchanged CSV-column decision with its original scope. Earlier access results are stale for the new rule. Reading one section and saying OK do not establish approval.",
+      "expectations": [
+        "It reconnects to the export purpose and the recorded open expiry question without recapping everything.",
+        "It explains that former-member download access changed since export-v1 and cannot inherit the prior denial observation.",
+        "It preserves the explicit CSV-column decision and distinguishes merely opened sections from agreed behavior.",
+        "It labels export-v2 runtime behavior unverified and does not ask the human to decide whether the test passed.",
+        "It offers the next useful inspection and keeps other changed behaviors accessible; it does not impose HTML or acknowledgment checkpoints."
+      ]
+    },
+    {
+      "id": 12,
+      "prompt": "/human-review 승인할 내용은 없다고 들었는데 계산 구조를 내가 이해하고 넘어가고 싶어. 첨부한 변경에서 왜 결과가 같아지는지 전후로 짧게 보여줘.",
+      "files": [
+        "evals/fixtures/refactor-replay.md",
+        "evals/fixtures/refactor-before.js",
+        "evals/fixtures/refactor-after.js"
+      ],
+      "expected_output": "A concrete before/after calculation explanation with accessible source and accurately attributed replay evidence, not just a readiness or equivalence claim.",
+      "expectations": [
+        "It explains the mechanism using actual functions or expressions in the supplied source.",
+        "It does not invent a decision or stop because no decision is open.",
+        "It keeps the supplied replay distinct from checks actually rerun.",
+        "It uses concrete Korean wording and avoids unexplained process labels."
       ]
     }
   ]

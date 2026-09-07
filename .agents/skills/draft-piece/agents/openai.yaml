@@ -1,0 +1,4 @@
+interface:
+  display_name: "Draft Piece"
+  short_description: "Draft or correct a piece with confirmed writing criteria"
+  default_prompt: "Use $draft-piece to draft from this brief or correct this article, preserve confirmed reusable feedback, verify the applicable writing criteria and evidence, and preview when supported."

@@ -1,90 +1,116 @@
 ---
 name: human-review
-description: Turn a completed repository change into a minimal visual handoff for human judgment. Use when the user explicitly asks to inspect the actual outcome of substantial or consequential AI-authored repository work and decide how to handle unresolved product commitments or material consequences, including requests for a visual review when the whole diff is unreasonable to inspect. Summarize the outcome, show observed results, isolate consequential human decisions, and keep evidence on demand. Do not use for a change summary alone, automatic post-implementation review, a small ordinary diff, defect hunting alone, or non-repository content.
+description: Help a human understand and inspect completed AI-authored repository work through actual results, before-and-after explanations, and supporting evidence. Use when the user asks to understand the work before accepting it, examine assumptions beyond an AI summary, or resume a human review after switching tasks. Also use for explicit requests to judge unresolved product behavior. Ordinary change summaries, automated defect hunting, and non-repository content do not need this skill.
 ---
 
 # Human Review
 
-Protect human attention. Use automated evidence for mechanically checkable
-correctness; ask the human only about unresolved commitments or material
-consequences that require product intent, local context, or explicit risk
-acceptance.
+Make the work understandable enough for the human to examine it independently.
+Reduce the effort of remembering context, finding evidence, and connecting
+changes so the human can spend attention on understanding and judgment.
 
-## Establish trustworthy coverage
+## Reconnect to the work
 
-Read the request, repository instructions, current diff or named change, and any
-relevant specs or project decisions. Inspect the actual product and rerun the
-smallest checks needed to support each claim. Treat prior summaries as claims,
-never as proof. Review the completed work without fixing or broadening it.
+Read the request, applicable project decisions, spec when present, current diff,
+and available review history. Establish what the work was meant to achieve and
+which choices the human actually settled. Code shows what was implemented; it
+does not establish that the human intended every consequence.
 
-Before compressing, account for every changed product behavior, access or data
-boundary, external contract, and failure or recovery path. Include material
-implementation choices or consequences that the request and project decisions
-leave open; treat them as unresolved rather than settled. Give each commitment a
-review disposition—summary, human question, or mechanical issue—and an evidence
-status—observed, inferred, or unverified. Keep this coverage note behind the
-evidence path, but surface any release blocker or material unverified limit in
-the overview. This check exists because compression can otherwise make an
-omitted change invisible.
+Open with the purpose, the resulting change, and where to start looking. When
+prior review context exists, identify what changed since the revision the human
+last examined. Otherwise describe a fresh starting point. Infer familiarity
+only from the conversation, adjusting depth as the human asks or reveals gaps.
 
-Use results observed from the named change in a real runnable environment. Keep
-the change reference, route or command, and environment with the evidence. Never
-redraw an intended UI or manufacture representative output and label it observed;
-when the result cannot be captured safely, mark it unverified.
+Before compressing the change, account for each changed behavior, access rule,
+data effect, external interaction, and failure path. For each, distinguish what
+to explain, what needs a product decision, and any confirmed defect; separately
+record what was observed, inferred from source, or remains unverified. This
+prevents a concise explanation from silently omitting part of the change. Keep
+the complete list accessible and put blockers and consequential unknowns near
+the opening.
 
-Redact secrets and personal data without hiding the behavior under review. Never
-rerun a destructive production action merely to create evidence.
+## Show how the behavior changed
 
-## Find the human judgment
+Explain one coherent behavior at a time, connecting its trigger, before/after
+result, mechanism, and consequences. Keep its place in the whole change visible
+and let the human choose another part, including choices the AI considers
+settled. Organize by what happens rather than by file or implementation layer.
 
-Reason from commitments, not files or technical layers. Create a human question
-only when the answer is unresolved and would change implementation or release,
-or when an owner must supply product intent or local context or explicitly accept
-a material consequence or release risk. Reserve explicit acceptance for
-consequences that are costly if wrong, difficult to reverse, or whose
-acceptability cannot be decided by factual verification alone. Missing evidence
-alone is not a human question.
+Use the smallest representation that makes the relationship easy to inspect:
+actual UI captures, request/response values, a short source comparison, an access
+table, or a flow diagram. Put the relevant evidence beside the claim or behind
+an adjacent disclosure. Explain technical details when they help the human
+check how a result follows; keep the deeper source available on demand.
 
-Demonstrate commitments whose intent and relevant consequences the request or
-current project decisions explicitly settle without asking for approval again.
-Treat a material consequence left open or newly exposed by the implementation as
-unresolved. Keep routine defects, style, and internal refactors with demonstrated
-equivalence out of the human queue. Report confirmed defects as mechanical
-issues and expose blockers in the overview; do not turn them into approval
-questions.
+Inspect the actual product and run the smallest safe checks needed to support
+the explanation. Tie each observed result to the named revision or dirty diff,
+route or command, and environment. Identify supplied observations as supplied
+and preserve their provenance. Prior AI summaries are claims, not proof. Label
+source-derived conclusions and missing observations accurately; a mock or
+proposed screen is never an observed result. Redact secrets and personal data,
+and preserve the product while preparing the review.
 
-Present zero to three active independent questions in the current review set,
-ordered by cost of error, reversibility, and limits of direct evidence. Name
-every deferred commitment and bring it forward as earlier questions are
-resolved. Do not bundle independent commitments or use model confidence as
-evidence.
+Write in the human's language using concrete actions and outcomes. Name the
+actual question, changed behavior, or place to see the evidence instead of
+abstract process labels such as “unresolved commitments,” “review disposition,”
+or “evidence path.” Keep necessary technical names and explain unfamiliar ones
+in context. Omit time estimates, severity codes, scores, and file/test counts
+that do not help examine the behavior.
 
-## Build the review surface
+## Support judgment without substituting for it
 
-Copy [assets/review.html](./assets/review.html) to a temporary location outside
-the repository and follow the presentation contract embedded there. Leave
-product source unchanged, keep the artifact free of network dependencies, and do
-not commit it.
+Invite examination at consequential assumptions or boundaries, not an
+acknowledgment after every explanation. A question should expose a real choice
+and what each answer changes. Do not invent a product decision because evidence
+is missing, a diff is large, or a confirmed defect needs repair.
 
-Render the finished artifact in a browser. Exercise every review-surface route,
-disclosure, comparison or replay, and relevant narrow viewport before presenting
-it. Run the finished HTML using a method supported by the current harness and
-share an address the user can open. Return one preview image when the host
-supports it. If no browser path works, report the surface as an unverified draft.
-Browser verification is a completion gate for the surface, not the underlying
-change. Preserve every product blocker and unverified result after the surface
-passes.
+Keep at most three unresolved product decisions active and name every deferred
+decision so it can follow as earlier ones settle. Start with choices whose
+consequences are costly or hard to reverse. This limit applies to
+decisions, not to the work the human can inspect. With no open product decision,
+still explain the behavior and make its evidence available; say separately
+whether defects or missing observations prevent a readiness claim.
 
-## Keep ownership human
+Treat a choice as settled only when the human explicitly states it in
+conversation. Opening a section, reading, silence, and a general acknowledgment
+are not acceptance. Preserve reusable confirmed decisions through the project's
+existing decision process; temporary review pages and notes are not that record.
 
-Open on the overview, then focus the conversation on the first active unresolved
-question. Treat a question as resolved only after the user states a choice in the
-conversation. Restate the choice and its consequence, then move to the next
-unresolved commitment and bring deferred commitments forward. When none remains,
-say what closed each question: governing decisions, direct evidence, or an
-explicit human choice. Do not treat silence, navigation, or an AI recommendation
-as approval.
+## Leave a usable return point
 
-Keep the temporary surface non-authoritative. When a choice must constrain future
-work, identify the need for canonical preservation and write it only through the
-repository's established decision process and authorization.
+When review pauses or the human switches tasks, preserve a concise note in the
+conversation, or beside a temporary review artifact when a portable handoff is
+useful. Include the source revision and any dirty changes, retaining the relevant
+diff or snapshot when uncommitted edits are part of that source. Record the parts
+actually examined, the human's expressed decisions or questions, what remains open, and
+the next useful action. Link the note and its source evidence so another session
+can pick it up. Keep observed navigation separate from expressed understanding
+and acceptance; if none is known, say so.
+
+On return, compare the current work with the recorded source before reusing
+earlier observations. Point out what needs another look and why, preserve
+unaffected discussion, and resume at the open question. If the earlier source
+cannot be recovered, say which comparison is unavailable rather than claiming
+the review is current. Before handing off any review, provide a next starting
+point without pretending the human has already examined it.
+
+## Deliver a review the human can use
+
+Keep simple explanations in conversation. When comparison, navigation, or
+continued review benefits from HTML, adapt [assets/review.html](assets/review.html)
+outside the repository. It provides context, a map of behaviors, before/after
+sections, nearby evidence, and an optional return note. Translate labels,
+replace placeholders, and remove unused sections; the template is a starting
+point, not a compulsory screen for every change.
+
+For HTML, exercise navigation, comparisons, disclosures, and a narrow viewport
+in a browser. Fix incomplete content or broken controls before calling the
+surface ready. If browser verification is unavailable, state that limitation.
+Run the finished HTML using a method supported by the current harness and share
+an address the user can open, plus a preview when supported. Keep the server
+available for review. Browser verification establishes that the review surface
+works, not that the underlying product is correct or approved.
+
+A successful handoff supports explaining the behavior, inspecting an assumption
+the AI did not flag, and resuming after a switch. Do not claim improved human
+understanding merely because the page renders or the human grants approval.

@@ -1,6 +1,6 @@
 ---
 name: implement
-description: Implement or resume settled work from a selected spec folder. Use when the user provides a `docs/specs/SLUG/` folder and wants its settled spec or approved tasks completed in the current checkout with verification, one triaged pass of the current harness's automated code-review process, and a runnable product handoff when the repository exposes one through a local server.
+description: Implement or resume settled work from a selected spec folder. Use when the user provides a `docs/specs/SLUG/` folder and wants its settled spec or approved tasks completed in the current checkout with verification, one completed and triaged automated code review, and a runnable product handoff when the repository exposes one through a local server.
 ---
 
 # Implement
@@ -113,22 +113,52 @@ the file. When the core loop admits materially different journeys, preserve the
 current evidence and return that product interpretation for clarification; it
 is distinct from approval of the verification method.
 
-## Review the whole diff once, then triage
+## Complete one review of the whole diff, then triage
 
-After every outcome passes reconciliation and the complete verification, run
-the harness's automated code review once over the whole diff against the spec
-and its acceptance criteria. Retry a model-invocable reviewer that only an
-earlier session rejected. Choose the depth this change warrants from the modes
-you can invoke yourself, weighing what it touches against what verification
+After every outcome passes reconciliation and the complete verification, obtain
+one completed automated code review of the whole implementation diff against
+the spec and its acceptance criteria. Count a pass only when the reviewer
+finishes inspecting the intended scope and returns findings or an explicit
+no-findings result. An invocation, partial output, or silent exit is not that
+result. Skip a required review only when the user explicitly waives it, and
+record the waiver's scope.
+
+Use a reviewer the current harness lets you invoke. A prior session's user-only
+restriction does not establish current availability; check it again. Choose
+the depth this change warrants from the modes you can invoke yourself, weighing
+what it touches against what verification
 already settles, and name it, since a harness given no mode may reuse an
 earlier one. A deeper mode reserved for the user is something to offer, not to
 select. Take the harness's standard mode when nothing argues either way:
 `code-review medium` in Claude Code, while Codex has no dial. Wherever the
 reviewer accepts context, give it the spec's approved scope, off-limits areas,
 and remaining risks, so it does not re-argue settled trade-offs. Check the
-findings against the diff you meant to review: paths the change does not
-contain mean the reviewer read another target, so that pass is not spent —
-retarget it and run it once.
+reviewer's reported scope against the diff you meant to review. Findings about
+another target require retargeting, not repairs; that pass is not spent.
+
+For a review backed by a model service, identify the actual service and the
+diff, spec, and related source context it will receive. Carry applicable user
+authorization into the execution request and reuse it without asking again.
+Read-only describes file access, not whether context leaves the machine. If
+the service or source scope exceeds that authorization, request only the
+missing authority; a skill instruction is not itself a grant of permission.
+
+Recover command, compatibility, environment, and transient failures within the
+authorized scope and retry. Failed or mistargeted attempts do not consume the
+pass. Distinguish an explicit policy denial from those execution errors:
+preserve its rationale, pursue only a materially safer permitted alternative,
+or request the specific authority needed before retrying. Do not route the
+same denied action through another tool or service to bypass the denial.
+For a model-invocable reviewer blocked by missing user permission, establish the
+actual service and source scope, then ask for that permission. A confirmed
+manual command is not a substitute for resolving the missing authority.
+
+When review cannot finish because of permissions, a user-only or absent
+reviewer, or an unresolved execution failure, keep overall completion pending.
+Preserve verified outcomes, provide their evidence and runnable handoff, and
+name the exact blocker and next required action. Offer a user command only
+when the active harness confirms it. For a declared intermediate checkpoint,
+dependent work also waits for its review or explicit waiver.
 
 Repair a finding only when it breaks an approved acceptance criterion, or is a
 defect or regression you confirm by reproducing it on a path ordinary use
@@ -149,13 +179,12 @@ the handoff; and a material consequence the spec leaves open, such as a security
 trade-off or a pathological-input failure, as a decision the user owns, with
 `human-review` offered for judging it.
 
-The review is evidence in the handoff, not a completion condition. Completion
-needs the acceptance criteria, reconciliation, and verification to pass on the
-executable revision being handed off, and the must-fix findings repaired and
-reverified. Report what the pass produced, what it changed, and what it left
-open. When the reviewer is user-only, rejected, errors, times out, or does not
-exist, say so and still report the verified work as complete, offering only a
-command the active session confirms.
+Completion needs the acceptance criteria, reconciliation, and verification to
+pass on the executable revision being handed off, each required review to have
+completed or been explicitly waived by the user, and the must-fix findings
+repaired and reverified. A completed review may leave recorded findings; zero
+findings is not the gate. Report the reviewed scope, result or explicit waiver,
+what changed, and what remains open.
 
 ## Hand off the runnable product
 

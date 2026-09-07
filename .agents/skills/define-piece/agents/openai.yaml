@@ -1,0 +1,4 @@
+interface:
+  display_name: "Define Piece"
+  short_description: "Settle one piece's brief before drafting"
+  default_prompt: "Use $define-piece to settle this topic one decision at a time and write its brief for drafting."
