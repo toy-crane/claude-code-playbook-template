@@ -1,0 +1,23 @@
+<!doctype html>
+<html lang="ko">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>알림 설정</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <main class="settings">
+      <header class="settings__header">
+        <h1>알림 설정</h1>
+        <p class="settings__lead">어떤 알림을 어디로 받을지 고릅니다.</p>
+      </header>
+      <section id="channels" class="channels"></section>
+      <footer class="settings__footer">
+        <button id="save" class="button button--primary" type="button">저장</button>
+        <span id="status" class="status" role="status" aria-live="polite"></span>
+      </footer>
+    </main>
+    <script type="module" src="settings.js"></script>
+  </body>
+</html>
