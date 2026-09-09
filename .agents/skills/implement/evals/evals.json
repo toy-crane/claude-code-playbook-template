@@ -72,7 +72,7 @@
       "expected_output": "The response implements the approved spec through the tdd skill at the pre-agreed Checkout API seam, then completes verification and one final automated review pass.",
       "files": [],
       "expectations": [
-        "It uses the tdd skill because the behavior has a pre-agreed public seam.",
+        "It uses the tdd skill because the behavior can be verified through a public seam.",
         "It uses the approved Checkout API seam without inventing an implementation-only test boundary.",
         "It still completes the required verification and one automated review pass.",
         "It does not open a review round after each refactor."
@@ -584,6 +584,45 @@
         "Keep overall completion pending and preserve verified outcomes.",
         "Ask for permission naming OpenAI and the three source categories.",
         "Do not substitute the available manual command or bypass the denial."
+      ]
+    },
+    {
+      "id": 48,
+      "prompt": "/implement docs/specs/mobile-library/를 구현해줘. spec.md는 승인된 prototype.html과 세 개의 관련 결정 문서를 링크하고, 프로토타입에는 상세 표지와 카드 안의 `계속 읽기`를 포함한 화면별 상태가 남아 있어. iOS와 Android 모두 완료 범위야.",
+      "expected_output": "Before implementation, the response loads the selected folder as one handoff bundle, including the spec, active tasks, explicitly linked decisions, and approved prototype. It verifies each affected screen and state against the prototype on both claimed platforms and gives the same handoff sources to the whole-diff reviewer.",
+      "files": [],
+      "expectations": [
+        "It identifies and reads spec.md, every active task, and all explicitly linked decision contracts, and it renders or otherwise inspects the approved prototype before deriving the implementation approach or editing source.",
+        "It treats the prototype as the concrete visual and state reference without allowing it to silently replace an explicit product contract.",
+        "It compares the actual detail cover, the containment of `계속 읽기` inside its card, and every applicable screen state rather than checking only that those elements exist or that navigation succeeds.",
+        "It obtains separate actual-screen evidence from iOS and Android at the same applicable prototype screens and states before claiming both platforms.",
+        "It preserves each platform's intended layout and native conventions instead of requiring pixel-identical iOS and Android rendering.",
+        "It supplies the whole-diff reviewer with the spec, active task contract, linked decisions, and approved prototype or their repository paths.",
+        "It does not report completion while a required handoff source remains uninspected or an applicable acceptance or prototype criterion remains uncompared."
+      ]
+    },
+    {
+      "id": 49,
+      "prompt": "/implement docs/specs/account-recovery/를 구현해줘. spec.md는 복구 완료 화면에 이메일 주소를 표시하지 않는다고 명시하지만, 링크된 승인 prototype.html은 같은 화면에 이메일 주소를 표시해. 어느 쪽을 따를지는 따로 정하지 않았어.",
+      "expected_output": "The response loads both required handoff sources, records the exact screen-state conflict, and keeps the affected outcome and dependents blocked for a shaping decision instead of choosing either source or reopening the product decision itself.",
+      "files": [],
+      "expectations": [
+        "It recognizes the explicit spec and approved prototype as complementary handoff sources that disagree at one exact screen and state.",
+        "It does not silently prioritize the prototype or discard its visual criterion because spec.md is the product-contract anchor.",
+        "It preserves the current artifacts and evidence and reports the exact conflicting email-address treatment.",
+        "It keeps the affected outcome and dependent work blocked until the product conflict is settled through shaping."
+      ]
+    },
+    {
+      "id": 50,
+      "prompt": "/implement docs/specs/export-cli/를 구현해줘. spec.md와 활성 task는 출력 형식 결정 문서만 링크하고, 승인된 프로토타입이나 화면·상태 자료는 없어.",
+      "expected_output": "The response loads the non-visual handoff bundle and completes CLI behavior, runtime verification, acceptance reconciliation, and whole-diff review without inventing prototype or screen comparison work.",
+      "files": [],
+      "expectations": [
+        "It reads the spec, active task, and explicitly linked output-format decision as the required handoff.",
+        "It derives CLI runtime evidence from the command behavior and acceptance criteria.",
+        "It does not add a visual prototype, screenshot, viewport, or platform-screen comparison gate when the handoff contains no approved visual reference.",
+        "It still enforces every applicable acceptance criterion and the normal whole-diff review gate."
       ]
     }
   ]

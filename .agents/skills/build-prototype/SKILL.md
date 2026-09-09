@@ -1,12 +1,20 @@
 ---
 name: build-prototype
-description: Build a self-contained dummy-data HTML prototype covering every screen and relevant state of a web, mobile-web, or native-app surface. Use when the user wants to review and settle a complete screen-based product or feature before implementation, especially when prose or isolated variants cannot resolve cross-screen structure. Do not use for production implementation or CLI, terminal, or voice interfaces.
+description: Build a complete dummy-data HTML prototype or a temporary comparison of up to three alternatives for a specific user situation. Use to settle a screen-based product before implementation or resolve a visual or interaction decision during shaping or prototype review. Do not use for production implementation or CLI, terminal, or voice interfaces.
 ---
 
 # Build Prototype
 
 Build a disposable but finished-looking model of the whole surface so the user
 can settle structure, relationships, and behavior before implementation.
+
+Separate the product layer from the decision layer: `prototype.html` holds the
+canonical product screens and flows; a temporary `compare.html` resolves the
+user's current question in its specific situation. Scope the comparison by what
+the decision needs, whether a component, a screen, or a short flow.
+For a local comparison request, go directly to **Compare one decision** and
+limit building and verification to that decision. The whole-surface inventory,
+review, and preservation gates apply to the prototype, not to this intermediate.
 
 ## Set the effort
 
@@ -21,18 +29,14 @@ share an address the user can open. Hold this gate fixed at `standard`.
 
 - `standard` uses the base gate as its complete result.
 - `high` passes the same base gate, then adds close visual matching to an
-  inspectable current product or reference. Broaden the search for mismatches,
-  independently reproduce each material candidate, correct verified mismatches,
-  and recheck affected screens until none remain. When the host supports
-  subagents, delegate the audit to one fresh reviewer subagent at high model
+  inspectable current product or reference through **Review and converge**.
+  When the host supports subagents, delegate the audit to one fresh reviewer
+  subagent at high model
   effort and give it the reference and candidate artifact without the builder's
   findings. Otherwise separate the build and verification passes and report
   that reviewer independence or model effort was unavailable. If no reference
   can be inspected, report that visual equivalence is unverified and use the
   extra pass only to strengthen layout robustness.
-
-The selected effort changes additional reference verification, not prototype
-completeness, interaction correctness, browser coverage, or visual finish.
 
 ## Ground the prototype
 
@@ -96,16 +100,34 @@ layout and interaction recovery with realistic long or awkward content. Give
 each material mismatch candidate its exact coordinate, observed evidence, and
 reproduction path. Have the fresh reviewer subagent reproduce candidates when
 one is available, discard those that do not reproduce, and correct the verified
-set.
+set until no reproduced material mismatches remain.
 After a correction, re-render its coordinate and the other screens or states
 that share the changed token, component, or shell behavior. Report the audited
 coverage and any unverified coordinates or fidelity claims in the conversation.
 
-For an unresolved detail, render two or three variants that differ only on that
-question. Hold content, data, surrounding layout, behavior, and every confirmed
-element fixed. Keep these disposable comparisons outside the product screen and
-state selectors. Let the user choose, fold the winner into the canonical file,
-and discard the other variants.
+## Compare one decision
+
+For one unresolved visual or interaction decision, copy
+[templates/comparison-shell.html](./templates/comparison-shell.html) into a
+temporary `compare.html`. Name the concrete user situation and render up to
+three alternatives with just enough context to judge it. A fragment may be
+sufficient; a flow may need several related views. This scope is independent of
+the prototype's screen inventory. Build comparisons when a decision arises,
+not once per product screen, and keep unrelated product work in the prototype.
+
+Preserve the template's styling and contract comment, which owns the comparison
+controls and keeps product navigation inside its alternative. Hold content,
+data, surrounding layout, behavior, and confirmed elements fixed except for the
+governing choice. Render and verify only the interactions, states, and sizes
+needed to judge it, then share the runnable comparison and ask for the choice.
+
+Once the user chooses, apply that result to the affected product UI and flow in
+the same `prototype.html` and verify the affected behavior there. Delete the
+temporary comparison after integration, then resume the prototype review or
+shaping session. Create a fresh comparison for the next decision; do not collect
+past comparisons or promote `compare.html` into the final deliverable. If the
+prototype has not been built yet, record the choice and discard the comparison
+without building the whole product just to demonstrate integration.
 
 ## Preserve the approved result
 

@@ -51,10 +51,12 @@
       "files": [],
       "expectations": [
         "It renders two or three variants differing only on the contested treatment.",
+        "It uses templates/comparison-shell.html for one temporary compare.html containing only the home screen context needed for the grid-versus-list decision, without rebuilding the full product or collecting other screen comparisons.",
+        "It keeps the original shell styling while separating the decision layer: the situation label supplies context and variant, state, and viewport controls operate independently of the product's screen inventory.",
         "Confirmed screens, content, data, surrounding layout, and behavior stay fixed across the variants.",
         "The variants remain disposable comparisons outside the product screen and state selectors; the canonical prototype keeps one version of the home screen.",
         "It requests the user's reaction as the answer instead of arguing the choice in prose.",
-        "It folds the chosen variant back into the single prototype file."
+        "Once the user chooses, it integrates the result into the existing prototype, verifies the affected behavior there, deletes the temporary comparison, and resumes the enclosing review."
       ]
     },
     {
@@ -240,6 +242,81 @@
         "It does not present the device-time-zone default as a confirmed outcome, settled constraint, or observable acceptance criterion.",
         "It preserves the approved activity-log outcomes, scope, acceptance criteria, and linked prototype.",
         "It keeps deferrals and remaining risks distinct from the labeled assumption."
+      ]
+    },
+    {
+      "id": 18,
+      "prompt": "/build-prototype 기존 글 상세 화면에서 저장 버튼을 누른 직후 피드백만 비교해줘. 버튼 문구를 바꾸는 안, 토스트를 띄우는 안, 버튼 아래 안내를 넣는 안 중에 고르려는 거야. 다른 화면이나 전체 프로토타입은 만들지 말고 이 상황만 보여줘.",
+      "expected_output": "The response builds one temporary compare.html for the save-feedback decision, using only the action area and enough article context to judge the three treatments. It keeps the decision layer independent of product screens and makes save and undo work in each alternative.",
+      "files": [],
+      "expectations": [
+        "The comparison contains only the requested save-feedback situation with A/B/C alternatives; it does not generate a full article screen, library, settings, or a companion full prototype just to explain the layers.",
+        "The shell uses a situation label and variant, state, and viewport controls rather than a product screen inventory or a disabled one-screen selector.",
+        "Each alternative changes only the feedback treatment, and saving and undoing are working interactions rather than one-click state presets.",
+        "The selected outcome remains unconfirmed until the user chooses; it does not fabricate a winner or perform an illustrative integration without a request.",
+        "After an actual choice, it integrates that outcome into the existing product prototype, verifies the affected behavior, and discards the comparison."
+      ]
+    },
+    {
+      "id": 19,
+      "prompt": "/build-prototype 초대 링크를 처음 열었는데 로그인하지 않은 상황만 비교하자. A는 로그인 후 초대 내용을 보여주고 B는 초대 내용을 먼저 보여준 다음 수락할 때 로그인해. 각각 이 짧은 흐름을 직접 눌러 보고 싶어. 나머지 서비스 화면은 필요 없어.",
+      "expected_output": "The response builds one comparison for the invitation-entry decision. Each alternative contains the related invitation and sign-in views needed for its short flow without expanding to the service's full screen set or enforcing an exactly-one-screen rule.",
+      "files": [],
+      "expectations": [
+        "The comparison hierarchy is the situation and its alternatives, not product screens each containing their own variants.",
+        "Each alternative can navigate between only the related sign-in and invitation views and recover to its start.",
+        "It neither rejects the multi-view situation nor flattens it into a static single screen to satisfy a fixed screen-count constraint.",
+        "It holds invitation content and confirmed behavior fixed while varying only when sign-in occurs.",
+        "It leaves unrelated service screens out and keeps comparison choices out of the canonical prototype's screen inventory."
+      ]
+    },
+    {
+      "id": 20,
+      "prompt": "compare.html에서 알림을 끄는 순간의 확인 표현을 비교했고 B로 확정했어. 이제 이 비교를 마무리해줘. 현재 프로젝트에는 compare.html만 있고 prototype.html은 아직 없어. 이전 대화는 남아 있지 않으니 compare.html에 보존된 계약을 기준으로 처리해줘.",
+      "expected_output": "Using the contract preserved in compare.html, the response records the chosen behavior for the later prototype build and discards the finished comparison. It neither invents an existing integration target nor builds a complete prototype just to close this decision.",
+      "files": ["evals/fixtures/compare-resume/compare.html"],
+      "expectations": [
+        "The comparison contract independently handles the absence of prototype.html without relying on a remembered SKILL.md exception.",
+        "It records the confirmed B behavior and closes the local comparison without creating unrelated product screens or a new prototype.",
+        "It discards the temporary comparison after recording the choice and resumes the enclosing work.",
+        "It does not claim integration or runtime verification in a prototype that does not exist."
+      ]
+    },
+    {
+      "id": 21,
+      "type": "multi_turn",
+      "prompt": "/build-prototype 글 상세에서 저장을 누른 직후 표현만 비교해줘. A는 버튼을 '저장됨'으로 바꾸고, B는 버튼 아래에 '보관함에 저장했어요.'와 '실행 취소'를 계속 보여주고, C는 같은 안내와 실행 취소가 있는 토스트를 4초 보여줘. B와 C의 버튼 문구는 '저장'으로 유지해. 아직 전체 프로토타입은 필요 없고 이 상황만 눌러보고 싶어.",
+      "expected_output": "Across three separately dispatched turns, the agent creates a bounded comparison, records the user's B choice and removes the comparison without creating a prototype, then a fresh agent builds a new canonical prototype from only the surviving project files. The new detail screen preserves B's persistent inline feedback and working undo, and the library reflects saving and undoing.",
+      "files": ["evals/fixtures/compare-to-prototype/project.md"],
+      "turns": [
+        {
+          "id": "compare",
+          "context": "fresh",
+          "prompt_source": "prompt",
+          "checkpoint": "Verify the runnable comparison and all three feedback treatments before delivering the choice. No prototype.html or docs/specs exists. Keep an evidence snapshot outside the executor's project."
+        },
+        {
+          "id": "choose",
+          "context": "same_agent",
+          "prompt": "B로 할게. 저장 안내와 실행 취소가 버튼 아래에 계속 남는 게 좋겠어. 이 비교는 여기서 마무리해줘. 전체 프로토타입은 나중에 만들자.",
+          "checkpoint": "The actual generated project files record B's concrete behavior. compare.html is deleted, and no prototype.html or docs/specs has been created. Preserve the executor's files exactly for the next turn."
+        },
+        {
+          "id": "prototype",
+          "context": "fresh_agent_files_only",
+          "prompt": "/build-prototype 프로젝트에 남아 있는 메모를 기준으로 읽을거리 앱 전체 프로토타입을 만들어줘. 보관함, 글 상세, 설정 화면이 필요해. 보관함이 비어 있을 때도 확인하고 싶고, 저장과 실행 취소가 보관함에 반영되는지도 직접 눌러보고 싶어. 이전 대화는 볼 수 없으니 현재 파일을 확인해서 이어서 진행해줘.",
+          "checkpoint": "Run a genuinely fresh agent with the skill, current project files, and only this prompt. Do not supply earlier prompts, responses, deleted HTML, or the chosen behavior. Exercise the new prototype and compare the observed behavior against the external evidence from the earlier turns."
+        }
+      ],
+      "expectations": [
+        "The first turn creates only the requested comparison with A/B/C alternatives and working save and undo, without whole-product screens or a companion prototype.",
+        "The choice turn records B as persistent inline confirmation below the unchanged save button, with working undo; recording only the option letter does not pass.",
+        "After the choice turn, compare.html is absent and no prototype or durable spec has been created just to close the comparison.",
+        "The final turn runs in a fresh agent that receives only surviving project files and the final prompt; the evaluator does not inject or repair the decision record.",
+        "The new prototype contains one canonical library, article detail, and settings screen with product screen, state, and viewport controls; comparison alternatives and controls do not reappear.",
+        "Saving in the new detail screen keeps the button label unchanged and shows the chosen inline confirmation and undo below it. The confirmation remains after more than four seconds; neither a changed-label alternative nor a transient toast replaces it.",
+        "Undo removes the confirmation and saved article; saving again adds the article to the library, and navigation preserves the resulting saved state.",
+        "The executor verifies the requested screens, the empty-library preset and recovery, and the 390, 768, and full viewports, then supplies a runnable address while keeping the product review open and docs/specs absent."
       ]
     }
   ]

@@ -1,0 +1,252 @@
+<!--
+  comparison shell: a decision layer for one user situation, up to three alternatives.
+
+  Copy this template to a temporary compare.html and keep this comment in it.
+  Once the user chooses, integrate the choice into the existing prototype.html
+  and verify it there. If no prototype exists, record the choice for its later
+  build instead. Then delete this comparison and start fresh for the next
+  decision; the full screen inventory belongs only in the canonical prototype.
+
+  Contract (separate the decision layer from the product layer):
+  - Product:  Each .sh-stage contains only end-user product UI. Keep review notes,
+               rationale, instructions, and approval controls in conversation.
+  - Situation: Put the concrete user situation in .sh-workspace's data-question.
+               Include only the context needed to judge the current question:
+               a component, a screen, or related views in a short flow. There
+               is no product screen inventory or fixed screen count here.
+               Any needed product navigation belongs inside its alternative.
+  - Variants: .sh-workspace contains one direct .sh-options row with one to three
+               direct children carrying unique data-variant="a" and data-title="A".
+               Put each alternative's product UI in its own .sh-stage. The
+               shell adds labels outside product pixels and an All / A / B / C
+               menu using the supplied titles. One alternative hides the menu.
+               Scope interactions to their alternative and keep DOM IDs unique.
+               Use comparisonShell.setVariant("a") or setVariant("all") to switch.
+               Switching alternatives preserves the selected state and viewport.
+  - States:   "Default" is automatic. .sh-workspace declares only representative
+               presets in data-states="Empty,Error". Use natural, situation-specific
+               names. Reserve presets for important multi-step results, forced
+               data or errors, or materially different structure; keep one-click
+               and transient states as interactions. Use data-when="Empty" on
+               preset-only elements. Call comparisonShell.setState("Name") on
+               entry and setState("Default") on exit, including when repeated
+               actions cross a preset condition.
+               Declare only presets needed for this decision; a selected preset
+               applies to all its alternatives, including hidden ones.
+  - Viewport: "vp (m)" cycles full / 390 / 768. The 390 preset is a
+               fixed-height, internally scrolling phone frame. Start a
+               mobile-first prototype by adding class="sh-vp-390" to <body>
+               (or a bootstrap classList.add before the chrome script runs).
+               In comparisons, 390 and 768 apply to each alternative separately.
+               Keep those widths and scroll horizontally when they do not fit.
+               The full preset shares available space across the alternatives.
+  - Pinning:  keep in-frame bars (tab bars, CTAs) inside the phone with
+               position: sticky; position: fixed pins to the browser window.
+  - Tokens:   replace the project-tokens block with project tokens copied
+               verbatim. Map differing names to --background, --foreground, and
+               --font afterwards; replace network fonts with a system stack and
+               note that substitution. Without a design system, keep this
+               palette as the finished style.
+  - Placeholders: .wf-pic stands in for pictures the prototype has no real
+               files for. Use real text everywhere text belongs.
+
+  - Chrome:   Reuse the prototype shell's styling, state control, and viewport
+               cycle. Replace the product screen selector with the situation
+               label and variant selector; All shows alternatives together and
+               an individual option shows that alternative alone. Scope by the
+               question, not by an obligation to compare every product screen.
+
+  Self-contained by design: no build, no framework, no network.
+-->
+<meta charset="utf-8">
+<title>Compare</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<style>
+  /* ── project tokens: the project's own, or this minimal set as-is ── */
+  :root {
+    --background: #f6f6f6;
+    --surface: #ffffff;
+    --foreground: #3a3a3a;
+    --muted: #9a9a9a;
+    --line: #dcdcdc;
+    --accent: #6b6b6b;
+    --radius: 6px;
+    --font: system-ui, sans-serif;
+  }
+
+  /* ── review chrome (sh-*): keep; extend product styles elsewhere ── */
+  * { box-sizing: border-box }
+  body {
+    margin: 0; padding: 0 0 40px;
+    background: var(--background, #f6f6f6); color: var(--foreground, #3a3a3a);
+    font-family: var(--font, system-ui, sans-serif);
+  }
+  .sh-bar {
+    position: sticky; top: 0; z-index: 999;
+    display: flex; gap: 10px; align-items: center; flex-wrap: wrap;
+    padding: 8px 12px; background: #191a1c; color: #d7d7d7;
+    font: 12px/1.5 ui-monospace, SFMono-Regular, Menlo, monospace;
+  }
+  .sh-bar b, .sh-control-label { color: #8a8f98; font-weight: 500 }
+  .sh-control { display: inline-flex; gap: 5px; align-items: center }
+  .sh-bar button {
+    border: 1px solid #3a3d42; background: none; color: inherit;
+    font: inherit; padding: 2px 9px; border-radius: 99px; cursor: pointer;
+  }
+  .sh-bar select {
+    width: 170px; border: 1px solid #3a3d42; background: #232428; color: inherit;
+    font: inherit; padding: 3px 28px 3px 9px; border-radius: 7px; cursor: pointer;
+    color-scheme: dark;
+  }
+  #sh-question { overflow-wrap: anywhere; max-width: 100% }
+  .sh-bar button.on { background: #d7d7d7; color: #191a1c; border-color: #d7d7d7 }
+  .sh-spacer { flex: 1 }
+  .sh-stage { max-width: 960px; margin: 0 auto; padding: 12px 16px 0 }
+  [hidden] { display: none !important }
+
+  /* comparisons: the product stages retain the original shell styling */
+  .sh-workspace { overflow-x: auto }
+  .sh-options { display: flex; gap: 16px; justify-content: safe center; align-items: flex-start }
+  [data-variant] { flex: 1 0 300px; max-width: 960px; min-width: 0 }
+  .sh-variant-label { margin: 12px 16px 0; color: var(--muted); font: 12px/1.5 ui-monospace, SFMono-Regular, Menlo, monospace }
+  .sh-vp-390 [data-variant] { flex: 0 0 390px }
+  .sh-vp-768 [data-variant] { flex: 0 0 768px }
+
+  /* viewport presets */
+  .sh-vp-390 .sh-stage {
+    max-width: 390px; background: var(--background, #f6f6f6);
+    border: 10px solid #191a1c; border-radius: 28px;
+    padding: 16px 12px; height: min(844px, calc(100dvh - 52px));
+    overflow-y: auto; margin-top: 12px;
+  }
+  .sh-vp-768 .sh-stage {
+    max-width: 768px; border: 1px solid #c4c4c4; border-radius: 12px;
+    padding: 16px; margin-top: 12px;
+  }
+
+  /* placeholders */
+  .wf-pic  { border-radius: 4px; background:
+             repeating-linear-gradient(45deg, #e9e9e9, #e9e9e9 6px, #f2f2f2 6px, #f2f2f2 12px) }
+</style>
+
+<header class="sh-bar">
+  <b>compare</b>
+  <span id="sh-question"></span>
+  <label class="sh-control" id="sh-variant-control"><span class="sh-control-label">variant</span><select id="sh-variant"></select></label>
+  <span class="sh-spacer"></span>
+  <label class="sh-control"><span class="sh-control-label">state</span><select id="sh-state"></select></label>
+  <button id="sh-vp">vp: full (m)</button>
+</header>
+
+<main class="sh-workspace" data-question="알림을 끈 직후">
+  <div class="sh-options">
+    <div data-variant="a" data-title="A · 버튼 문구"><div class="sh-stage"><h1>알림 설정</h1><button onclick="this.textContent=this.textContent==='알림 끄기'?'알림 꺼짐':'알림 끄기'">알림 끄기</button></div></div>
+    <div data-variant="b" data-title="B · 버튼 아래 안내"><div class="sh-stage"><h1>알림 설정</h1><button aria-pressed="false" onclick="const off=this.getAttribute('aria-pressed')!=='true';this.setAttribute('aria-pressed',String(off));this.nextElementSibling.hidden=!off">알림 끄기</button><p role="status" hidden>알림을 껐어요. 이 설정에서 다시 켤 수 있어요.</p></div></div>
+  </div>
+</main>
+
+<script>
+  const stage = document.querySelector('.sh-workspace');
+  const stateSelect = document.getElementById('sh-state');
+  const variantSelect = document.getElementById('sh-variant');
+  const variantControl = document.getElementById('sh-variant-control');
+  const vpBtn = document.getElementById('sh-vp');
+  function fail(message) {
+    const notice = document.createElement('p');
+    notice.setAttribute('role', 'alert');
+    notice.textContent = message;
+    stage.replaceChildren(notice);
+    document.querySelectorAll('.sh-bar select, .sh-bar button').forEach(control => control.disabled = true);
+    throw new Error(message);
+  }
+
+  const question = (stage.dataset.question || '').trim();
+  if (!question) fail('Name the user situation in data-question.');
+  document.getElementById('sh-question').textContent = question;
+
+  const rows = [...stage.querySelectorAll(':scope > .sh-options')];
+  if (rows.length !== 1) fail('Use one alternatives row for the current decision.');
+  const currentVariants = [...rows[0].children].filter(node => node.matches('[data-variant]'));
+  const ids = currentVariants.map(variant => variant.dataset.variant.trim());
+  if (currentVariants.length < 1 || currentVariants.length > 3 || new Set(ids).size !== ids.length || ids.includes('all') || ids.includes('')) {
+    fail('The decision needs 1–3 alternatives with unique, nonempty data-variant values other than "all".');
+  }
+  currentVariants.forEach((variant, index) => {
+    variant.dataset.variant = ids[index];
+    const label = document.createElement('div');
+    label.className = 'sh-variant-label';
+    label.textContent = variant.dataset.title || variant.dataset.variant;
+    variant.prepend(label);
+  });
+
+  function buildVariants() {
+    variantControl.hidden = currentVariants.length === 1;
+    variantSelect.replaceChildren();
+    const choices = currentVariants.length > 1 ? [{ id: 'all', title: 'All' }] : [];
+    choices.push(...currentVariants.map(variant => ({
+      id: variant.dataset.variant,
+      title: variant.dataset.title || variant.dataset.variant
+    })));
+    choices.forEach(choice => variantSelect.add(new Option(choice.title, choice.id)));
+    applyVariant(choices[0].id);
+  }
+
+  function applyVariant(id) {
+    const fallback = currentVariants.length > 1 ? 'all' : currentVariants[0].dataset.variant;
+    const active = [...variantSelect.options].some(option => option.value === id) ? id : fallback;
+    currentVariants.forEach(variant => {
+      variant.hidden = active !== 'all' && variant.dataset.variant !== active;
+      variant.querySelector('.sh-variant-label').hidden = active !== 'all';
+    });
+    variantSelect.value = active;
+  }
+  variantSelect.onchange = () => applyVariant(variantSelect.value);
+
+  const declared = (stage.dataset.states || '').split(',').map(x => x.trim()).filter(Boolean);
+  const currentStates = [...new Set(['Default', ...declared])];
+  function buildStates() {
+    stateSelect.innerHTML = '';
+    currentStates.forEach(name => {
+      const option = document.createElement('option');
+      option.textContent = name;
+      option.value = name;
+      stateSelect.append(option);
+    });
+    applyState('Default');
+  }
+
+  function applyState(name) {
+    const active = currentStates.includes(name) ? name : 'Default';
+    stage.querySelectorAll('[data-when]').forEach(el => {
+      el.hidden = !el.dataset.when.split(',').map(x => x.trim()).includes(active);
+    });
+    stateSelect.value = active;
+  }
+  stateSelect.onchange = () => applyState(stateSelect.value);
+
+  window.comparisonShell = {
+    setState: applyState,
+    getQuestion: () => question,
+    getState: () => stateSelect.value,
+    setVariant: applyVariant,
+    getVariant: () => variantSelect.value
+  };
+
+  const VPS = ['full', '390', '768'];
+  let vp = VPS.find(v => document.body.classList.contains('sh-vp-' + v)) || 'full';
+  function applyVp() {
+    VPS.forEach(v => document.body.classList.toggle('sh-vp-' + v, v === vp && v !== 'full'));
+    vpBtn.textContent = 'vp: ' + vp + ' (m)';
+    vpBtn.classList.toggle('on', vp !== 'full');
+  }
+  vpBtn.onclick = () => { vp = VPS[(VPS.indexOf(vp) + 1) % VPS.length]; applyVp(); };
+  applyVp();
+
+  addEventListener('keydown', e => {
+    if (/INPUT|TEXTAREA|SELECT/.test(e.target.tagName)) return;
+    if (e.key === 'm') vpBtn.click();
+  });
+
+  buildStates();
+  buildVariants();
+</script>

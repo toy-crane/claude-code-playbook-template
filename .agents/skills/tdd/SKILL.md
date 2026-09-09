@@ -28,9 +28,13 @@ reaching into internals.
 Reuse an existing seam before creating one. Create a seam only for a stable use
 case or domain concept, not an implementation helper whose name may change.
 
-Write down the seams under test and confirm them with the user before the first
-test. Write no test at an unconfirmed seam. Agreeing the seams directs effort to
-critical paths and complex logic instead of trying to test everything.
+Select test seams from the agreed behavior and existing public interfaces,
+prioritizing critical paths and complex logic. Briefly state the chosen
+seam and the behavior it will verify, then proceed with the first test.
+
+Resolve technical uncertainty through repository evidence. Ask the user
+only when the expected behavior remains unclear or proceeding would
+change the agreed product contract.
 
 ## Anti-patterns
 
