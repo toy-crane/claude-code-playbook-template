@@ -7,11 +7,17 @@
       "skillPath": "skills/workflow/add-stack-context/SKILL.md",
       "computedHash": "963265a45b37e496cb9e308a563f1940d5841e2cda54142d2bea3f6b59325dbd"
     },
+    "babysit-specs": {
+      "source": "toy-crane/skills",
+      "sourceType": "github",
+      "skillPath": "skills/workflow/babysit-specs/SKILL.md",
+      "computedHash": "af63d664a410b29961954d8d4b8f3c1b274ee6aeefc72c3c1c4bc75de92e3d31"
+    },
     "build-prototype": {
       "source": "toy-crane/skills",
       "sourceType": "github",
       "skillPath": "skills/workflow/build-prototype/SKILL.md",
-      "computedHash": "8770bac0b3f2f8cc3a2d8d9d2c250eda03d954016ea93d164b9d9af3346596ee"
+      "computedHash": "ef34e8f19f5ff2759ad0958377705b99d632f6714cb45d3b9e79f3a3b94d6066"
     },
     "commit": {
       "source": "toy-crane/skills",
@@ -65,13 +71,13 @@
       "source": "toy-crane/skills",
       "sourceType": "github",
       "skillPath": "skills/workflow/implement/SKILL.md",
-      "computedHash": "737362cd77f4c528484310e383649abca1ad6c6548b31603fffa5e9c92122b0e"
+      "computedHash": "4a9ff1e93a439a74ed2e6be7084cc23d3bdc6d1f2f2faabfc6666dd6da49327a"
     },
     "maintain-project-context": {
       "source": "toy-crane/skills",
       "sourceType": "github",
       "skillPath": "skills/workflow/maintain-project-context/SKILL.md",
-      "computedHash": "7653068ab75452c3699f5c347a3816eec55f46bc7105fc9388fe7ce88af2939a"
+      "computedHash": "d41f5a9440a14d9705691c7bbbbea0aaf620f4161b79578453a0606063a6782d"
     },
     "merge": {
       "source": "toy-crane/skills",
@@ -83,7 +89,7 @@
       "source": "vercel/next.js",
       "sourceType": "github",
       "skillPath": "skills/next-dev-loop/SKILL.md",
-      "computedHash": "fcfd05ce87d9edafda2e454f3f998bc45cb96fa2a3b695a4c3c144a9a13e7c39"
+      "computedHash": "d604c9440a736b08836fe782e8c0bf6a596d00c4e20e3e245e4a4394efbf74f4"
     },
     "pr": {
       "source": "toy-crane/skills",
@@ -125,13 +131,13 @@
       "source": "toy-crane/skills",
       "sourceType": "github",
       "skillPath": "skills/workflow/shape-idea/SKILL.md",
-      "computedHash": "2a90c704cb92f4c5bdc01fce6d4afae0148e518a12ae3a81cebcadf5f034b1d5"
+      "computedHash": "4aef1291843f652a73997645a2857f92947b95eb85bca05257ae3487003ba113"
     },
     "split-into-tasks": {
       "source": "toy-crane/skills",
       "sourceType": "github",
       "skillPath": "skills/workflow/split-into-tasks/SKILL.md",
-      "computedHash": "801dc12c1c9ffd9ef2a64ab7cd1e767215cf034c36d6284ff0fdee82a55c93de"
+      "computedHash": "eb0ac37cd33b8bb461f6a97553e99e517d4cd457b56fa439296b4f74c6ed7866"
     },
     "tdd": {
       "source": "toy-crane/skills",
@@ -143,7 +149,7 @@
       "source": "toy-crane/skills",
       "sourceType": "github",
       "skillPath": "skills/workflow/update-project-skills/SKILL.md",
-      "computedHash": "e8df92d8ccd489e20c760726f4afe10d96eec3131025e1db17261e38932e4f8e"
+      "computedHash": "d32afd997c10adf6707b80ab0ee30c37638dc53b5f728dd539ce5ff058c0a432"
     }
   }
 }

@@ -41,6 +41,21 @@ ownership before absorbing ambiguous dirty changes. Then work sequentially from
 the current unblocked frontier; when no task files exist, implement `spec.md`
 directly.
 
+Before changing source for an outcome, check the spec against what the
+repository has done since. Compare its assumptions, settled constraints, and
+acceptance criteria with the current code and the Git history since the spec
+folder's last commit; your own code-plus-task checkpoints advance that
+baseline, so each check covers only what happened since the previous outcome.
+A mismatch that would change an approved outcome, acceptance criterion,
+off-limits area, or other product constraint stops that outcome before any
+source change: name the stale point and its evidence, then route it to
+`babysit-specs` for this spec folder alone when that skill is available, or
+present the exact decision for the user to settle through shaping when it is
+not. Naming the folder keeps the revision on the selected work unit; you still
+never read a sibling spec folder. A stale spec caught here
+costs nothing, while the same discovery made mid-implementation discards work
+already done.
+
 Derive only the active outcome's technical approach just in time. A task
 boundary requires this reload; it does not by itself require a new session,
 worker, or reviewer. Keep the spec folder as the single handoff instead of

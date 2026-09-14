@@ -7,7 +7,7 @@
       "expected_output": "The response updates every locked skill from every source with one project-scoped skills update call, installs the newly published Toycrane skill for codex and claude-code, then runs the installed companion synchronizer so expo-smoke-runner exists in both native formats with recorded ownership, while emil-design-eng is refreshed but neither removed nor joined by other emilkowalski skills and local-reviewer stays unchanged.",
       "files": [],
       "expectations": [
-        "It runs npx skills update -p -y once to refresh every locked skill in place, including the third-party one, instead of re-adding the managed Toycrane skills by name.",
+        "It runs skills update -p -y once through the project's runner to refresh every locked skill in place, including the third-party one, instead of re-adding the managed Toycrane skills by name.",
         "It installs only the newly published Toycrane skill through one explicit skills add call targeting codex and claude-code without global installation.",
         "It runs .agents/skills/update-project-skills/scripts/sync_companion_agents.py after the update so companion payloads come from the refreshed project copies, installing .claude/agents/expo-smoke-runner.md and .codex/agents/expo-smoke-runner.toml and recording the name in .agents/toycrane-agents-lock.json.",
         "It leaves local-reviewer alone and updates shared_skills and shared_agents only when .agent-sync/manifest.json already exists.",
@@ -35,6 +35,17 @@
         "It does not remove seo-audit or reinstall shadcn on its own; both appear in the report as items for the user to decide.",
         "It does not add any skill from coreyhaines31/marketingskills or another third-party source.",
         "It keeps every change project-local and commits the lock, updated skills, and agent files together per the repository's commit policy."
+      ]
+    },
+    {
+      "id": 4,
+      "prompt": "Use $update-project-skills in this Expo app. The root package.json pins bun 1.3.6 through devEngines and the repository has a bun.lock. skills-lock.json manages commit and expo-dev-loop from toy-crane/skills.",
+      "expected_output": "The response reaches the skills.sh CLI through bunx so npm's devEngines check never aborts it, then performs the ordinary in-place update, companion synchronization, and verification without touching the project's package manager pin.",
+      "files": [],
+      "expectations": [
+        "It invokes the CLI as bunx skills@latest because the project pins bun through devEngines, rather than npx, which npm aborts with EBADDEVENGINES.",
+        "It still runs one project-scoped update call, then the companion synchronizer, and finishes with the inventory and companion checks.",
+        "It does not edit package.json, the devEngines pin, or onFail to make npx usable."
       ]
     }
   ]

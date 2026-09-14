@@ -18,11 +18,13 @@
   - Variants: .sh-workspace contains one direct .sh-options row with one to three
                direct children carrying unique data-variant="a" and data-title="A".
                Put each alternative's product UI in its own .sh-stage. The
-               shell adds labels outside product pixels and an All / A / B / C
-               menu using the supplied titles. One alternative hides the menu.
-               Scope interactions to their alternative and keep DOM IDs unique.
-               Use comparisonShell.setVariant("a") or setVariant("all") to switch.
-               Switching alternatives preserves the selected state and viewport.
+               shell shows exactly one alternative at a time, starting with the
+               first, and builds a menu from the supplied titles. One alternative
+               hides the menu. Scope interactions to their alternative and keep
+               DOM IDs unique. Use comparisonShell.setVariant("a") to switch; an
+               unknown id falls back to the first alternative. Switching
+               preserves the selected state, viewport, theme, and scroll offset
+               (the phone frame's own offset at 390, the page offset otherwise).
   - States:   "Default" is automatic. .sh-workspace declares only representative
                presets in data-states="Empty,Error". Use natural, situation-specific
                names. Reserve presets for important multi-step results, forced
@@ -37,9 +39,8 @@
                fixed-height, internally scrolling phone frame. Start a
                mobile-first prototype by adding class="sh-vp-390" to <body>
                (or a bootstrap classList.add before the chrome script runs).
-               In comparisons, 390 and 768 apply to each alternative separately.
-               Keep those widths and scroll horizontally when they do not fit.
-               The full preset shares available space across the alternatives.
+               The visible alternative gets the same width a single product
+               screen gets at that preset, narrowing with the pane the same way.
   - Pinning:  keep in-frame bars (tab bars, CTAs) inside the phone with
                position: sticky; position: fixed pins to the browser window.
   - Tokens:   replace the project-tokens block with project tokens copied
@@ -50,11 +51,11 @@
   - Placeholders: .wf-pic stands in for pictures the prototype has no real
                files for. Use real text everywhere text belongs.
 
-  - Chrome:   Reuse the prototype shell's styling, state control, and viewport
-               cycle. Replace the product screen selector with the situation
-               label and variant selector; All shows alternatives together and
-               an individual option shows that alternative alone. Scope by the
-               question, not by an obligation to compare every product screen.
+  - Chrome:   Reuse the prototype shell's styling, state control, viewport
+               cycle, and theme toggle. Replace the product screen selector
+               with the situation label and variant selector, which shows one
+               alternative at a time. Scope by the question, not by an
+               obligation to compare every product screen.
 
   Self-contained by design: no build, no framework, no network.
 -->
@@ -104,13 +105,8 @@
   .sh-stage { max-width: 960px; margin: 0 auto; padding: 12px 16px 0 }
   [hidden] { display: none !important }
 
-  /* comparisons: the product stages retain the original shell styling */
+  /* comparisons: one alternative at a time, keeping the product stage styling */
   .sh-workspace { overflow-x: auto }
-  .sh-options { display: flex; gap: 16px; justify-content: safe center; align-items: flex-start }
-  [data-variant] { flex: 1 0 300px; max-width: 960px; min-width: 0 }
-  .sh-variant-label { margin: 12px 16px 0; color: var(--muted); font: 12px/1.5 ui-monospace, SFMono-Regular, Menlo, monospace }
-  .sh-vp-390 [data-variant] { flex: 0 0 390px }
-  .sh-vp-768 [data-variant] { flex: 0 0 768px }
 
   /* viewport presets */
   .sh-vp-390 .sh-stage {
@@ -168,37 +164,32 @@
   if (rows.length !== 1) fail('Use one alternatives row for the current decision.');
   const currentVariants = [...rows[0].children].filter(node => node.matches('[data-variant]'));
   const ids = currentVariants.map(variant => variant.dataset.variant.trim());
-  if (currentVariants.length < 1 || currentVariants.length > 3 || new Set(ids).size !== ids.length || ids.includes('all') || ids.includes('')) {
-    fail('The decision needs 1–3 alternatives with unique, nonempty data-variant values other than "all".');
+  if (currentVariants.length < 1 || currentVariants.length > 3 || new Set(ids).size !== ids.length || ids.includes('')) {
+    fail('The decision needs 1–3 alternatives with unique, nonempty data-variant values.');
   }
-  currentVariants.forEach((variant, index) => {
-    variant.dataset.variant = ids[index];
-    const label = document.createElement('div');
-    label.className = 'sh-variant-label';
-    label.textContent = variant.dataset.title || variant.dataset.variant;
-    variant.prepend(label);
-  });
+  currentVariants.forEach((variant, index) => { variant.dataset.variant = ids[index]; });
 
   function buildVariants() {
     variantControl.hidden = currentVariants.length === 1;
     variantSelect.replaceChildren();
-    const choices = currentVariants.length > 1 ? [{ id: 'all', title: 'All' }] : [];
-    choices.push(...currentVariants.map(variant => ({
-      id: variant.dataset.variant,
-      title: variant.dataset.title || variant.dataset.variant
-    })));
-    choices.forEach(choice => variantSelect.add(new Option(choice.title, choice.id)));
-    applyVariant(choices[0].id);
+    currentVariants.forEach(variant => variantSelect.add(new Option(
+      variant.dataset.title || variant.dataset.variant, variant.dataset.variant)));
+    applyVariant(currentVariants[0].dataset.variant);
   }
 
   function applyVariant(id) {
-    const fallback = currentVariants.length > 1 ? 'all' : currentVariants[0].dataset.variant;
-    const active = [...variantSelect.options].some(option => option.value === id) ? id : fallback;
-    currentVariants.forEach(variant => {
-      variant.hidden = active !== 'all' && variant.dataset.variant !== active;
-      variant.querySelector('.sh-variant-label').hidden = active !== 'all';
-    });
+    const active = currentVariants.some(variant => variant.dataset.variant === id)
+      ? id : currentVariants[0].dataset.variant;
+    const leaving = currentVariants.find(variant => !variant.hidden);
+    const leavingFrame = leaving && leaving.querySelector('.sh-stage');
+    const frameOffset = leavingFrame ? leavingFrame.scrollTop : 0;
+    const pageOffset = scrollY;
+    currentVariants.forEach(variant => { variant.hidden = variant.dataset.variant !== active; });
     variantSelect.value = active;
+    const entering = currentVariants.find(variant => variant.dataset.variant === active);
+    const enteringFrame = entering.querySelector('.sh-stage');
+    if (enteringFrame) enteringFrame.scrollTop = frameOffset;
+    scrollTo(scrollX, pageOffset);
   }
   variantSelect.onchange = () => applyVariant(variantSelect.value);
 

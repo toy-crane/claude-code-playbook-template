@@ -70,9 +70,12 @@ forced data or errors, and structures that are not trivial to reach. Synchronize
 the selector when interactions enter or leave a declared preset.
 
 Copy project tokens verbatim into `:root`, or extract the existing design
-language when no token file exists. Style every screen through those tokens and
-mark elements with the design system's component names in `data-component`;
-use `new:Name` only when no component exists.
+language when no token file exists. When the project ships a dark palette, copy
+it under `.sh-theme-dark` so the shell's theme switch appears; a project without
+one leaves the prototype with no theme control rather than an invented dark
+mode. Style every screen through those tokens and mark elements with the design
+system's component names in `data-component`; use `new:Name` only when no
+component exists.
 
 Use realistic dummy content with real-length names, plausible copy, awkward
 numbers, and only relevant edge conditions. Never use lorem ipsum. Keep out real
@@ -118,8 +121,11 @@ not once per product screen, and keep unrelated product work in the prototype.
 Preserve the template's styling and contract comment, which owns the comparison
 controls and keeps product navigation inside its alternative. Hold content,
 data, surrounding layout, behavior, and confirmed elements fixed except for the
-governing choice. Render and verify only the interactions, states, and sizes
-needed to judge it, then share the runnable comparison and ask for the choice.
+governing choice. The reviewer sees one alternative at a time and switches
+between them, so verify each alternative at the same state and viewport
+coordinate rather than only the one the comparison opens on. Render and verify
+only the interactions, states, and sizes needed to judge it, then share the
+runnable comparison and ask for the choice.
 
 Once the user chooses, apply that result to the affected product UI and flow in
 the same `prototype.html` and verify the affected behavior there. Delete the

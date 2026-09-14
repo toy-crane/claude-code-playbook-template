@@ -1,0 +1,21 @@
+:root {
+  --background: #f7f8fa;
+  --surface: #ffffff;
+  --foreground: #1f2430;
+  --muted: #6b7280;
+  --line: #e3e6eb;
+  --accent: #2f6fed;
+  --radius: 8px;
+  --font: system-ui, sans-serif;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --background: #10131a;
+    --surface: #181c25;
+    --foreground: #e7eaf0;
+    --muted: #8b93a3;
+    --line: #262c38;
+    --accent: #5b8dff;
+  }
+}

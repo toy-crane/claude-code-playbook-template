@@ -4,12 +4,12 @@
     {
       "id": 1,
       "prompt": "/build-prototype 북마크한 아티클을 모아 매주 다이제스트로 보내주는 웹앱을 만들려고 해. 화면부터 보면서 정하고 싶어.",
-      "expected_output": "The response uses the current request and conversation as sufficient context without requiring or searching for a pre-existing spec. It proposes a screen inventory as a correctable draft, then builds one temporary self-contained HTML file grown from the shell template (a screen selector, the selected screen's representative state selector, and a viewport cycle) with every proposed screen finished the first time it is shown, and walks the user through the surface asking for reactions. It runs the finished HTML using a method supported by the current harness and shares an address the user can open. It does not create a durable spec folder before approval. This project has no design system, so it builds on the shell's minimal palette and treats that as the finished look. It does not scaffold the production app.",
+      "expected_output": "The response uses the current request and conversation as sufficient context without requiring or searching for a pre-existing spec. It proposes a screen inventory as a correctable draft, then builds one temporary self-contained HTML file grown from the shell template (a screen selector, the selected screen's representative state selector, and a viewport cycle, with no theme control because this project declares no dark tokens) with every proposed screen finished the first time it is shown, and walks the user through the surface asking for reactions. It runs the finished HTML using a method supported by the current harness and shares an address the user can open. It does not create a durable spec folder before approval. This project has no design system, so it builds on the shell's minimal palette and treats that as the finished look. It does not scaffold the production app.",
       "files": [],
       "expectations": [
         "It proposes the screen inventory as a draft to correct instead of asking the user to enumerate screens.",
         "It builds one self-contained HTML file holding every proposed screen, not one file per screen.",
-        "The file declares UTF-8 and carries the shell chrome (screen selector, current-screen state selector, viewport cycle) and shared :root tokens, with no build step, framework, or network dependency.",
+        "The file declares UTF-8 and carries the shell chrome (screen selector, current-screen state selector, viewport cycle) and shared :root tokens, with no build step, framework, or network dependency. The theme switch stays absent, since no .sh-theme-dark tokens are declared.",
         "The screen selector uses screen names without counts or indexes, and the state selector supplies Default plus only representative direct-entry presets rather than every one-click or transient interaction state.",
         "With no design system to copy, it builds on the shell's minimal palette and presents it as the finished look rather than a stage to be replaced later.",
         "Screens carry realistic dummy data and their edge states from the first render, with no lorem ipsum and no staged fidelity.",
@@ -117,7 +117,7 @@
       "files": [],
       "expectations": [
         "All requested screens live in one self-contained HTML file rather than one file per screen.",
-        "The pinned shell uses a single screen selector, a current-screen state selector, and a viewport cycle; it does not render screen tabs, state pills, a separate inspector, or a cases taxonomy.",
+        "The pinned shell uses a single screen selector, a current-screen state selector, and a viewport cycle; it does not render screen tabs, state pills, a separate inspector, a cases taxonomy, or a theme switch this project has no dark tokens for.",
         "The screen selector lists natural screen names without counts or indexes that imply a linear flow or progress.",
         "Each screen gets Default automatically, while additional state names remain contextual rather than following a fixed global naming schema.",
         "State presets are limited to important multi-step results, forced data or error conditions, and materially different structures.",
@@ -133,7 +133,7 @@
       "files": [],
       "expectations": [
         "All requested screens live in one self-contained HTML file with realistic dummy content and no external runtime dependencies.",
-        "The shell contains one screen selector with natural names and no counts or indexes, one contextual state selector, and the viewport cycle.",
+        "The shell contains one screen selector with natural names and no counts or indexes, one contextual state selector, and the viewport cycle, with no theme switch because the project declares no dark palette.",
         "Default is automatic and any additional state names are contextual to their selected screen.",
         "Filters, mark-all-read, menus, expanded details, and other obvious one-click results remain working interactions and are not duplicated as state presets.",
         "Only important multi-step results, forced data or error conditions, and materially different structures that are not trivial to reach become state presets.",
@@ -149,7 +149,7 @@
       "files": [],
       "expectations": [
         "All requested screens live in one self-contained HTML file with realistic dummy content and no external runtime dependencies.",
-        "The shell uses natural screen names without indexes or totals, contextual representative states, and the viewport cycle.",
+        "The shell uses natural screen names without indexes or totals, contextual representative states, and the viewport cycle, with no theme switch because the project declares no dark palette.",
         "Filters, mark-all-read, stock adjustments, and restocking remain working product interactions rather than separate presets.",
         "Only a forced out-of-stock condition or another important non-trivial condition becomes a representative preset.",
         "Repeated stock reductions that cross the declared out-of-stock condition synchronize the state selector on entry.",
@@ -317,6 +317,22 @@
         "Saving in the new detail screen keeps the button label unchanged and shows the chosen inline confirmation and undo below it. The confirmation remains after more than four seconds; neither a changed-label alternative nor a transient toast replaces it.",
         "Undo removes the confirmation and saved article; saving again adds the article to the library, and navigation preserves the resulting saved state.",
         "The executor verifies the requested screens, the empty-library preset and recovery, and the 390, 768, and full viewports, then supplies a runnable address while keeping the product review open and docs/specs absent."
+      ]
+    },
+    {
+      "id": 22,
+      "prompt": "/build-prototype 팀 대시보드에 알림 센터를 붙이려고 해. 알림 목록, 알림 상세, 알림 설정 화면을 한 파일에서 보고 싶어. 디자인 토큰은 tokens.css에 있어.",
+      "expected_output": "The response builds the three notification screens in one temporary self-contained HTML file styled through the project's own tokens. It carries the light values into :root and the project's dark values into a .sh-theme-dark rule instead of copying the prefers-color-scheme media query, so the review bar shows the light / dark switch after the viewport cycle and the prototype opens light whatever the reviewer's system prefers. It runs the file and shares an address the user can open.",
+      "files": [
+        "evals/fixtures/dark-tokens/project.md",
+        "evals/fixtures/dark-tokens/tokens.css"
+      ],
+      "expectations": [
+        "The prototype's :root carries the project's light token values, and its dark values appear under a .sh-theme-dark rule.",
+        "No @media (prefers-color-scheme: dark) block is copied into the prototype, so a reviewer whose system prefers dark still opens it in light.",
+        "The review bar renders the light / dark switch after the viewport cycle; selecting dark repaints the product screens through the dark tokens while the bar keeps its own dark chrome styling.",
+        "The selected theme survives screen, state, and viewport changes, and reloading the address returns the prototype to light.",
+        "The three requested screens are finished the first time they are shown, with realistic notification content and no lorem ipsum."
       ]
     }
   ]

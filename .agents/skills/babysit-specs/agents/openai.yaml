@@ -1,0 +1,4 @@
+interface:
+  display_name: "Babysit Specs"
+  short_description: "Bring queued specs back in line with shipped work"
+  default_prompt: "Use $babysit-specs to compare each active spec folder with what shipped since its last commit, fix the staleness that preserves the approved meaning as an overridable assumption, ask one question about each point that would change it, and report what was updated, asked, and handed off."

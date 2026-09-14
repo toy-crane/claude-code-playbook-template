@@ -31,7 +31,10 @@ task-specific constraints, blockers with reasons, and any review checkpoint.
 Implementation derives the active outcome's technical approach just in time
 from the then-current repository, so omit predicted files, functions, code
 structure, technical-layer steps, context boundaries, and internal sequences.
-Reference an approved prototype when relevant without copying its implementation.
+Under a task's constraints record only the references scoped to that task: the
+approved prototype screens and states it delivers, and a decision contract only
+it depends on. Name what each governs and leave its rules and screen
+compositions in the source itself.
 
 Add an intermediate review checkpoint only when a material error could compound
 through substantial dependent work, or when deterministic checks cannot
