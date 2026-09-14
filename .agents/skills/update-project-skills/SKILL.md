@@ -18,6 +18,14 @@ other entry as third-party. Skills and agents without a lock entry are
 project-local; preserve them unless the user explicitly approves adopting a
 name.
 
+## Run the CLI
+
+Every command below runs the current published CLI as `<runner> skills@latest`.
+Take `<runner>` from the target project's package manager: `bunx` for bun,
+`pnpm dlx` for pnpm, `npx -y` otherwise. npm aborts `npx` with
+`EBADDEVENGINES` before the CLI starts when `package.json` pins another
+package manager through `devEngines`.
+
 ## Update every installed skill
 
 1. Resolve the target Git repository from the requested path or current
@@ -25,8 +33,8 @@ name.
 2. Inspect the installed and upstream inventories:
 
    ```bash
-   npx -y skills@latest list --json
-   npx -y skills@latest add toy-crane/skills --list
+   <runner> skills@latest list --json
+   <runner> skills@latest add toy-crane/skills --list
    ```
 
    Read the project's `skills-lock.json`. The upstream list is the current
@@ -36,7 +44,7 @@ name.
    call:
 
    ```bash
-   npx -y skills@latest update -p -y
+   <runner> skills@latest update -p -y
    ```
 
    The CLI refreshes each lock entry that records a `skillPath`, one clone per
@@ -65,11 +73,11 @@ Install the new skills in one explicit call so stack exclusions and unapproved
 collisions stay excluded, then remove retired names from the whole project:
 
 ```bash
-npx -y skills@latest add toy-crane/skills \
+<runner> skills@latest add toy-crane/skills \
   --skill <new-skill-name> [<new-skill-name> ...] \
   --agent codex claude-code \
   -y
-npx -y skills@latest remove <retired-skill-name> [<retired-skill-name> ...] -y
+<runner> skills@latest remove <retired-skill-name> [<retired-skill-name> ...] -y
 ```
 
 Keep retirement unscoped. An agent-scoped removal can leave the canonical
@@ -115,7 +123,7 @@ identity before writing its canonical Claude Code and Codex pair.
 
 ## Verify the result
 
-- Rerun `npx -y skills@latest list --json`.
+- Rerun `<runner> skills@latest list --json`.
 - Confirm each current Toycrane skill exists in `.agents/skills` and in
   `skills-lock.json` with source `toy-crane/skills`, and that
   `.claude/skills/<name>` is a relative link to `../../.agents/skills/<name>`.

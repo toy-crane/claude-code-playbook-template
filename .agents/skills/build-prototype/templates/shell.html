@@ -31,12 +31,22 @@
                verbatim. Map differing names to --background, --foreground, and
                --font afterwards; replace network fonts with a system stack and
                note that substitution. Without a design system, keep this
-               palette as the finished style.
+               palette as the finished style. When the project ships dark
+               tokens, copy them under .sh-theme-dark, which the shell sets
+               on both the root element and body, so :root.sh-theme-dark and
+               body.sh-theme-dark work too. A .dark class or a
+               prefers-color-scheme media query copied verbatim would follow
+               the reviewer's system instead of the toggle.
+  - Theme:    the light / dark switch (t) changes the product surface only.
+               It appears only when a .sh-theme-dark rule declares dark tokens,
+               so a prototype without them carries no theme control. Prototypes
+               always load light; the review bar keeps its own dark styling in
+               both themes so it still reads as chrome.
   - Placeholders: .wf-pic stands in for pictures the prototype has no real
                files for. Use real text everywhere text belongs.
 
   - Chrome:   Keep exactly the screen selector, selected-screen state selector,
-               and viewport cycle.
+               viewport cycle, and theme toggle.
 
   Self-contained by design: no build, no framework, no network.
 -->
@@ -82,6 +92,8 @@
   }
   #sh-screen { width: 190px }
   .sh-bar button.on { background: #d7d7d7; color: #191a1c; border-color: #d7d7d7 }
+  .sh-theme { display: inline-flex; border: 1px solid #3a3d42; border-radius: 99px; overflow: hidden }
+  .sh-theme button { border: 0; border-radius: 0; padding: 2px 10px }
   .sh-spacer { flex: 1 }
   .sh-stage { max-width: 960px; margin: 0 auto; padding: 12px 16px 0 }
   [hidden] { display: none !important }
@@ -101,6 +113,9 @@
   /* placeholders */
   .wf-pic  { border-radius: 4px; background:
              repeating-linear-gradient(45deg, #e9e9e9, #e9e9e9 6px, #f2f2f2 6px, #f2f2f2 12px) }
+  .sh-theme-dark .wf-pic { background: repeating-linear-gradient(45deg,
+             color-mix(in srgb, var(--foreground) 16%, transparent) 0 6px,
+             color-mix(in srgb, var(--foreground) 8%, transparent) 6px 12px) }
 </style>
 
 <header class="sh-bar">
@@ -109,6 +124,9 @@
   <span class="sh-spacer"></span>
   <label class="sh-control"><span class="sh-control-label">state</span><select id="sh-state"></select></label>
   <button id="sh-vp">vp: full (m)</button>
+  <div class="sh-theme" id="sh-theme" role="group" aria-label="theme (t)" hidden>
+    <button data-theme="light">light</button><button data-theme="dark">dark</button>
+  </div>
 </header>
 
 <main class="sh-stage">
@@ -125,6 +143,8 @@
   const screenSelect = document.getElementById('sh-screen');
   const stateSelect = document.getElementById('sh-state');
   const vpBtn = document.getElementById('sh-vp');
+  const themeCtl = document.getElementById('sh-theme');
+  const themeBtns = [...themeCtl.querySelectorAll('button')];
   let current = null;
   let currentStates = [];
 
@@ -183,12 +203,29 @@
   vpBtn.onclick = () => { vp = VPS[(VPS.indexOf(vp) + 1) % VPS.length]; applyVp(); };
   applyVp();
 
+  const hasDark = [...document.styleSheets].some(sheet => {
+    try {
+      return [...sheet.cssRules].some(rule => (rule.selectorText || '')
+        .split(',').some(part => /\.sh-theme-dark$/.test(part.trim())));
+    } catch { return false }
+  });
+  let dark = false;
+  function applyTheme() {
+    document.documentElement.classList.toggle('sh-theme-dark', dark);
+    document.body.classList.toggle('sh-theme-dark', dark);
+    themeBtns.forEach(b => b.classList.toggle('on', (b.dataset.theme === 'dark') === dark));
+  }
+  themeCtl.hidden = !hasDark;
+  themeBtns.forEach(b => b.onclick = () => { dark = b.dataset.theme === 'dark'; applyTheme(); });
+  applyTheme();
+
   addEventListener('keydown', e => {
     if (/INPUT|TEXTAREA|SELECT/.test(e.target.tagName)) return;
     const i = screens.indexOf(current);
     if (e.key === 'ArrowRight') show(screens[(i + 1) % screens.length].dataset.screen);
     if (e.key === 'ArrowLeft') show(screens[(i - 1 + screens.length) % screens.length].dataset.screen);
     if (e.key === 'm') vpBtn.click();
+    if (e.key === 't' && !themeCtl.hidden) { dark = !dark; applyTheme(); }
   });
 
   addEventListener('hashchange', () => show(location.hash.slice(1)));

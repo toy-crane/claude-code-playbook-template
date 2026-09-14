@@ -58,7 +58,7 @@
         "Each task file explains the complete behavior delivered when the task finishes.",
         "Each blocker includes the reason it gates completion.",
         "Acceptance criteria verify observable completed behavior instead of naming files, classes, hooks, or implementation steps.",
-        "It references an approved prototype when relevant rather than copying its implementation.",
+        "It records under a task's constraints only task-scoped references \u2014 the approved prototype screens and states that task delivers, or a decision contract only it depends on \u2014 without copying their contents, repeating the spec's links, or linking spec.md.",
         "It numbers blockers before dependents.",
         "It uses the task template and preserves pending, in-progress, completed, blocked, and superseded as the status vocabulary.",
         "It initializes only status plus verification, blocker, and revision evidence, without commit anchors, correction counters, or a terminal run-completion section.",

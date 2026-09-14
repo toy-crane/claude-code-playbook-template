@@ -624,6 +624,25 @@
         "It does not add a visual prototype, screenshot, viewport, or platform-screen comparison gate when the handoff contains no approved visual reference.",
         "It still enforces every applicable acceptance criterion and the normal whole-diff review gate."
       ]
+    },
+    {
+      "id": 51,
+      "prompt": "/implement docs/specs/csv-export/ 구현해줘.",
+      "expected_output": "The response compares the spec with the current repository before changing source, finds that the approved comma-separated constraint and the report.csv filename contradict the shipped tab-separated serializer, stops that outcome before any source change, and names the stale point with its route.",
+      "files": [
+        "evals/fixtures/stale-spec/package.json",
+        "evals/fixtures/stale-spec/README.md",
+        "evals/fixtures/stale-spec/src/rows.js",
+        "evals/fixtures/stale-spec/docs/specs/csv-export/spec.md"
+      ],
+      "expectations": [
+        "It compares the spec's settled constraints and acceptance criteria with the current code before changing any source file.",
+        "It identifies the conflict between the spec's comma-separated constraint and the shipped tab delimiter in src/rows.js, including the report.csv filename criterion.",
+        "It stops that outcome before writing any source change rather than implementing against either side.",
+        "It names the exact stale point and its evidence instead of reporting a vague mismatch.",
+        "It routes the stale point to babysit-specs when that skill is available, or presents the exact decision for the user to settle through shaping when it is not.",
+        "It does not silently rewrite the spec to match the code, nor change the shipped delimiter to match the spec."
+      ]
     }
   ]
 }

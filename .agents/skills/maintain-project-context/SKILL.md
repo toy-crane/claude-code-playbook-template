@@ -1,6 +1,6 @@
 ---
 name: maintain-project-context
-description: Clean, compact, and reconcile durable project context without changing established meaning. Always use this skill whenever a request cleans, audits, or checks consistency across two or more durable context sources, even when they are called product docs, glossary, decisions, specs, or agent instructions instead of PRODUCT.md, GLOSSARY.md, docs/decisions, docs/specs, AGENTS.md, or CLAUDE.md. Also use for confirmed shipped-spec retirement. Do not use to define new product intent, record one newly settled term or decision, look up context, shape a feature, or implement work.
+description: Clean, compact, and reconcile durable project context without changing established meaning. Always use this skill whenever a request cleans, audits, or checks consistency across two or more durable context sources, even when they are called product docs, glossary, decisions, specs, or agent instructions instead of PRODUCT.md, GLOSSARY.md, docs/decisions, docs/specs, AGENTS.md, or CLAUDE.md. Also use for confirmed shipped-spec retirement. Do not use to define new product intent, record one newly settled term or decision, look up context, shape a feature, implement work, or revise an active spec's behavior against work that has shipped, which belongs to `babysit-specs`.
 ---
 
 # Maintain Project Context
