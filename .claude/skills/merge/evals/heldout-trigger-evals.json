@@ -1,0 +1,8 @@
+[
+  {"query":"PR #93 상태부터 확인해서 통과했으면 main에 land시키고 checkout을 정리해줘.","should_trigger":true},
+  {"query":"현재 기능 브랜치를 GitHub review 경유로 기본 브랜치에 합치고 로컬 작업 공간도 치워줘.","should_trigger":true},
+  {"query":"이 변경은 이미 원격에 합쳐졌어. 사실인지 검증하고 남은 worktree와 서버만 정리해줘.","should_trigger":true},
+  {"query":"GitHub 없이 로컬 release 브랜치 두 개를 octopus merge해줘.","should_trigger":false},
+  {"query":"두 CSV 파일의 고객 행을 이메일 기준으로 병합해줘.","should_trigger":false},
+  {"query":"현재 변경을 리뷰 가능한 PR로 게시까지만 하고 멈춰줘.","should_trigger":false}
+]

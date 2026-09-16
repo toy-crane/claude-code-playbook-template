@@ -1,0 +1,42 @@
+[
+  {
+    "query": "앞 spec을 구현해서 머지했어. docs/specs/에 남은 spec들이 지금 코드랑 안 맞을 것 같은데 확인하고 고쳐줘.",
+    "should_trigger": true
+  },
+  {
+    "query": "docs/specs/digest-schedule/spec.md가 낡았어. 지난 주에 나간 채널 작업 기준으로 이 spec을 지금 상태에 맞춰줘.",
+    "should_trigger": true
+  },
+  {
+    "query": "구현하려고 보니 spec이 이미 나간 작업이랑 충돌해서 멈췄어. spec 쪽을 먼저 정리해줘.",
+    "should_trigger": true
+  },
+  {
+    "query": "대기 중인 spec 세 개가 앞 구현 때문에 가정이 틀어졌는지 훑고, 안 바뀌는 건 그냥 고치고 바뀌는 건 물어봐줘.",
+    "should_trigger": true
+  },
+  {
+    "query": "docs/specs/billing-retry/에 링크된 승인 prototype이 지금 화면이랑 달라졌어. 이 spec을 현재 제품에 맞게 갱신해줘.",
+    "should_trigger": true
+  },
+  {
+    "query": "기존 결제 화면에 쿠폰 입력 기능을 추가할 건데 동작과 오류 상태를 구현 가능한 spec으로 새로 정리해줘.",
+    "should_trigger": false
+  },
+  {
+    "query": "PRODUCT.md와 GLOSSARY.md, docs/decisions가 서로 겹치고 오래됐어. durable 맥락 전체를 정리해줘.",
+    "should_trigger": false
+  },
+  {
+    "query": "이미 배포까지 끝난 spec 폴더들을 확인해서 정리하고 삭제해줘.",
+    "should_trigger": false
+  },
+  {
+    "query": "docs/specs/checkout/를 독립적으로 배포 가능한 task들로 나눠줘.",
+    "should_trigger": false
+  },
+  {
+    "query": "docs/specs/billing/ 폴더를 구현해줘. 승인된 task가 있으면 순서대로 끝까지 실행하고 검증해.",
+    "should_trigger": false
+  }
+]

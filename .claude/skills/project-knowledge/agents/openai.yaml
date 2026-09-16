@@ -1,0 +1,4 @@
+interface:
+  display_name: "Project Knowledge"
+  short_description: "Maintain terms and settled reusable decisions"
+  default_prompt: "Use $project-knowledge to resolve this project term or preserve a settled decision for future work."

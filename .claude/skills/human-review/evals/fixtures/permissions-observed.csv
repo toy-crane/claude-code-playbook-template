@@ -1,0 +1,6 @@
+principal,action,observed_result,environment
+administrator,export entire workspace,allowed,local access suite
+manager,export own team,allowed,local access suite
+manager,export entire workspace,denied,local access suite
+member,export own team,denied,local access suite
+member,export entire workspace,denied,local access suite

@@ -1,0 +1,91 @@
+{
+  "skill_name": "add-stack-context",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "/add-stack-context package.json에는 Next.js와 Playwright가 직접 의존성으로 있고, package-lock.json에는 수백 개의 전이 의존성이 있어. components.json에는 shadcn 설정이 있어. 현재 스택의 공식 에이전트 컨텍스트를 설치해줘.",
+      "expected_output": "The response inventories the direct stack technologies, uses the lockfile only for installed versions, and accounts for each direct technology without treating transitive packages as separate stack entries.",
+      "files": [],
+      "expectations": [
+        "It includes Next.js, Playwright, and shadcn in the stack checklist.",
+        "It does not expand the checklist with transitive dependencies from package-lock.json.",
+        "It uses current sources controlled by each vendor and matches version-specific context where available.",
+        "It gives every checklist item an explicit final outcome."
+      ]
+    },
+    {
+      "id": 2,
+      "prompt": "/add-stack-context 이 빈 저장소에 에이전트용 스택 컨텍스트를 준비해줘. 아직 manifest나 config 파일은 없어.",
+      "expected_output": "With no declared stack to inventory, the response asks what technologies the user intends to use before attempting installation.",
+      "files": [],
+      "expectations": [
+        "It does not guess a framework or hosted service.",
+        "It asks the user for the intended stack.",
+        "It does not install generic or community-made context while waiting."
+      ]
+    },
+    {
+      "id": 3,
+      "prompt": "/add-stack-context 공식 에이전트 컨텍스트를 확인해줘. 한 라이브러리는 벤더 공식 자료가 없지만 커뮤니티 skill은 있고, 다른 도구의 공식 installer는 기존 AGENTS.md 안의 사용자 규칙과 벤더 관리 블록을 함께 발견해.",
+      "expected_output": "The response reports the library's official-context gap without substituting the community skill, preserves user-authored context, and lets only the official method update vendor-managed content.",
+      "files": [],
+      "expectations": [
+        "It rejects the community skill as a substitute for missing official context.",
+        "It records the library as unavailable from an official source.",
+        "It preserves user-authored AGENTS.md content.",
+        "It updates vendor-managed blocks only through the documented official method."
+      ]
+    },
+    {
+      "id": 4,
+      "prompt": "/add-stack-context 공식 출처는 확인됐지만 installer가 현재 환경에서 실패했어. 나머지 스택 항목은 설치됐거나 이미 존재해. 마무리해줘.",
+      "expected_output": "The response does not hide or loop on the failed installation; it records the item as blocked with a concrete reason and accounts for every other item.",
+      "files": [],
+      "expectations": [
+        "It classifies the failed item as blocked rather than installed or unavailable.",
+        "It states the blocker and preserves the official source checked.",
+        "It summarizes installed and already-present items separately.",
+        "For installed context, it includes the documented update path when one exists."
+      ]
+    },
+    {
+      "id": 5,
+      "prompt": "/add-stack-context 이 프로젝트는 AcmeDB를 직접 사용해. find-skills로 찾아보니 Acme 공식 조직의 acmedb skill과 설치 수가 더 많은 커뮤니티 acmedb-pro skill이 함께 나왔어. 현재 컨텍스트를 갖춰줘.",
+      "expected_output": "The response uses find-skills for discovery but retains source acceptance itself: it verifies and may install the vendor-controlled skill, while presenting the more popular community skill only as an approval-gated candidate.",
+      "files": [],
+      "expectations": [
+        "It uses find-skills as the normal skill-discovery capability.",
+        "It independently verifies which candidate is controlled by the Acme vendor rather than treating search rank or install count as proof.",
+        "It may install the official Acme skill through its documented method.",
+        "It reports the community skill as an optional candidate and does not install it without explicit user approval.",
+        "It does not let the community skill substitute for the official-context audit result."
+      ]
+    },
+    {
+      "id": 6,
+      "prompt": "/add-stack-context find-skills skill이 설치되지 않은 저장소야. 직접 사용하는 Orbit 프레임워크의 agent context를 점검해줘. Skills 생태계에는 공식 skill이 없고, Orbit 공식 문서에는 AGENTS.md codemod가 있어.",
+      "expected_output": "The response treats the missing helper skill as a fallback condition rather than a blocker, performs equivalent current skill discovery, and still installs the vendor's official non-skill context through its documented codemod.",
+      "files": [],
+      "expectations": [
+        "It does not classify Orbit as unavailable or blocked solely because find-skills is absent.",
+        "It searches the current Skills ecosystem through an available CLI or equivalent source under the same official-source policy.",
+        "It continues beyond skill search and recognizes the official AGENTS.md codemod as valid vendor context.",
+        "It applies only the codemod's documented changes and reports its supported update path."
+      ]
+    },
+    {
+      "id": 7,
+      "prompt": "/add-stack-context NovaJS가 공식 llms.txt를 제공해. 이 저장소의 AGENTS.md에는 사용자 규칙이 있고 CLAUDE.md는 AGENTS.md를 가리키는 심볼릭 링크야. llms.txt 내용을 프로젝트에 저장해서 다음 에이전트가 읽게 해줘.",
+      "expected_output": "The response refuses the stale snapshot mechanism while still completing the context outcome: it preserves the shared instruction structure and user rules, then adds a bounded instruction that retrieves the current official llms.txt when NovaJS work begins and reconciles it with the installed version.",
+      "files": [],
+      "expectations": [
+        "It does not copy the llms.txt body into the repository.",
+        "It preserves the existing user-authored AGENTS.md content.",
+        "It preserves CLAUDE.md as a link to AGENTS.md rather than creating a second independently maintained copy.",
+        "It adds or updates only a bounded managed instruction for NovaJS.",
+        "The instruction tells later agents to retrieve the current official source when relevant work begins and compare it with the installed version.",
+        "It reports task-time retrieval as the context's update path."
+      ]
+    }
+  ]
+}

@@ -1,0 +1,4 @@
+interface:
+  display_name: "Split Into Tasks"
+  short_description: "Split specs into a shallow outcome map"
+  default_prompt: "Use $split-into-tasks to turn this spec into the complete shallow set of independently deliverable outcomes without predicting code-level implementation, with only risk-justified review checkpoints."

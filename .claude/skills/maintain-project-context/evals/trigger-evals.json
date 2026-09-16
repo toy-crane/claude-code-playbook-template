@@ -1,0 +1,50 @@
+[
+  {
+    "query": "PRODUCT.md, GLOSSARY.md, 결정문이 기능 출시를 거치면서 서로 중복되고 일부 표현도 오래됐어. 새 결정을 만들지는 말고 현재 확정된 맥락으로 정리해줘.",
+    "should_trigger": true
+  },
+  {
+    "query": "완료된 spec 폴더가 쌓였고 AGENTS.md에도 결정 전문이 복사돼 있어. 장기 프로젝트 맥락을 한번 정비해줘.",
+    "should_trigger": true
+  },
+  {
+    "query": "현재 제품 문서와 용어집, decision index 사이에 충돌이 있는지 점검하고 안전하게 고칠 수 있는 것만 반영해줘.",
+    "should_trigger": true
+  },
+  {
+    "query": "결제는 토스페이먼츠만 쓰기로 방금 정했어. 이 새 결정을 프로젝트에 남겨줘.",
+    "should_trigger": false
+  },
+  {
+    "query": "우리 제품의 핵심 사용자를 누구로 할지 처음부터 같이 정해서 PRODUCT.md를 만들어줘.",
+    "should_trigger": false
+  },
+  {
+    "query": "checkout-v2 기능을 구현 가능한 spec으로 구체화해줘.",
+    "should_trigger": false
+  },
+  {
+    "query": "GLOSSARY.md에서 우리가 확정 구독자를 뭐라고 부르기로 했는지만 찾아줘.",
+    "should_trigger": false
+  },
+  {
+    "query": "문서 정리는 됐고 승인된 spec을 그대로 구현해줘.",
+    "should_trigger": false
+  },
+  {
+    "query": "출시를 몇 번 거치니 루트 제품 문서, 용어집, 결정 폴더와 남은 spec이 서로 어긋나 보여. 의도를 새로 정하지 말고 확정된 내용 안에서 정합성을 회복해줘.",
+    "should_trigger": true
+  },
+  {
+    "query": "출하가 확인된 spec들을 치우기 전에 재사용할 결정은 보존하고, 오래된 agent 지침과 decision index까지 함께 정비해줘.",
+    "should_trigger": true
+  },
+  {
+    "query": "무료 체험이 끝났지만 아직 기능을 쓸 수 있는 사용자를 부를 새 용어를 정해서 용어집에 기록해줘.",
+    "should_trigger": false
+  },
+  {
+    "query": "제품 사용자를 개인에서 가족으로 바꾸기로 방금 확정했어. PRODUCT.md의 제품 의미를 나와 함께 다시 정의해줘.",
+    "should_trigger": false
+  }
+]

@@ -1,0 +1,7 @@
+:root { --bg: #ffffff; --fg: #1c1c1a; --line: #dedcd4; }
+body { margin: 0; font-family: system-ui, sans-serif; background: var(--bg); color: var(--fg); }
+.page { max-width: 560px; margin: 0 auto; padding: 32px 20px; }
+.channel-list { list-style: none; margin: 0; padding: 0; border-top: 1px solid var(--line); }
+.channel-row { display: flex; justify-content: space-between; align-items: center; padding: 14px 0; border-bottom: 1px solid var(--line); }
+.channel-name { font-weight: 500; }
+.switch { display: flex; gap: 8px; align-items: center; font-size: 14px; }

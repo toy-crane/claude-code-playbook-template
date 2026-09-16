@@ -1,0 +1,4 @@
+interface:
+  display_name: "Pull Base Branch"
+  short_description: "Rebase onto the requested or default base"
+  default_prompt: "Use $pull to rebase the current checkout onto its latest remote base branch without losing local work."

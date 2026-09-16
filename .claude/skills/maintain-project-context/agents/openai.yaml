@@ -1,0 +1,4 @@
+interface:
+  display_name: "Maintain Project Context"
+  short_description: "Reconcile durable context without changing intent"
+  default_prompt: "Use $maintain-project-context to reconcile and clean this project’s durable context without inventing decisions."

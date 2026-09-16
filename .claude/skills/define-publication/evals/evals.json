@@ -1,0 +1,76 @@
+{
+  "skill_name": "define-publication",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "/define-publication 제품 블로그를 시작하려고 한다",
+      "expected_output": "The response treats the medium name as enough to begin the interview but not enough to write the premise, asks one open question about a concrete reading scene, and creates no file.",
+      "files": [],
+      "expectations": [
+        "It asks one open question about who meets the writing, in what situation, and what they read instead today.",
+        "It does not invent readers or a purpose, or recommend voice before that context is known.",
+        "It does not create docs/publications/ or any file.",
+        "It does not brief or draft a piece."
+      ]
+    },
+    {
+      "id": 2,
+      "prompt": "/define-publication 우리 CLI를 쓰는 개발자를 위한 짧은 기술 블로그야. 터미널을 열어 둔 채 작업 사이에 읽고, 글 하나를 읽고 나면 전에 못 하던 명령 하나를 직접 돌릴 수 있어야 해. 어조는 담백한 1인칭 복수 현재형, 과장 없이. 회사 소식과 마케팅은 안 다뤄. 글은 400–900자 수준의 H2 절 구조로 content/posts/<slug>.md에 두고 scripts/preview.sh로 미리 봐. 완료 증거는 독자 질문 통과와 실린 명령 실행 확인. 이 내용으로 docs/publications/blog.md를 써줘.",
+      "expected_output": "The response recognizes the explicit premise and write request as sufficient, asks no new question, and writes one docs/publications/blog.md covering every approved area without inventing meaning.",
+      "files": [],
+      "expectations": [
+        "It writes docs/publications/blog.md rather than only proposing content.",
+        "It represents readers and situations, promised change, voice, coverage, conventions with form, location, and preview, evidence of a finished piece, and success signals or assumptions.",
+        "It asks no additional question.",
+        "It does not copy product facts into the file and does not create a brief."
+      ]
+    },
+    {
+      "id": 3,
+      "prompt": "/define-publication 첨부한 docs/publications/blog.md가 현재 전제야. 독자를 개인 개발자에서 팀 리드까지 넓히기로 했어. 나머지는 유지하면서 파일을 갱신해줘.",
+      "expected_output": "The response revises the same file in place, changes only the confirmed reader meaning, preserves the rest, and makes the consequential change explicit.",
+      "files": [
+        "evals/fixtures/blog/docs/publications/blog.md"
+      ],
+      "expectations": [
+        "It updates docs/publications/blog.md rather than creating a dated or parallel file.",
+        "It incorporates the team-lead readers.",
+        "It preserves the voice, coverage, conventions, and evidence sections found only in the attached file.",
+        "It leaves no change log or obsolete reader statement in the file."
+      ]
+    },
+    {
+      "id": 4,
+      "prompt": "/define-publication 주말에 직접 키운 식물을 관찰하는 개인 기록 매체를 만들고 있어. 독자는 나 자신이고 저녁에 사진과 함께 읽어. 독자의 행동을 바꾸는 목적은 없고 내가 본 변화를 나중에 돌아볼 수 있으면 돼. 짧은 관찰 기록만 다루고 재배법 강의는 제외해. 완성 글은 content/posts/<slug>.md에 두며 별도 웹 미리보기는 없어. 관찰 사실과 날짜가 맞는지, 본문만 읽고 무엇을 봤는지 알 수 있는지가 완료 기준이야. 나머지는 다 정했고 말투만 미정이야. 다음 단계로 진행해줘.",
+      "expected_output": "A short illustrative voice sample and a reason grounded in a private observation record, awaiting reaction.",
+      "files": [],
+      "expectations": [
+        "It shows actual sample prose before asking the user to name a tone.",
+        "It does not invent an audience or a promised behavior change for this personal record.",
+        "It keeps the sample unsettled and creates no premise or piece yet."
+      ]
+    },
+    {
+      "id": 5,
+      "prompt": "/define-publication 독자는 요리를 처음 해 보는 나 자신이고 주방 메모를 나중에 돌아보는 기록이야. 앞서 네가 제안한 예문은 “요리에서는 불의 세기를 이해하는 것이 중요합니다. 재료를 넣기 전에 팬이 충분히 달궈졌는지 확인해야 합니다.”였어. 너무 가르치는 느낌이야. 같은 내용으로 다른 방향을 보고 싶어.",
+      "expected_output": "The prose changes while the cooking topic and claims remain stable; no permanent preference is inferred.",
+      "files": [],
+      "expectations": [
+        "It changes the actual sentences rather than only tone adjectives.",
+        "It keeps the same content and does not invent a recipe, outcome, or reader.",
+        "It does not save the proposed alternative as accepted voice."
+      ]
+    },
+    {
+      "id": 6,
+      "prompt": "/define-publication 주말 식물 관찰 기록의 전제와 저장을 최종 확인할게. 독자는 저녁에 사진과 함께 읽는 나이고 목적은 본 변화를 나중에 돌아보는 거야. 짧은 관찰 기록만 쓰고 재배법 강의는 제외해. content/posts/<slug>.md에 두고 웹 미리보기는 없어. 독자 질문 확인과 관찰 사실 확인이 완료 기준이야. 이 매체에만 적용할 예문으로 “오늘은 잎 끝에 작은 갈색 점이 보였다. 지난주 사진에는 없던 점이다.”를 채택할게. 관찰한 것과 비교를 먼저 담고 해석을 서두르지 않는 특징이 좋아. 이대로 docs/publications/plants.md를 저장해줘.",
+      "expected_output": "Writes the confirmed premise with the accepted sample, confirmed qualities and scope.",
+      "files": [],
+      "expectations": [
+        "The premise contains the accepted sentences, confirmed qualities and evidence of acceptance.",
+        "It keeps the voice specific to this medium and does not create a duplicate shared rule.",
+        "It writes no full article or brief and asks no repeated approval."
+      ]
+    }
+  ]
+}

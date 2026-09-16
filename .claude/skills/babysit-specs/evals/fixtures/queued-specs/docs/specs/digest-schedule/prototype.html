@@ -1,0 +1,82 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Digest schedule prototype</title>
+<style>
+  :root { --bg:#ffffff; --fg:#1c1c1a; --muted:#6b6a64; --line:#dedcd4; --accent:#185fa5; }
+  body { margin:0; font-family:system-ui,sans-serif; background:#f4f2ec; color:var(--fg); }
+  .bar { display:flex; gap:8px; padding:12px 20px; background:var(--bg); border-bottom:1px solid var(--line); flex-wrap:wrap; }
+  .bar button { font:inherit; padding:6px 12px; border:1px solid var(--line); background:var(--bg); border-radius:6px; cursor:pointer; }
+  .bar button[aria-pressed="true"] { border-color:var(--accent); color:var(--accent); }
+  .screen { display:none; max-width:560px; margin:24px auto; background:var(--bg); border:1px solid var(--line); border-radius:12px; padding:24px; }
+  .screen.active { display:block; }
+  h1 { font-size:20px; font-weight:500; margin:0 0 20px; }
+  h2 { font-size:16px; font-weight:500; margin:24px 0 8px; }
+  .row { display:flex; justify-content:space-between; align-items:center; padding:14px 0; border-bottom:1px solid var(--line); }
+  .row:first-of-type { border-top:1px solid var(--line); }
+  .hint { color:var(--muted); font-size:14px; margin:4px 0 0; }
+  select { font:inherit; padding:4px 8px; }
+  .event { padding:12px 0; border-bottom:1px solid var(--line); }
+  .event .target { color:var(--muted); font-size:13px; }
+  .empty { color:var(--muted); padding:24px 0; text-align:center; }
+</style>
+</head>
+<body>
+<nav class="bar">
+  <button data-screen="settings" aria-pressed="true">Preferences</button>
+  <button data-screen="digest" aria-pressed="false">Digest email</button>
+  <button data-state="empty" aria-pressed="false">Empty interval</button>
+</nav>
+
+<section class="screen active" id="settings">
+  <h1>Notification preferences</h1>
+  <div class="row">
+    <span>Mute all notifications</span>
+    <label><input type="checkbox" /> Muted</label>
+  </div>
+  <p class="hint">Muted targets are still collected into the daily digest.</p>
+  <h2>Daily digest</h2>
+  <div class="row">
+    <span>Send one daily digest</span>
+    <label><input type="checkbox" checked /> On</label>
+  </div>
+  <div class="row">
+    <span>Delivery hour</span>
+    <select><option>08:00</option><option selected>09:00</option><option>18:00</option></select>
+  </div>
+</section>
+
+<section class="screen" id="digest">
+  <h1>Your daily digest</h1>
+  <div id="events">
+    <div class="event"><div>Rin mentioned you in "Launch checklist"</div><div class="target">Mentions</div></div>
+    <div class="event"><div>3 new comments on "Pricing page"</div><div class="target">Comments</div></div>
+    <div class="event"><div>Release 2.4.0 shipped</div><div class="target">Releases</div></div>
+  </div>
+</section>
+
+<script>
+  const buttons = document.querySelectorAll('.bar button');
+  const events = document.getElementById('events');
+  const populated = events.innerHTML;
+  const emptyState = '<p class="empty">Nothing happened since your last digest.</p>';
+  function show(id) {
+    document.querySelectorAll('.screen').forEach((s) => s.classList.toggle('active', s.id === id));
+    buttons.forEach((b) => {
+      if (b.dataset.screen) b.setAttribute('aria-pressed', String(b.dataset.screen === id));
+    });
+  }
+  buttons.forEach((b) => {
+    b.addEventListener('click', () => {
+      if (b.dataset.screen) return show(b.dataset.screen);
+      const on = b.getAttribute('aria-pressed') !== 'true';
+      b.setAttribute('aria-pressed', String(on));
+      events.innerHTML = on ? emptyState : populated;
+      show('digest');
+    });
+  });
+</script>
+</body>
+</html>

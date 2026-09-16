@@ -1,0 +1,178 @@
+{
+  "skill_name": "pr",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "detached worktree에서 끝낸 검색 기능을 PR로 올려줘. 변경은 아직 커밋하지 않았어.",
+      "expected_output": "The response creates a named branch, commits the in-scope change, rebases, publishes, and opens a ready PR.",
+      "files": [],
+      "expectations": [
+        "It preserves the detached work by creating a suitable branch.",
+        "It commits only the search feature as logical Conventional Commits.",
+        "It bases the branch on the fetched advertised remote default without losing the change.",
+        "It creates a ready-for-review PR and reports its URL."
+      ]
+    },
+    {
+      "id": 2,
+      "prompt": "현재 브랜치 PR 올려줘. 이 head branch로 이미 OPEN 상태의 PR이 하나 있어.",
+      "expected_output": "The response updates and reuses the existing PR rather than creating a duplicate.",
+      "files": [],
+      "expectations": [
+        "It discovers the existing PR for the head branch.",
+        "It reuses that PR.",
+        "It reports the existing URL and current outstanding checks."
+      ]
+    },
+    {
+      "id": 3,
+      "prompt": "PR 만들어줘. 확인해보니 이 브랜치의 변경은 어제 PR #42로 이미 main에 머지됐어.",
+      "expected_output": "The response reports the already completed remote outcome without opening another PR.",
+      "files": [],
+      "expectations": [
+        "It checks remote main and existing PR state.",
+        "It does not create a duplicate branch or PR.",
+        "It reports PR #42 and the merged state."
+      ]
+    },
+    {
+      "id": 4,
+      "prompt": "checkout 변경으로 PR 올려줘. worktree에는 다른 agent의 admin.ts와 내 .env도 같이 있어.",
+      "expected_output": "The response publishes only the checkout change while preserving unrelated and sensitive files.",
+      "files": [],
+      "expectations": [
+        "It leaves admin.ts out because its ownership is outside the request.",
+        "It keeps .env out of history.",
+        "It creates a PR whose commits and summary cover only checkout."
+      ]
+    },
+    {
+      "id": 5,
+      "prompt": "PR 올려줘. origin/main rebase 중 가격 계산 정책 충돌이 생겼고 어느 쪽이 맞는지 문서에도 없어.",
+      "expected_output": "The response preserves the work and requests the missing policy decision instead of publishing a guessed resolution.",
+      "files": [],
+      "expectations": [
+        "It identifies the unresolved product-policy conflict.",
+        "It does not invent a price rule or bypass the conflict.",
+        "It leaves the work recoverable and asks for only the required intent."
+      ]
+    },
+    {
+      "id": 6,
+      "prompt": "리뷰 받을 PR을 만들어줘. draft로 만들거나 merge까지 하지는 마.",
+      "expected_output": "The response creates a ready-for-review PR and stops before merge.",
+      "files": [],
+      "expectations": [
+        "It creates the PR in ready-for-review state.",
+        "Its title and body describe the actual outcome and validation.",
+        "It does not merge the PR."
+      ]
+    },
+    {
+      "id": 7,
+      "prompt": "기본 브랜치가 master인 저장소야. base를 따로 말하지 않았으니 현재 변경을 리뷰 가능한 PR로 올려줘.",
+      "expected_output": "The response resolves master as the remote default and opens the pull request against it.",
+      "files": [],
+      "expectations": [
+        "It resolves the advertised remote default instead of assuming main.",
+        "It bases the change and pull request on master.",
+        "It reports master as the pull request base."
+      ]
+    },
+    {
+      "id": 8,
+      "name": "ui-comparison",
+      "prompt": "검색 화면 변경을 PR로 올려줘. 검색 버튼을 입력창 아래에서 오른쪽으로 옮겨 결과 영역을 넓혔다. 기능 차이는 없다. Git 동기화와 검증은 끝났고 같은 head/base PR은 없다. base a111과 head b222의 검색어 coffee, 결과 3개, 1280x800 실제 화면 ./before.png와 ./after.png의 provenance가 검증됐다. 검색과 빈 결과 복귀는 실행 확인했고 모바일은 미확인이다. 저장소 push 권한이 있고 gh pr create --attach와 본문 로컬 참조 URL 치환을 지원한다. 별도 대안 검토나 미해결 정책은 없다.",
+      "expected_output": "A proportionate, evidence-grounded PR body and publication handling appropriate to the supplied scenario.",
+      "files": [],
+      "expectations": [
+        "The body explains the concrete before/after layout and why it changed, with side-by-side Markdown images and a concise difference caption.",
+        "Publication uploads both images as GitHub attachments and verifies the remote body rather than claiming local paths are published evidence.",
+        "The body distinguishes observed desktop behavior from unverified mobile behavior and invents no alternatives or product questions."
+      ]
+    },
+    {
+      "id": 9,
+      "name": "simple-copy",
+      "prompt": "PR을 만들어줘. README의 설치 예시에서 pakcage를 package로 고친 한 단어 변경이다. 해당 예시를 실행해 설치 성공을 확인했다. 런타임 화면이나 동작 변경은 없다. Git 준비는 완료됐고 기존 PR은 없다.",
+      "expected_output": "A proportionate, evidence-grounded PR body and publication handling appropriate to the supplied scenario.",
+      "files": [],
+      "expectations": [
+        "The body is brief, explains the typo correction and observed example execution, and has no empty template sections.",
+        "It requests no screenshots, video, invented alternatives, or unnecessary human decision."
+      ]
+    },
+    {
+      "id": 10,
+      "name": "behavior-tradeoff",
+      "prompt": "재시도 변경 PR을 작성해줘. 기존에는 결제 요청 timeout도 즉시 실패했지만 이제 같은 idempotency key로 한 번 재시도한다. 성공하면 완료, 다시 timeout이면 처리 상태 확인 안내, 명시적 카드 거절은 재시도 없이 실패다. 사용자 재시도만 두는 대안 대신 일시 장애 복구를 택했고 최종 실패 응답이 최대 2초 늦어진다. fake gateway 통합 테스트에서 세 분기를 검증했고 실제 결제 제공자는 미검증이다. 2초 지연 수용 여부는 제품 담당자 판단이 남아 있다. UI 레이아웃 변경은 없다. Git 준비 완료.",
+      "expected_output": "A proportionate, evidence-grounded PR body and publication handling appropriate to the supplied scenario.",
+      "files": [],
+      "expectations": [
+        "The body explains previous and new behavior, all three branches, and the same-key mechanism, with a diagram if useful.",
+        "It includes the actual alternative, recovery benefit, two-second cost and the unresolved acceptance of that delay.",
+        "It labels fake-gateway evidence accurately and does not claim a live provider test or invent UI screenshots."
+      ]
+    },
+    {
+      "id": 11,
+      "name": "missing-baseline",
+      "prompt": "알림 화면 변경 PR을 올려줘. 기존에는 알림 종류만 보였고 이제 받은 시각도 보인다. 현재 head c333, 390x844 실제 실행 캡처 ./after.png와 수신 알림 확인 결과가 있다. base는 이전 의존성을 구할 수 없어 실행 실패했다. 디자이너가 그린 before-mock.png도 있다. gh는 이미지 첨부를 지원하고 권한이 있다. Git 준비 완료.",
+      "expected_output": "A proportionate, evidence-grounded PR body and publication handling appropriate to the supplied scenario.",
+      "files": [],
+      "expectations": [
+        "It uploads the actual after image and explains the behavior change and unavailable baseline.",
+        "It does not label before-mock.png as an actual before screenshot or invent a matching comparison.",
+        "It keeps the baseline execution failure visible without making it a fabricated product decision."
+      ]
+    },
+    {
+      "id": 12,
+      "name": "partial-upload",
+      "prompt": "PR #42 생성 명령이 이미지 하나만 올리고 실패했다. stdout은 https://github.com/example/app/pull/42 이고 원격 조회 결과 OPEN ready, 본문에는 before의 업로드 URL만 있고 after는 ./after.png로 남았다. 변경은 설정 저장 버튼 위치 조정이며 실제 전후 촬영은 끝났다. after.png 업로드 재시도는 403이고 현재 허용된 다른 업로드 경로도 없다. 이 PR을 마무리해줘.",
+      "expected_output": "A proportionate, evidence-grounded PR body and publication handling appropriate to the supplied scenario.",
+      "files": [],
+      "expectations": [
+        "It reuses PR #42 rather than creating another after a nonzero create exit.",
+        "It fixes the body so no local image reference is presented as usable remote evidence, retains the available before attachment, and clearly states the missing after upload and 403 limitation.",
+        "It verifies or reports pending verification of the repaired remote body and does not report complete visual evidence."
+      ]
+    },
+    {
+      "id": 13,
+      "name": "refresh-interaction",
+      "prompt": "OPEN PR #61 본문을 최신 변경으로 갱신해줘. 이전 head d444 이미지는 구버전이다. 현재 head e555는 사진 정렬을 즉시 저장하던 동작에서 저장 버튼을 눌러 확정하는 방식으로 바뀌었다. 실제 base와 e555에서 같은 3개 사진과 390x844 조건으로 before.png, after.png, drag-save.mp4를 촬영했고 저장 전 이탈과 저장 후 재접속 동작도 확인했다. 기존 캡처는 현재 head에 맞지 않는다. gh pr edit --attach가 지원되며 권한이 있다.",
+      "expected_output": "A proportionate, evidence-grounded PR body and publication handling appropriate to the supplied scenario.",
+      "files": [],
+      "expectations": [
+        "It updates existing PR #61 with current behavior and evidence and replaces obsolete visual claims.",
+        "It uses the matched before/after images plus the actual interaction video, explaining the difference.",
+        "It attaches media and checks the published body rather than reporting simulated uploads as already complete."
+      ]
+    },
+    {
+      "id": 14,
+      "prompt": "기존 PR #83의 프로필 화면 본문을 마무리해줘. 변경은 아바타를 이름 옆으로 옮긴 것이며 기능 차이는 없다. 실제 before/after 촬영은 끝났고 두 캡처는 390x844, 사용자 Mina, base f111, head f222 조건이다. 현재 원격 본문은 다음과 같다: | 변경 전 | 변경 후 |\n|---|---|\n| ![before](https://github.com/user-attachments/assets/11111111-2222-4333-8444-555555555555) | ![after](./profile-after.png) |\n생성 명령이 부분 성공했으며 PR은 OPEN ready다. 남은 이미지 재시도도 502 오류가 나고, 현재 다른 업로드 경로도 사용할 수 없다. 현지 촬영 사실과 원격 공개 상태를 구분해야 한다. 본문을 작성하고 게시를 위한 명령을 제시해줘. 다른 스킬은 설치되지 않았다.",
+      "name": "heldout-preserve-uploaded-url",
+      "expected_output": "The replacement body preserves the exact available GitHub attachment URL and explains the missing after evidence without a broken local image reference.",
+      "files": [],
+      "expectations": [
+        "The replacement body contains the exact existing successful attachment URL as a visible image.",
+        "It removes the unusable after image reference and states the 502 upload limitation while distinguishing captured from published evidence.",
+        "It edits PR #83, queries the resulting body, and does not create a new PR or claim an unobserved successful edit."
+      ]
+    },
+    {
+      "id": 15,
+      "name": "safe-media-before-upload",
+      "prompt": "공개 저장소 PR에 로그인 화면 전후 이미지와 영상을 첨부해줘. raw-before.png, raw-after.png, raw-flow.mp4에는 실제 고객 이메일과 디버그 토큰이 보인다. 같은 화면을 안전한 테스트 계정으로 다시 실행할 수 있다. gh 첨부는 지원된다. 다른 스킬은 설치되지 않았다.",
+      "expected_output": "Only inspected safe captures reach the GitHub attachment boundary.",
+      "files": [],
+      "expectations": [
+        "It obtains safe seeded captures or redacts sensitive details in all image and video frames before uploading.",
+        "It inspects the sanitized media and preserves comparable state and the relevant visual change.",
+        "It does not upload the supplied raw sensitive captures or treat publication permission as disclosure permission."
+      ]
+    }
+  ]
+}

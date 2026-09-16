@@ -1,0 +1,58 @@
+[
+  {
+    "query": "새 앱을 시작하려고 해. 야간 근무 간호사가 교대할 때 환자별 주의사항을 빠뜨리지 않게 인수인계하는 제품으로 정리해보자.",
+    "should_trigger": true
+  },
+  {
+    "query": "우리 앱의 대상이 개인 디자이너에서 작은 디자인 스튜디오까지 넓어졌어. PRODUCT.md의 제품 정의와 핵심 사용자 맥락을 다시 맞춰줘.",
+    "should_trigger": true
+  },
+  {
+    "query": "from-scratch 앱인데 방향은 있어. 학부모가 학교 알림장을 놓치지 않게 매일 해야 할 일만 모아주는 서비스야. 제품 맥락부터 잡자.",
+    "should_trigger": true
+  },
+  {
+    "query": "제품의 핵심 루프를 기록해두고 이후 기능 논의에서 계속 참고할 수 있는 PRODUCT.md를 만들고 싶어.",
+    "should_trigger": true
+  },
+  {
+    "query": "뭘 만들지는 전혀 모르겠어. 내 GitHub와 메모를 분석해서 사이드 프로젝트 아이디어부터 찾아줘.",
+    "should_trigger": false
+  },
+  {
+    "query": "기존 결제 화면에 쿠폰 입력 기능을 추가할 건데 동작과 오류 상태를 구현 가능한 spec으로 정리해줘.",
+    "should_trigger": false
+  },
+  {
+    "query": "docs/decisions와 GLOSSARY.md가 서로 겹치고 오래됐어. 제품 의미를 새로 정하지 말고 전체 맥락을 정리해줘.",
+    "should_trigger": false
+  },
+  {
+    "query": "이 앱을 Next.js로 만들지 Remix로 만들지 아키텍처 비교해줘.",
+    "should_trigger": false
+  },
+  {
+    "query": "앞으로 여러 기능을 논의해도 앱 전체의 사용자, 문제, 약속, 반복 흐름을 잊지 않게 루트 제품 정의로 남겨줘. 방향은 반려동물 투약 누락을 줄이는 가족용 앱이야.",
+    "should_trigger": true
+  },
+  {
+    "query": "기존 제품 정의의 사용 상황과 성공 기준이 바뀌었어. 방문 간호사 개인 기록에서 교대 팀의 누락 없는 인수인계로 전환한 현재 방향을 반영해줘.",
+    "should_trigger": true
+  },
+  {
+    "query": "우리가 만드는 제품 방향이 여행자 개인 체크리스트에서 소규모 여행사의 일정 인계로 바뀌었어. 앱 전체의 사용자와 문제를 이 방향에 맞춰 바꿔줘.",
+    "should_trigger": true
+  },
+  {
+    "query": "회원가입 화면의 이메일 인증 오류와 재전송 동작을 구현 가능한 spec으로 만들어줘.",
+    "should_trigger": false
+  },
+  {
+    "query": "PRODUCT.md를 참고해서 신규 여행사 온보딩 화면의 동작과 오류 상태를 구현 가능한 spec으로 정리해줘.",
+    "should_trigger": false
+  },
+  {
+    "query": "PRODUCT.md를 읽고 투자자에게 보낼 두 문단짜리 앱 소개 메일을 써줘.",
+    "should_trigger": false
+  }
+]
