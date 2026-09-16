@@ -147,24 +147,18 @@ through `project-knowledge` at discovery time. If unavailable, write the
 symptom, observed evidence, suspected cause, what was tried, and proposed next
 step to `docs/follow-ups/<slug>.md`.
 
-## Re-verify the product before review and after repairs
+## Complete deterministic verification before review
 
 After all outcomes pass focused verification and reconciliation, rerun the
-complete deterministic verification, then re-exercise the changed flow and a
-representative journey derived from the root `PRODUCT.md` core loop in the
-running product. Every platform named in the result owes its own runtime
-evidence; never infer one platform from another.
-
-When `PRODUCT.md` or its core loop is absent, re-verify the changed flow and
-report the missing regression coverage without inventing a journey or editing
-the file. When the core loop admits materially different journeys, preserve the
-current evidence and return that product interpretation for clarification; it
-is distinct from approval of the verification method.
+complete deterministic verification. Keep the focused runtime evidence available
+for review; run the final changed-flow and core-loop gate after review and
+must-fix repairs, so that gate observes the revision being handed off.
 
 ## Complete one review of the whole diff, then triage
 
-After every outcome passes reconciliation and the complete verification, obtain
-one completed automated code review of the whole implementation diff against
+After every outcome passes reconciliation and the complete deterministic
+verification, obtain one completed automated code review of the whole
+implementation diff against
 the spec and its acceptance criteria. Count a pass only when the reviewer
 finishes inspecting the intended scope and returns findings or an explicit
 no-findings result. An invocation, partial output, or silent exit is not that
@@ -181,8 +175,9 @@ select. Take the harness's standard mode when nothing argues either way:
 `code-review medium` in Claude Code, while Codex has no dial. Wherever the
 reviewer accepts context, give it the required handoff sources or their
 repository paths: the spec's approved scope, off-limits areas and remaining
-risks, the active task contract, linked project decisions, and any approved
-reference artifacts whose criteria apply to the diff. Check the reviewer's
+risks, the active task contract, linked project decisions, any approved
+reference artifacts whose criteria apply to the diff, and the focused
+verification evidence already collected. Check the reviewer's
 reported scope against both that handoff and the diff you meant to review.
 Findings about another target require retargeting, not repairs; that pass is not
 spent.
@@ -214,10 +209,8 @@ dependent work also waits for its review or explicit waiver.
 Repair a finding only when it breaks an approved acceptance criterion, or is a
 defect or regression you confirm by reproducing it on a path ordinary use
 reaches; a reviewer's assertion is not that confirmation. Rerun the affected
-verification. When the repair changes executable product behavior, it
-invalidates the earlier final runtime evidence: re-run the changed-flow and
-core-loop gate above on every claimed platform after the repair passes. Send no
-scope through the reviewer twice, repairs included. Each scope gets one pass: a
+verification after repairs. Send no scope through the reviewer twice, repairs
+included. Each scope gets one pass: a
 declared checkpoint's cumulative scope, then the whole diff. Point anyone asking
 for another look at a confirmed user command instead of invoking the reviewer
 again.
@@ -229,6 +222,28 @@ disposed of, as disposed; an out-of-scope, stylistic, or unconfirmed finding, in
 the handoff; and a material consequence the spec leaves open, such as a security
 trade-off or a pathological-input failure, as a decision the user owns, with
 `human-review` offered for judging it.
+
+## Verify the final product after review and repairs
+
+After the whole-diff review is complete and triaged and any must-fix repairs
+pass their affected verification, re-exercise the changed flow and a
+representative journey derived from the root `PRODUCT.md` core loop in the
+running product. An explicit review waiver also leads to this gate. Every
+platform named in the result owes its own runtime evidence for the revision
+being handed off; never infer one platform from another.
+
+When `PRODUCT.md` or its core loop is absent, verify the changed flow and
+report the missing regression coverage without inventing a journey or editing
+the file. When the core loop admits materially different journeys, preserve the
+current evidence and return that product interpretation for clarification; it
+is distinct from approval of the verification method.
+
+If final verification finds an in-scope defect, repair it, rerun the affected
+checks, then repeat this gate on the repaired revision without a second review
+pass. An executable repair invalidates earlier final runtime evidence, including
+evidence brought from a run that verified before review. A blocked required
+runtime check keeps completion pending with its exact failed gate and
+prerequisite.
 
 Completion needs every required handoff source to have been inspected, every
 applicable acceptance and approved-reference criterion to be reconciled with the

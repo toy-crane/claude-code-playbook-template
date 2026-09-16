@@ -17,14 +17,14 @@
     {
       "id": 2,
       "prompt": "/implement docs/specs/todo-platform/를 끝까지 구현해줘. 폴더 안에 승인된 Task 01부터 04까지 있고 Task 03에만 Review checkpoint가 선언돼 있어.",
-      "expected_output": "The response implements the approved tasks sequentially in dependency order, records completed status and verification evidence, runs the declared Task 03 checkpoint as one bounded review pass, and finishes with complete verification and one final review pass.",
+      "expected_output": "The response implements approved tasks sequentially, preserves the declared Task 03 review checkpoint, completes deterministic verification and the whole-diff review, then verifies the final runtime after any repairs.",
       "files": [],
       "expectations": [
         "It selects the approved task files as the active implementation handoff.",
         "It completes the tasks sequentially in dependency order.",
         "It marks finished task files completed and records their verification evidence.",
         "Task 03 is the sole intermediate review checkpoint it runs, as one pass over the declared cumulative scope rather than a repeated round.",
-        "It runs complete integrated verification before the single final review pass."
+        "It runs complete integrated deterministic verification before the single whole-diff review, with final runtime verification after review and any must-fix repairs."
       ]
     },
     {
@@ -69,7 +69,7 @@
     {
       "id": 6,
       "prompt": "/implement docs/specs/checkout/를 구현해줘. 승인된 spec에 Checkout API가 public test seam으로 합의돼 있어.",
-      "expected_output": "The response implements the approved spec through the tdd skill at the pre-agreed Checkout API seam, then completes verification and one final automated review pass.",
+      "expected_output": "The response implements the approved spec through the tdd skill at the pre-agreed Checkout API seam, completes deterministic verification and one whole-diff automated review, then verifies the final runtime after any repairs.",
       "files": [],
       "expectations": [
         "It uses the tdd skill because the behavior can be verified through a public seam.",
@@ -420,13 +420,14 @@
     {
       "id": 34,
       "prompt": "/implement docs/specs/reminder-toggle/를 끝내줘. Expo 화면 변경이고 expo-dev-loop와 expo-smoke-test가 둘 다 설치되어 있어. PRODUCT.md의 core loop는 리마인더를 추가하고 오늘 목록에서 확인하는 것이야. 결과는 iOS와 Android 둘 다 지원한다고 전달해야 해.",
-      "expected_output": "The response uses expo-dev-loop for focused verification while editing, then uses expo-smoke-test before completion to re-drive the changed toggle flow and the PRODUCT.md core loop on iOS and Android, with separate runtime evidence for each platform.",
+      "expected_output": "The response uses expo-dev-loop for focused verification while editing, runs complete deterministic checks and one whole-diff review, then uses expo-smoke-test after triage and any must-fix repairs to verify the changed toggle and PRODUCT.md core loop on both platforms.",
       "files": [],
       "expectations": [
         "It uses expo-dev-loop for the focused inner loop rather than postponing all runtime checks until the end.",
         "It uses expo-smoke-test for the final changed-flow and core-loop regression rather than treating the focused pass as delivery evidence.",
         "It drives both the changed flow and the PRODUCT.md core loop on each platform.",
-        "It requires separate iOS and Android evidence and does not infer platform parity from one target."
+        "It requires separate iOS and Android evidence and does not infer platform parity from one target.",
+        "It schedules the final expo-smoke-test after the whole-diff review and any must-fix repairs, while preserving focused runtime evidence before review."
       ]
     },
     {
@@ -524,7 +525,8 @@
         "It respects the explicit waiver for this final review.",
         "It records the waiver scope rather than fabricating a review result.",
         "It completes only if the remaining acceptance criteria and verification pass.",
-        "It does not treat this waiver as authorization to skip reviews of unrelated scopes or future work."
+        "It does not treat this waiver as authorization to skip reviews of unrelated scopes or future work.",
+        "The explicit review waiver still leads to final changed-flow and core-loop runtime verification before completion."
       ]
     },
     {
@@ -642,6 +644,72 @@
         "It names the exact stale point and its evidence instead of reporting a vague mismatch.",
         "It routes the stale point to babysit-specs when that skill is available, or presents the exact decision for the user to settle through shaping when it is not.",
         "It does not silently rewrite the spec to match the code, nor change the shipped delimiter to match the spec."
+      ]
+    },
+    {
+      "id": 52,
+      "prompt": "/implement docs/specs/reminder-toggle/를 마무리해줘. 구현, 집중 자동 검사, iOS 집중 검증, 승인 자료 대조는 끝났어. 전체 자동 검사, 로컬 전체 리뷰, 최종 iOS·Android 핵심 흐름 검증은 아직이야. 리뷰 도구는 정상 사용 가능하고 결과는 지적 없음이야.",
+      "expected_output": "Complete full deterministic checks, finish the whole-diff review, then verify the final changed flow and core loop on both platforms before completion.",
+      "files": [],
+      "expectations": [
+        "It retains the focused verification evidence and completes full deterministic checks before review.",
+        "Its first final core-loop verification follows the completed review rather than preceding it.",
+        "It completes only with separate current-revision runtime evidence for both platforms."
+      ]
+    },
+    {
+      "id": 53,
+      "prompt": "/implement docs/specs/reminder-save/를 마무리해줘. 구현과 집중 검증·대조는 끝났고, 전체 자동 검사와 리뷰와 최종 양 플랫폼 검증이 남았어. 리뷰에서 일반 사용 경로의 저장 결함 한 건이 재현됐고 수정이 필요해.",
+      "expected_output": "Complete deterministic checks and the whole-diff review, repair the reproduced defect and rerun affected verification, then perform final runtime verification of the repaired revision without a second review.",
+      "files": [],
+      "expectations": [
+        "It does not perform a final core-loop pass before the pending review and repair.",
+        "It verifies affected behavior after repair before the final runtime gate.",
+        "It verifies the repaired revision on every claimed platform and invokes no second review."
+      ]
+    },
+    {
+      "id": 54,
+      "prompt": "/implement docs/specs/reminder-toggle/의 로컬 전체 리뷰는 이번에 명시적으로 면제할게. 구현과 집중 검증·대조는 끝났고 전체 자동 검사와 최종 양 플랫폼 검증은 아직이야. iOS와 Android 지원은 그대로 확인해줘.",
+      "expected_output": "Record the explicit review waiver, complete required deterministic verification, then verify the final changed flow and core loop on both platforms.",
+      "files": [],
+      "expectations": [
+        "It performs no automated review invocation.",
+        "It preserves full deterministic and final runtime verification despite the waiver.",
+        "It does not treat focused evidence or the waiver as final completion evidence."
+      ]
+    },
+    {
+      "id": 55,
+      "prompt": "/implement docs/specs/reminder-save/를 마무리해줘. 전체 자동 검사와 전체 리뷰 1회가 끝났고 지적도 처리했어. 그 뒤 최종 양 플랫폼 검증에서 일반 경로의 저장 문제가 재현됐어. iOS와 Android 모두 이번 전달 범위야.",
+      "expected_output": "Repair the final-runtime defect, rerun affected verification, repeat the final runtime gate on the repaired revision and complete without repeating the spent review.",
+      "files": [],
+      "expectations": [
+        "It keeps completion pending until the final-runtime defect is repaired and reverified.",
+        "It repeats the final changed-flow and core-loop verification on every claimed platform using the repaired revision.",
+        "It invokes no second whole-diff review over the already-reviewed scope."
+      ]
+    },
+    {
+      "id": 56,
+      "prompt": "/implement docs/specs/reminder-toggle/를 마무리해줘. 구현과 집중 검증·대조와 전체 자동 검사는 통과했어. 그런데 필수 전체 리뷰 서비스가 현재 사용할 수 없고 가능한 복구 경로도 실패했어. 면제는 하지 않았어. 최종 핵심 흐름 검증은 아직이야.",
+      "expected_output": "Preserve focused evidence and runnable handoff while reporting review pending and its precise prerequisite; do not claim completion or imply a waiver.",
+      "files": [],
+      "expectations": [
+        "It does not mark the implementation complete with its required review blocked.",
+        "It reports the exact review blocker and available focused evidence.",
+        "It does not launch final runtime verification as a substitute for completing or explicitly waiving the pending review."
+      ]
+    },
+    {
+      "id": 57,
+      "prompt": "/implement docs/specs/report-export/를 마무리해줘. CLI 제품이며 시각 자료나 플랫폼 화면 기준은 없어. 구현과 집중 명령 검증·대조는 끝났고 전체 자동 검사·로컬 전체 리뷰·최종 명령 흐름 검증이 남았어. PRODUCT.md의 핵심 흐름은 입력을 읽어 보고서를 저장하는 것이야.",
+      "expected_output": "Apply the same deterministic-check, review-and-repair, final-runtime order to the CLI surface without adding Expo, visual or device requirements.",
+      "files": [],
+      "expectations": [
+        "It completes deterministic checks and review before final command-flow and core-loop verification.",
+        "It uses command runtime evidence rather than adding device, screenshot or Expo gates.",
+        "It preserves the whole-diff review and the current executable revision completion requirements."
       ]
     }
   ]
