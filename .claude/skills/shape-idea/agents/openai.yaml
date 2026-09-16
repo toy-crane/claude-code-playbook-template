@@ -1,0 +1,4 @@
+interface:
+  display_name: "Shape Idea"
+  short_description: "Clarify an idea into a product contract"
+  default_prompt: "Use $shape-idea to settle this idea one decision at a time and write its stable product contract for implementation."

@@ -1,0 +1,155 @@
+{
+  "skill_name": "babysit-specs",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "/babysit-specs 채널 알림 작업(docs/specs/notification-channels/)을 방금 구현해서 머지하고 폴더도 지웠어. 남아 있는 spec을 지금 코드에 맞게 정리해줘.",
+      "expected_output": "The run compares docs/specs/digest-schedule/spec.md with the shipped code, fixes the points that preserve the approved meaning without asking, and asks exactly one question about the muted-channel constraint the shipped deliverable() contradicts.",
+      "files": [
+        "evals/fixtures/queued-specs/package.json",
+        "evals/fixtures/queued-specs/server.js",
+        "evals/fixtures/queued-specs/README.md",
+        "evals/fixtures/queued-specs/src/index.html",
+        "evals/fixtures/queued-specs/src/styles.css",
+        "evals/fixtures/queued-specs/src/channels.js",
+        "evals/fixtures/queued-specs/src/preferences.js",
+        "evals/fixtures/queued-specs/docs/decisions/README.md",
+        "evals/fixtures/queued-specs/docs/decisions/notifications.md",
+        "evals/fixtures/queued-specs/docs/specs/digest-schedule/spec.md",
+        "evals/fixtures/queued-specs/docs/specs/digest-schedule/prototype.html"
+      ],
+      "expectations": [
+        "It renames the spec's `target` wording to the shipped `channel` without asking, and marks the correction as an overridable assumption.",
+        "It records that the per-channel notification toggle criterion is already satisfied by the shipped preferences screen instead of leaving it as outstanding work.",
+        "It asks exactly one question, about the settled constraint that the digest includes muted channels while the shipped deliverable() filters muted channels out, and includes a recommended answer with a concise reason.",
+        "It waits for that answer instead of choosing the constraint's outcome itself.",
+        "It does not reopen the one-digest-per-interval constraint, the daily-only scope, or the daylight-saving risk, none of which the shipped work touches.",
+        "It writes no change to src/, package.json, server.js, or any other product source in the fixture.",
+        "It writes the revision into docs/specs/digest-schedule/spec.md in place and adds no change log section and no separate revision file.",
+        "It preserves the spec's links to prototype.html and docs/decisions/notifications.md rather than restating their contents."
+      ]
+    },
+    {
+      "id": 2,
+      "prompt": "/babysit-specs 채널 알림 작업은 머지됐어. docs/specs/digest-schedule/ 하나만 확인해줘. 승인된 화면이 지금 제품과 어긋났는지도 봐줘.",
+      "expected_output": "The run renders the linked prototype.html, compares its screens with the running preferences screen, and names the drifted screen and state rather than reading the prototype as source text only.",
+      "files": [
+        "evals/fixtures/queued-specs/package.json",
+        "evals/fixtures/queued-specs/server.js",
+        "evals/fixtures/queued-specs/README.md",
+        "evals/fixtures/queued-specs/src/index.html",
+        "evals/fixtures/queued-specs/src/styles.css",
+        "evals/fixtures/queued-specs/src/channels.js",
+        "evals/fixtures/queued-specs/src/preferences.js",
+        "evals/fixtures/queued-specs/docs/decisions/README.md",
+        "evals/fixtures/queued-specs/docs/decisions/notifications.md",
+        "evals/fixtures/queued-specs/docs/specs/digest-schedule/spec.md",
+        "evals/fixtures/queued-specs/docs/specs/digest-schedule/prototype.html"
+      ],
+      "expectations": [
+        "It renders prototype.html and compares its screens and states with the current product surface rather than only reading its markup.",
+        "It names the preferences screen as the drifted coordinate: the prototype shows one global mute row while the shipped screen shows a per-channel list.",
+        "It either regenerates that screen through build-prototype or, when build-prototype is unavailable, records the drift as a remaining risk in spec.md.",
+        "It does not silently rewrite prototype.html by hand as if it were ordinary source.",
+        "It reports the digest email screen as unaffected rather than regenerating every screen."
+      ]
+    },
+    {
+      "id": 3,
+      "prompt": "/babysit-specs docs/specs/ 아래 spec 세 개가 남아 있어. 인자 없이 돌릴 테니 알아서 봐줘.",
+      "expected_output": "The run takes every folder under docs/specs/, handles them one at a time, and keeps the one-question rule across the whole run rather than batching several questions together.",
+      "files": [],
+      "expectations": [
+        "It selects every folder present under docs/specs/ because none was named.",
+        "It handles one spec at a time rather than merging all three into a single comparison.",
+        "It asks at most one question at a time and waits, even though three specs are in scope.",
+        "It does not ask about a spec whose contract the shipped work leaves untouched."
+      ]
+    },
+    {
+      "id": 4,
+      "prompt": "/babysit-specs docs/specs/export-csv/ 확인해줘. 알고 보니 이 기능은 지난 주 다른 작업에 딸려서 이미 전부 구현됐어.",
+      "expected_output": "The run confirms every acceptance criterion against the current repository, reports the spec as a retirement candidate, and leaves the folder in place.",
+      "files": [],
+      "expectations": [
+        "It checks each acceptance criterion against the current repository rather than accepting the user's claim alone.",
+        "It reports docs/specs/export-csv/ as a retirement candidate.",
+        "It does not delete the spec folder or its files.",
+        "It names maintain-project-context or the user as the owner of the actual retirement."
+      ]
+    },
+    {
+      "id": 5,
+      "prompt": "/babysit-specs docs/specs/search-filters/ 를 지금 코드에 맞춰줘. 이 폴더에는 tasks/ 안에 task 세 개가 있고 01은 이미 completed 야.",
+      "expected_output": "The run revises spec.md, names the tasks the revision reaches for split-into-tasks to re-cut, and leaves the completed task's evidence untouched.",
+      "files": [],
+      "expectations": [
+        "It rewrites spec.md and does not edit any file under tasks/.",
+        "It names the specific tasks the revised outcome reaches so split-into-tasks can re-cut them.",
+        "It leaves task 01's recorded completion evidence in place rather than clearing or rewriting it.",
+        "When the revision changes what task 01 delivered, it names that task for re-verification instead of marking it incomplete itself."
+      ]
+    },
+    {
+      "id": 6,
+      "prompt": "/babysit-specs 방금 머지한 작업에서 용어를 Member에서 Subscriber로 통일했어. docs/specs/billing-retry/ 를 맞춰줘.",
+      "expected_output": "The run updates the renamed term throughout the spec without asking, marks the correction as an overridable assumption, and finishes without a question because no approved meaning changed.",
+      "files": [],
+      "expectations": [
+        "It updates the term throughout spec.md without asking the user.",
+        "It marks the correction as an agent-chosen assumption the user can override rather than as a newly settled constraint.",
+        "It finishes without asking a question, since a rename preserves the approved meaning.",
+        "It reports the update with its reason instead of applying it silently.",
+        "It checks GLOSSARY.md for the project's current term rather than taking the new name from the prompt alone."
+      ]
+    },
+    {
+      "id": 7,
+      "prompt": "/babysit-specs docs/specs/audit-log/spec.md 는 아직 커밋한 적이 없어. 그래도 지금 코드랑 맞는지 봐줘.",
+      "expected_output": "The run recognises that the spec has no committed baseline, compares against the current state alone, and says in its report that the comparison was weaker for that reason.",
+      "files": [],
+      "expectations": [
+        "It recognises that an uncommitted spec has no baseline commit to measure changes from.",
+        "It compares against the current repository state rather than refusing to run.",
+        "Its report says the comparison was weaker and names the missing baseline as the reason.",
+        "It does not commit the spec itself to manufacture a baseline."
+      ]
+    },
+    {
+      "id": 8,
+      "prompt": "/babysit-specs docs/specs/rate-limit/ 좀 봐줘. 앞 작업이 요청 한도를 계정 단위에서 API 키 단위로 바꿨는데, 이 spec은 계정 단위 한도를 승인된 결과로 적어두고 있어.",
+      "expected_output": "The run treats the changed unit as a meaning-changing point, asks one question with a recommendation, and does not rewrite the approved outcome on its own.",
+      "files": [],
+      "expectations": [
+        "It classifies the account-versus-key unit as changing what the user approved, not as a meaning-preserving correction.",
+        "It asks one question with a recommended answer and a concise reason, then waits.",
+        "It leaves the approved outcome as written until the user answers.",
+        "It does not record its own preferred unit as a settled constraint."
+      ]
+    },
+    {
+      "id": 9,
+      "prompt": "/babysit-specs 앞 작업에서 재시도 정책을 확정했고, 이건 앞으로 다른 작업도 그대로 따라야 해. docs/specs/webhook-delivery/ 를 여기에 맞춰줘.",
+      "expected_output": "The run revises the spec and routes the reusable retry policy to project-knowledge so it lands in a decision contract rather than living only inside this spec.",
+      "files": [],
+      "expectations": [
+        "It revises docs/specs/webhook-delivery/spec.md to follow the settled retry policy.",
+        "It routes the reusable policy through project-knowledge, or writes it into its decision contract directly when project-knowledge is unavailable.",
+        "It does not leave a decision future work should reuse recorded only inside the work-unit spec.",
+        "It links the decision contract from the spec instead of copying the policy's rules into it."
+      ]
+    },
+    {
+      "id": 10,
+      "prompt": "/babysit-specs docs/specs/onboarding/ 맞춰주는 김에, 이 spec이 참조하는 코드도 지금 구조로 리팩터링해줘.",
+      "expected_output": "The run revises the spec and declines to change product source, naming the boundary rather than silently ignoring the second half of the request.",
+      "files": [],
+      "expectations": [
+        "It revises docs/specs/onboarding/spec.md against the current repository.",
+        "It does not edit product source, configuration, or dependencies.",
+        "It says plainly that source changes are outside this skill and names where that work belongs.",
+        "It does not perform the refactor in a scratch copy and then apply it to the working tree."
+      ]
+    }
+  ]
+}

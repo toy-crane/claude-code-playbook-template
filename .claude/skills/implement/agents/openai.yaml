@@ -1,0 +1,4 @@
+interface:
+  display_name: "Implement"
+  short_description: "Implement with runtime proof and a completed review"
+  default_prompt: "Use $implement to load this spec folder as one handoff bundle, then implement one outcome at a time. Read its textual contracts and inspect approved reference artifacts before changing source; reconcile each applicable acceptance and reference criterion with runtime evidence, including actual-screen comparison under each claimed platform's intended layout and native conventions when an approved visual reference exists. Give the same handoff to one whole-diff automated review, keep completion pending for uninspected or uncompared requirements or a blocked review unless explicitly waived, triage without automatic re-review, repeat runtime proof after executable repairs, and provide a runnable handoff when available."

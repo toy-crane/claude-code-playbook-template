@@ -1,0 +1,132 @@
+{
+  "skill_name": "draft-piece",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "/draft-piece docs/briefs/hello-world/",
+      "expected_output": "The response writes the piece to content/posts/<slug>.md as the publication file names, runs scripts/tally.sh on docs and on content/empty while writing and matches the stated output, hands the draft and reader questions to a fresh-context agent, revises at most once, previews through scripts/preview.sh, and stops before committing.",
+      "files": [
+        "evals/fixtures/blog-monorepo"
+      ],
+      "expectations": [
+        "It writes the piece under content/posts/ with front matter, not elsewhere.",
+        "It executes both marked commands in the repository and the piece's stated output matches the real output.",
+        "It runs a reader-question check through a separate agent that receives only the draft and the questions.",
+        "It revises at most once and records other remarks without acting on them.",
+        "It runs scripts/preview.sh and reports the rendered file.",
+        "It does not commit, open a pull request, or edit the brief."
+      ]
+    },
+    {
+      "id": 2,
+      "prompt": "/draft-piece docs/briefs/hello-world/ 쓰다 보니 빈 폴더 케이스보다 다른 파일 타입 확장이 더 재미있는데, 그쪽으로 논지를 바꿔서 써줘.",
+      "expected_output": "The response recognizes that the request changes the thesis and scope the brief settled, preserves the current draft, and returns the decision to the user for the brief to be resettled instead of drafting the new thesis.",
+      "files": [
+        "evals/fixtures/blog-monorepo"
+      ],
+      "expectations": [
+        "It does not edit brief.md.",
+        "It does not draft the new thesis under the old brief.",
+        "It states the exact decision that needs resettling and stops."
+      ]
+    },
+    {
+      "id": 3,
+      "prompt": "/draft-piece docs/briefs/backups/의 기존 초안을 교정해줘. 앞으로 이 블로그의 소제목은 짧아도 이 절이 말하는 주장을 드러내는 문장이어야 해. '백업의 중요성'처럼 주제 이름만 있으면 목차만 읽어서는 내용이 안 보이더라. 이 글에서는 '복원해 봐야 백업을 믿을 수 있다'로 고쳐줘. 제목이 길어서 줄여도 이 원칙은 유지해줘. 이번 교정은 이 제목과 같은 문제가 있는 부분만 다뤄줘.",
+      "expected_output": "Captures the explicit scoped rule during the correction and applies it without changing the thesis.",
+      "files": [
+        "evals/fixtures/writing-feedback"
+      ],
+      "expectations": [
+        "It updates the existing heading rule on disk without a separate remember request or approval.",
+        "It preserves brevity alongside claim-bearing headings, reason, scope, before/after and confirming instruction.",
+        "It changes the heading but preserves the backup claim and brief ownership.",
+        "It works with only draft-piece installed and reports the actual record location."
+      ]
+    },
+    {
+      "id": 4,
+      "prompt": "/draft-piece content/posts/backups.md에서 이번 글의 소제목만 “복원 확인”으로 해줘. 이 글에 한해서 목차 공간이 부족하니 예외로 둘게. 본문은 그대로 둬.",
+      "expected_output": "Applies a one-piece exception after capture without replacing the standing preference.",
+      "files": [
+        "evals/fixtures/writing-feedback"
+      ],
+      "expectations": [
+        "It changes the requested heading and leaves the body and standing criterion unchanged.",
+        "It does not replace the accepted default example with this exception.",
+        "It accepts this later user edit despite an earlier automatic revision."
+      ],
+      "setup": {
+        "write": {
+          "docs/decisions/writing.md": "# 글쓰기 기준\n\n## 소제목\n\n이 블로그의 소제목은 짧아도 절의 주장을 드러내는 문장으로 쓴다. 휴대폰에서 목차를 훑어보기 쉬워야 하고, 주제 이름만 있으면 목차만 읽어서는 내용을 알 수 없기 때문이다.\n\n- 바꾸기 전: 백업의 중요성\n- 채택한 예문: 복원해 봐야 백업을 믿을 수 있다\n- 확인 근거: 사용자가 앞으로 이 블로그 소제목에 주장을 드러내도록 지시하고 위 예문을 선택했다. 길이를 줄여도 그 원칙을 유지하라고 확인했다.\n- 범위: 이 블로그. 다른 매체에는 적용하기로 정하지 않았다.\n"
+        }
+      }
+    },
+    {
+      "id": 5,
+      "prompt": "/draft-piece content/posts/backups.md의 “테스트 폴더”를 이 글에서는 “임시 폴더”로 바꿔줘.",
+      "expected_output": "Makes the local replacement without a global vocabulary ban or a new style rule.",
+      "files": [
+        "evals/fixtures/writing-feedback"
+      ],
+      "expectations": [
+        "It edits the article and does not create a standing terminology or style preference.",
+        "It does not infer that all future articles must avoid the original phrase."
+      ]
+    },
+    {
+      "id": 6,
+      "prompt": "/draft-piece content/posts/backups.md를 교정해줘. 브리프는 없는 글이라고 보고 기존 글과 이 지시 안에서만 작업해. 문장을 쉽게 읽히게 다듬되 이번에 복원해 볼 수 있었다는 것과 모든 사고에서 된다는 보장은 아니라는 뜻이 유지되면 돼.",
+      "expected_output": "Uses the existing article and explicit correction without inventing an absent contract.",
+      "files": [
+        "evals/fixtures/writing-feedback"
+      ],
+      "expectations": [
+        "With the fixture brief removed before the run, it completes the scoped edit without creating a brief.",
+        "It preserves the experiment, author as actor, and limited causal claim.",
+        "It reports the absence of a full brief-based reader-question check instead of claiming it passed."
+      ],
+      "setup": {
+        "remove": [
+          "docs/briefs/backups/brief.md"
+        ]
+      }
+    },
+    {
+      "id": 7,
+      "prompt": "/draft-piece docs/briefs/backups/ 초안을 넘기기 전에 확인하고 필요한 부분을 고쳐줘.",
+      "expected_output": "After capture, a planted short topic-only heading is repaired despite answerable reader questions.",
+      "files": [
+        "evals/fixtures/writing-feedback"
+      ],
+      "expectations": [
+        "With current claim-bearing heading criteria retained but the article heading reset to 백업의 중요성, it repairs that confirmed violation.",
+        "It preserves the brief and evidence checks, and uses at most one automatic revision pass.",
+        "Unconfirmed stylistic suggestions do not become new rules or extra revision cycles."
+      ],
+      "setup": {
+        "write": {
+          "docs/decisions/writing.md": "# 글쓰기 기준\n\n## 소제목\n\n이 블로그의 소제목은 짧아도 절의 주장을 드러내는 문장으로 쓴다. 휴대폰에서 목차를 훑어보기 쉬워야 하고, 주제 이름만 있으면 목차만 읽어서는 내용을 알 수 없기 때문이다.\n\n- 바꾸기 전: 백업의 중요성\n- 채택한 예문: 복원해 봐야 백업을 믿을 수 있다\n- 확인 근거: 사용자가 앞으로 이 블로그 소제목에 주장을 드러내도록 지시하고 위 예문을 선택했다. 길이를 줄여도 그 원칙을 유지하라고 확인했다.\n- 범위: 이 블로그. 다른 매체에는 적용하기로 정하지 않았다.\n"
+        }
+      }
+    },
+    {
+      "id": 8,
+      "prompt": "/draft-piece 소제목 원칙을 수정할게. 앞으로 이 블로그의 소제목은 주장이 드러나는 짧은 문장으로 쓰되, 이미 확정한 예문 “복원해 봐야 백업을 믿을 수 있다”는 단정이 강해 보여. “복원해 보면 백업을 확인할 수 있다”로 예문과 이 글의 제목을 바꿔줘.",
+      "expected_output": "Updates the accepted exemplar under the unchanged rule rather than leaving both as approved defaults.",
+      "files": [
+        "evals/fixtures/writing-feedback"
+      ],
+      "expectations": [
+        "It replaces or clearly rejects the old accepted example at its current owner.",
+        "It retains the scoped rule and confirmation evidence, and does not alter unrelated publication meaning.",
+        "It does not change the brief thesis or claim universal restoration success."
+      ],
+      "setup": {
+        "write": {
+          "docs/decisions/writing.md": "# 글쓰기 기준\n\n## 소제목\n\n이 블로그의 소제목은 짧아도 절의 주장을 드러내는 문장으로 쓴다. 휴대폰에서 목차를 훑어보기 쉬워야 하고, 주제 이름만 있으면 목차만 읽어서는 내용을 알 수 없기 때문이다.\n\n- 바꾸기 전: 백업의 중요성\n- 채택한 예문: 복원해 봐야 백업을 믿을 수 있다\n- 확인 근거: 사용자가 앞으로 이 블로그 소제목에 주장을 드러내도록 지시하고 위 예문을 선택했다. 길이를 줄여도 그 원칙을 유지하라고 확인했다.\n- 범위: 이 블로그. 다른 매체에는 적용하기로 정하지 않았다.\n"
+        }
+      }
+    }
+  ]
+}

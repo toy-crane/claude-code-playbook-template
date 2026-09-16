@@ -1,0 +1,6 @@
+[
+  {"query":"이 checkout을 main 대상의 reviewable change request로 게시하고 팀에 줄 주소를 알려줘.","should_trigger":true},
+  {"query":"현재 브랜치를 GitHub 코드 리뷰에 보내고 합치기 전 상태에서 멈춰줘.","should_trigger":true},
+  {"query":"PR #101의 patch 파일을 내려받아서 /tmp에 저장해줘.","should_trigger":false},
+  {"query":"승인된 PR을 기본 브랜치에 합치고 작업 디렉터리를 지워줘.","should_trigger":false}
+]

@@ -1,0 +1,4 @@
+interface:
+  display_name: "Define Publication"
+  short_description: "Settle a publication with voice samples"
+  default_prompt: "Use $define-publication to settle this publication's readers, purpose, coverage, conventions, and evidence, recommend its voice through sample prose, and preserve the confirmed premise."

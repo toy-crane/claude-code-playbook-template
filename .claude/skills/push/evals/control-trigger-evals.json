@@ -1,0 +1,6 @@
+[
+  {"query":"tracked remote에 이 브랜치의 새 Git 커밋들을 전송해줘.","should_trigger":true},
+  {"query":"리베이스로 바뀐 branch history를 마지막으로 확인한 원격 상태에만 안전하게 게시해줘.","should_trigger":true},
+  {"query":"로컬 v3.0.0 tag만 origin으로 전송해줘. 브랜치는 건드리지 마.","should_trigger":false},
+  {"query":"패키지 새 버전을 npm registry에 배포해줘.","should_trigger":false}
+]

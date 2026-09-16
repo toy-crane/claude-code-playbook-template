@@ -1,0 +1,38 @@
+[
+  {
+    "query": "이번 주 블로그 글로 'Expo 앱의 스모크 테스트 자동화'를 쓰려고 해. 논지와 개요부터 잡자.",
+    "should_trigger": true
+  },
+  {
+    "query": "뉴스레터 다음 호 주제는 온보딩 이탈 분석이야. 본문 쓰기 전에 독자와 범위, 독자 질문을 정해서 브리프로 남겨줘.",
+    "should_trigger": true
+  },
+  {
+    "query": "'우리가 모노레포로 옮긴 이유' 글의 브리프를 만들어줘. 어떤 독자에게 무엇을 남길지부터.",
+    "should_trigger": true
+  },
+  {
+    "query": "블로그 글감이 하나 있는데 제목 후보랑 개요를 보면서 방향을 정하고 싶어. 주제는 스킬 배포 구조야.",
+    "should_trigger": true
+  },
+  {
+    "query": "기존 결제 화면에 쿠폰 입력 기능을 추가할 건데 동작과 오류 상태를 구현 가능한 spec으로 정리해줘.",
+    "should_trigger": false
+  },
+  {
+    "query": "회원가입 화면의 이메일 인증 오류와 재전송 동작을 구현 가능한 spec으로 만들어줘.",
+    "should_trigger": false
+  },
+  {
+    "query": "제품 블로그를 시작하려고 해. 누구를 위해 어떤 글을 쓸지 매체의 전제부터 잡자.",
+    "should_trigger": false
+  },
+  {
+    "query": "docs/briefs/monorepo-move/ 브리프대로 글을 써줘.",
+    "should_trigger": false
+  },
+  {
+    "query": "PRODUCT.md를 읽고 투자자에게 보낼 두 문단짜리 앱 소개 메일을 써줘.",
+    "should_trigger": false
+  }
+]

@@ -1,0 +1,6 @@
+[
+  {"query":"승인된 change request를 default branch에 반영하고 이 작업용 checkout을 정리해줘.","should_trigger":true},
+  {"query":"원격에는 이미 합쳐졌다고 하니 검증 후 이 브랜치의 개발 서버와 worktree 마무리까지 해줘.","should_trigger":true},
+  {"query":"두 데이터베이스 테이블을 customer_id 기준으로 merge하는 SQL을 작성해줘.","should_trigger":false},
+  {"query":"현재 결과를 PR로 올려서 리뷰 가능한 상태까지만 만들어줘.","should_trigger":false}
+]
