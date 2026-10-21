@@ -51,6 +51,13 @@ PLAYWRIGHT_CHROMIUM_PATH=/opt/pw-browsers/chromium bun run test:e2e
 
 `async` Server Component는 Vitest가 아직 지원하지 않으므로 E2E로 검증합니다.
 
+- **런타임 검증(에이전트용)**: [agent-browser](https://github.com/vercel-labs/agent-browser). 에이전트가 `next-dev-loop` 스킬로 실행 중인 앱을 직접 조작해 변경을 확인할 때 씁니다. 프로젝트 의존성이 아니므로 한 번 전역으로 설치합니다.
+
+```bash
+npm i -g agent-browser
+agent-browser install  # 설치된 Chrome이 없을 때만
+```
+
 ## Claude Code 워크플로우
 
 ```mermaid
