@@ -34,7 +34,7 @@ This block is written and re-added by `next dev` — verify at `node_modules/nex
 
 # 브라우저 검증
 
-- 실행 중인 앱의 런타임 검증은 `next-dev-loop` 스킬(`/_next/mcp` + `agent-browser`)로 한다. 브라우저 확인을 요구하는 다른 스킬(`implement`, `human-review`, `build-prototype` 등)도 같은 도구를 쓴다.
+- 실행 중인 앱의 런타임 검증은 `next-dev-loop` 스킬(`/_next/mcp` + `agent-browser`)로 한다. 브라우저 확인을 요구하는 다른 스킬(`implement`, `build-prototype` 등)도 같은 도구를 쓴다.
 - Playwright(`e2e/*.spec.ts`, `bun run test:e2e`)는 반복 실행할 E2E 테스트 코드 전용이다. 런타임 검증을 Playwright 스크립트로 대신하지 않는다.
 
 # 검증·리뷰 예산
