@@ -141,12 +141,12 @@
     {
       "id": 13,
       "name": "refresh-interaction",
-      "prompt": "OPEN PR #61 본문을 최신 변경으로 갱신해줘. 이전 head d444 이미지는 구버전이다. 현재 head e555는 사진 정렬을 즉시 저장하던 동작에서 저장 버튼을 눌러 확정하는 방식으로 바뀌었다. 실제 base와 e555에서 같은 3개 사진과 390x844 조건으로 before.png, after.png, drag-save.mp4를 촬영했고 저장 전 이탈과 저장 후 재접속 동작도 확인했다. 기존 캡처는 현재 head에 맞지 않는다. gh pr edit --attach가 지원되며 권한이 있다.",
+      "prompt": "OPEN PR #61 본문을 최신 변경으로 갱신해줘. 이전 head d444 이미지는 구버전이다. 현재 head e555는 사진 정렬을 즉시 저장하던 동작에서 저장 버튼을 눌러 확정하는 방식으로 바뀌었다. 실제 base와 e555에서 같은 3개 사진과 390x844 조건으로 같은 드래그 흐름을 녹화한 before-drag.mp4와 after-drag-save.mp4가 있고, 각각 4MB다. 저장 전 이탈과 저장 후 재접속 동작도 확인했다. 기존 캡처는 현재 head에 맞지 않는다. gh pr edit --attach가 지원되며 권한이 있다.",
       "expected_output": "A proportionate, evidence-grounded PR body and publication handling appropriate to the supplied scenario.",
       "files": [],
       "expectations": [
         "It updates existing PR #61 with current behavior and evidence and replaces obsolete visual claims.",
-        "It uses the matched before/after images plus the actual interaction video, explaining the difference.",
+        "It shows the before and after videos of the same drag flow as the primary evidence, each in its own paragraph as a `![](path)` reference below a label naming its revision, flow, and conditions, and explains the difference.",
         "It attaches media and checks the published body rather than reporting simulated uploads as already complete."
       ]
     },
@@ -172,6 +172,89 @@
         "It obtains safe seeded captures or redacts sensitive details in all image and video frames before uploading.",
         "It inspects the sanitized media and preserves comparable state and the relevant visual change.",
         "It does not upload the supplied raw sensitive captures or treat publication permission as disclosure permission."
+      ]
+    },
+    {
+      "id": 16,
+      "name": "spec-pr-creates-issue-before-opening",
+      "prompt": "이 브랜치는 docs/specs/export-csv/spec.md를 새로 추가했어. spec.md 첫 제목은 'CSV 내보내기'이고 Issue 줄은 없어. AGENTS.md에 ## Issue tracker 섹션이 있고 docs/issue-tracker.md가 ID 형식 `linear:<identifier>`, 생성 동작, 리뷰 상태 In Review를 기록하고 있어. Linear 도구는 쓸 수 있어. PR 올려줘. 다른 스킬은 설치되지 않았다.",
+      "expected_output": "The response creates one issue titled with the spec title before opening the PR, records its ID in spec.md on the same branch, and links it from the PR body without closing it.",
+      "files": [],
+      "expectations": [
+        "It creates exactly one issue through the convention's create operation, titled 'CSV 내보내기' with no `spec:` prefix, in the review state, with a bounded spec section as the body.",
+        "It does not search the tracker by title for an existing issue.",
+        "It writes `Issue: linear:<identifier>` into spec.md and commits it on the same branch before opening the PR.",
+        "The PR body carries the same `Issue:` line and no closing reference, because the PR only adds a spec."
+      ]
+    },
+    {
+      "id": 17,
+      "name": "existing-issue-line-and-no-tracker",
+      "prompt": "두 저장소에서 PR을 올려야 해. A 저장소는 ## Issue tracker 섹션이 있고, 브랜치가 바꾼 docs/specs/search/spec.md에 이미 `Issue: github:#12`가 있으며 구현과 검증이 끝나 커밋마다 Spec-Folder: docs/specs/search/ 트레일러가 있다. B 저장소는 트래커 섹션이 없고 브랜치가 docs/specs/onboarding/spec.md를 새로 추가했다. 다른 스킬은 설치되지 않았다.",
+      "expected_output": "Repository A reuses issue #12 and closes it from a verified implementation PR; repository B creates no issue and writes no Issue line.",
+      "files": [],
+      "expectations": [
+        "In A it creates no issue and uses `github:#12` from the spec's Issue line.",
+        "In A the PR body carries `Issue: github:#12` and the convention's closing reference, because the diff and verification establish implementation delivery.",
+        "In B it creates no issue, adds no Issue line to spec.md, and leaves the PR body without tracker lines."
+      ]
+    },
+    {
+      "id": 18,
+      "name": "video-first-bugfix",
+      "prompt": "PR을 만들어줘. 장바구니에서 수량을 빠르게 두 번 누르면 수량이 1만 늘던 버그를 고쳤다. base c100과 head c200을 같은 테스트 계정과 1280x800 조건으로 실행할 수 있고, 브라우저 자동화 도구로 화면 녹화가 가능하다. 아직 아무것도 촬영하지 않았다. gh pr create --attach가 영상 첨부를 지원하고 권한이 있다. 무료 플랜 저장소다. Git 준비 완료. 다른 스킬은 설치되지 않았다.",
+      "expected_output": "An interaction change gets before-and-after videos of the same flow as its primary evidence.",
+      "files": [],
+      "expectations": [
+        "It plans to record base and head running the same double-tap flow under matching account and viewport, so the before video shows the bug occurring.",
+        "The body embeds the two videos, each in its own paragraph as a `![](path)` reference below a label, followed by the difference and its reason, rather than leading with or settling for a screenshot comparison.",
+        "It keeps each video short enough for the free plan's attachment limit and checks the published body before reporting the videos as available."
+      ]
+    },
+    {
+      "id": 19,
+      "name": "static-copy-stills",
+      "prompt": "설정 화면 PR을 올려줘. 저장 버튼 문구를 '확인'에서 '저장'으로 바꾸고 버튼 색을 회색에서 파란색으로 바꿨다. 동작 차이는 없다. base와 head를 같은 390x844 조건으로 실행해 촬영할 수 있고 영상 녹화도 가능하다. gh 첨부를 지원하고 권한이 있다. Git 준비 완료. 다른 스킬은 설치되지 않았다.",
+      "expected_output": "A static copy and color change gets a side-by-side screenshot comparison without video.",
+      "files": [],
+      "expectations": [
+        "It compares matched before and after screenshots side by side with a short explanation of the difference.",
+        "It records no video and does not present missing video as a limitation, because motion adds nothing to judging copy and color."
+      ]
+    },
+    {
+      "id": 20,
+      "name": "mixed-behavior-and-detail",
+      "prompt": "PR을 만들어줘. 댓글 입력창이 이제 전송 중 비활성화되고 전송 후 스크롤이 새 댓글로 이동한다. 같은 변경에서 입력창 좌우 여백도 16px에서 12px로 줄였다. base와 head를 같은 데이터와 390x844 조건으로 실행할 수 있고 녹화와 캡처 모두 가능하다. gh 첨부를 지원하고 권한이 있다. Git 준비 완료. 다른 스킬은 설치되지 않았다.",
+      "expected_output": "Behavior is shown as before-and-after video, with a side-by-side still comparison added for the fine spacing change.",
+      "files": [],
+      "expectations": [
+        "It records before and after videos of sending a comment under matching conditions.",
+        "It adds a side-by-side screenshot comparison focused on the input padding, rather than relying on the videos to show the 4px change.",
+        "The body explains both the behavior change and the spacing change."
+      ]
+    },
+    {
+      "id": 21,
+      "name": "video-unavailable-fallback",
+      "prompt": "PR을 만들어줘. 드롭다운 메뉴가 이제 열릴 때 위로 펼쳐지는 애니메이션을 쓴다. 이 CI 컨테이너에는 화면 녹화 수단이 없고 스크린샷만 찍을 수 있다. base와 head의 열린 상태를 같은 1280x800 조건으로 촬영한 before.png, after.png가 있다. gh 첨부를 지원하고 권한이 있다. Git 준비 완료. 다른 스킬은 설치되지 않았다.",
+      "expected_output": "Without a recorder, the body compares screenshots and states why video is missing.",
+      "files": [],
+      "expectations": [
+        "It compares the before and after screenshots side by side.",
+        "It states that no recording tool was available in this environment as the reason video is missing, and that the animation itself is not shown.",
+        "It does not claim the animation was observed in video or invent a recording."
+      ]
+    },
+    {
+      "id": 22,
+      "name": "new-screen-head-video",
+      "prompt": "PR을 만들어줘. 새 온보딩 3단계 화면을 추가했다. base에는 이 화면이 없다. head d300에서 테스트 계정으로 3단계를 끝까지 진행한 onboarding.mp4(3MB, 390x844)를 녹화했다. gh 첨부를 지원하고 권한이 있다. Git 준비 완료. 다른 스킬은 설치되지 않았다.",
+      "expected_output": "A new screen with no before state gets the head video alone.",
+      "files": [],
+      "expectations": [
+        "It embeds the head onboarding video, labeled with its revision, flow, and conditions.",
+        "It states that there is no before state rather than inventing a baseline or mock comparison."
       ]
     }
   ]

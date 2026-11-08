@@ -161,7 +161,7 @@
       "expectations": [
         "It keeps the selected follow-up open and does not mix the different defect into a resolution pull request.",
         "It returns symptom, observed evidence, suspected cause, what was tried, and proposed next step to the coordinator.",
-        "The coordinator records the new follow-up through project-knowledge when available or the same five-field format otherwise, commits it, and publishes a dedicated ready-for-review follow-up-record pull request.",
+        "The coordinator records the new follow-up through project-knowledge, commits it, and publishes a dedicated ready-for-review follow-up-record pull request.",
         "It does not clean up a disposable worker that contains the only copy of the new evidence."
       ]
     },

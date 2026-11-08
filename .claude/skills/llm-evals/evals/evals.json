@@ -1,0 +1,89 @@
+{
+  "skill_name": "llm-evals",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "/llm-evals implement가 넘긴 기준이야. 결과물은 '환불 문의 분류'이고, 기준 3은 '환불 문의 분류 정확도, held-out 사례에서 90% 이상, 사례 출처는 fixtures/tickets.jsonl의 지난달 상담 로그'야. 스펙은 docs/specs/refund-triage/spec.md. 앱은 src/triage.js의 classifyTicket()이 Claude를 호출해. ANTHROPIC_API_KEY는 .env.local에 있고 Claude Code도 로그인돼 있어.",
+      "expected_output": "Before building anything the response asks once whether to reach the model through the API key, recommended, or the subscription, noting the subscription leaves out the app's parameters. Once answered, it builds cases from the named log, a runner on classifyTicket(), and a grader, runs a pilot of at most three cases, then stops once for approval with every case, graded samples, run size, noise floor beside the needed gain, and estimated cost, before measuring the baseline on the unchanged prompt.",
+      "files": [],
+      "expectations": [
+        "It asks how to reach the model before building the eval, recommending the API key and naming the subscription's fidelity gap for an app feature.",
+        "It takes cases from the named log rather than inventing them.",
+        "The runner calls classifyTicket() rather than rebuilding the Claude call.",
+        "It stops once before the full run and shows cases, graded samples, run size, noise floor next to the needed gain, and estimated cost.",
+        "It measures the baseline on the unchanged prompt before changing it."
+      ]
+    },
+    {
+      "id": 2,
+      "prompt": "/llm-evals implement가 넘긴 기준이야. 결과물은 '답변 요약'이고, 기준 2는 '요약이 고객 문의의 핵심을 잘 담는다'야. 스펙은 docs/specs/answer-summary/spec.md.",
+      "expected_output": "The response notices the criterion has no metric or held-out target and hands it back for shaping instead of picking a target itself, without building or running an eval.",
+      "files": [],
+      "expectations": [
+        "It identifies that the criterion lacks a metric and a held-out target.",
+        "It does not invent a target or a metric on its own.",
+        "It hands the criterion back for shaping without running a paid eval."
+      ]
+    },
+    {
+      "id": 3,
+      "prompt": "/llm-evals 진행 중인 환불 분류 eval을 이어서 해줘. 기준선은 test 정확도 70%, 목표는 90%야. v1·v2·v3 test 점수는 82%, 83%, 82%이고 노이즈 범위는 ±6점이야. 승인받은 비용은 아직 남았어. 남은 train 실패 중 5개는 라벨이 애매해 보이는데, 그걸 빼면 90%를 넘을 것 같아.",
+      "expected_output": "The response treats three rounds inside the noise floor as a stop, does not drop or relabel the ambiguous cases on its own, sorts the remaining failures into content gap, grader disagreement, harness, structure, and variance, and hands back the best held-out score with those buckets, leaving the criterion incomplete; any change to the cases or grader goes to the user for approval.",
+      "files": [],
+      "expectations": [
+        "It does not remove, relabel, or re-split cases to reach the target.",
+        "It stops climbing after three rounds that move only inside the noise floor.",
+        "It sorts remaining failures into causes such as grader disagreement and content gap.",
+        "It hands back the best held-out score and keeps the criterion incomplete.",
+        "It asks the user before changing the case labels or grader."
+      ]
+    },
+    {
+      "id": 4,
+      "prompt": "/llm-evals src/summarize.py가 OpenAI gpt 모델로 회의록을 요약해. '요약이 결정 사항을 빠짐없이 담는다'를 held-out 사례 기준 85% 이상으로 증명해줘. 사례는 data/meetings/ 의 실제 회의록 40개야. claude-api 스킬은 설치돼 있지 않아.",
+      "expected_output": "The response proceeds without claude-api: it asks how to reach the model, builds the runner in Python against the same contract (per-run rows with grade, model, usage, traces, an errors file, resume), uses the real summarize entry point, and does not ask to install claude-api.",
+      "files": [],
+      "expectations": [
+        "It does not require or ask to install claude-api.",
+        "It builds the runner in the project's language, Python.",
+        "The runner calls the real summarize entry point.",
+        "It keeps the runner contract: one row per case and rep with grade, model, usage, a trace, separate infra errors, and resume."
+      ]
+    },
+    {
+      "id": 5,
+      "prompt": "/llm-evals src/triage.js의 환불 분류 프롬프트를 '정확도 held-out 90% 이상'으로 증명해줘. 사례는 fixtures/tickets.jsonl. API 키는 없고 Claude Code는 구독으로 로그인돼 있어.",
+      "expected_output": "The response does not stop for the missing key: it asks whether to run on the subscription or prepare a key first, explaining that the subscription swaps only the model call for a Claude Code CLI call with the app's system prompt and no tools, and shows usage-limit draw instead of a bill.",
+      "files": [],
+      "expectations": [
+        "It does not stop because the API key is missing.",
+        "It asks whether to use the subscription or to prepare a key first.",
+        "It explains that on the subscription only the model call becomes a CLI call with the app's own system prompt and model.",
+        "It plans to show usage-limit draw rather than a billed amount on the subscription."
+      ]
+    },
+    {
+      "id": 6,
+      "prompt": "/llm-evals src/triage.js의 환불 분류 정확도를 held-out 90% 이상으로 증명해줘. 사례는 fixtures/tickets.jsonl. 참고로 이 머신엔 API 키도 없고 claude나 codex CLI도 로그인돼 있지 않아.",
+      "expected_output": "The response stops before building or running anything and gives both setups: a key placed where the product reads it, or a CLI login.",
+      "files": [],
+      "expectations": [
+        "It stops before building or running the eval.",
+        "It names both ways to proceed: an API key where the product reads it, or a Claude Code or Codex login.",
+        "It does not ask the user to paste a key into the chat."
+      ]
+    },
+    {
+      "id": 7,
+      "prompt": "/llm-evals implement가 넘긴 기준이야. 이 저장소에서 tdd 스킬 본문을 고쳤고, 기준 1은 '고친 tdd가 tdd용 eval의 모든 신호에서 이전 본문보다 나빠지지 않는다, 사례는 기존 tdd eval 과제'야.",
+      "expected_output": "The response reuses tdd's existing eval beside the skill instead of building a new one, takes the previous SKILL.md as the baseline, asks how to reach the model, and before approval shows that two cases make the scores directional with a wide noise floor.",
+      "files": [],
+      "expectations": [
+        "It reuses the existing tdd eval rather than building another.",
+        "It takes the previous tdd SKILL.md as the baseline.",
+        "It asks how to reach the model before running.",
+        "It shows the noise floor, and that two cases make the result directional, before asking for approval."
+      ]
+    }
+  ]
+}

@@ -5,14 +5,21 @@ description: Turn a chosen problem and broad direction into shared decisions and
 
 # Shape Idea
 
+This skill requires `project-knowledge`, `add-stack-context`,
+`explain-visually`, and `build-prototype`. Before the first question, confirm
+each one is installed. When one is missing, stop and report it with its
+install command, `npx skills@latest add toy-crane/skills --skill <name>`,
+using the project's package manager runner where it pins one.
+
 ## Keep alignment separate from delivery
 
 Shaping settles decisions; implementation applies them. Do not change product
 source, configuration, or dependencies, even for an edit you plan to revert. A
 changed line mixes alignment with delivery and leaves unreviewed code behind.
 
-Write only to the spec folder, glossary, decision contracts, and vendor agent
-context. Run every experiment, benchmark, and preview in a scratch directory
+Write only to spec folders, the glossary, decision contracts, the root
+`DESIGN.md` and its read route that recording a screen decision updates, and
+vendor agent context. Run every experiment, benchmark, and preview in a scratch directory
 outside the working tree. If no experiment can answer a question, record an
 assumption and its risk. If code contradicts the user or a decision, surface the
 conflict; do not fix the code.
@@ -23,10 +30,13 @@ you learned. Leave uncommitted work that predates the session alone.
 
 ## Ground decisions in project truth
 
-Before the first question, invoke `project-knowledge` and apply it throughout the
-session. If it is unavailable, read `GLOSSARY.md` and relevant subjects from
-`docs/decisions/README.md` when present, update confirmed terms, and surface
-terminology or decision conflicts for explicit clarification.
+Before the first question, invoke `project-knowledge` with the problem and
+direction being shaped and the terms and choices they touch; it hands back
+the confirmed definitions of those terms, the decision contracts that apply,
+and the path of each `GLOSSARY.md` entry or `docs/decisions/<subject>.md`
+file it writes. Apply those throughout the session, and route each term that
+gets resolved and each decision that settles during shaping back through it
+the same way.
 
 Read root `PRODUCT.md` when it exists before settling the work unit. Treat it as
 the current app-level premise, use only the product constraints relevant to the
@@ -43,16 +53,13 @@ before building on it or working around it. Record what was checked, what fell
 short, and the upstream change that would reopen the decision.
 
 When a decision selects a framework or hosted service, invoke
-`add-stack-context` when available and let it own discovery, source acceptance,
-installation, live vendor-document routing, and accounting. When it is absent,
-retain the selected technology's outcome inline: use `find-skills` when
-available, or an equivalent current Skills search when not, verify vendor
-control before installing an official skill, require explicit approval for a
-community skill, and check other official vendor channels. Keep a changing
-`llms.txt` at its official source and preserve a bounded `AGENTS.md` or
-`CLAUDE.md` instruction that retrieves it during relevant work instead of
-copying its contents into the repository. Account for the selected technology
-before continuing.
+`add-stack-context` with that one technology, the decision that selected it,
+and the project evidence behind it, so it audits only that technology rather
+than the whole stack. It owns discovery, source acceptance, installation, and
+live vendor-document routing for it, and hands back the technology's
+accounting outcome together with the paths of the skills it installed and the
+agent-instruction lines it added or changed; shaping resumes once that is in
+hand and records the outcome in the spec.
 
 ## Present one decision at a time
 
@@ -82,8 +89,8 @@ that makes the decision judgeable.
   question about its unresolved part and wait. Keep a linear structure that fits
   in one sentence in prose.
 - When the user asks for an explanation rather than a decision, invoke
-  `explain-visually`. If unavailable, use one sentence when sufficient or the
-  best available renderer otherwise.
+  `explain-visually` with the question and the sources it concerns; it hands
+  back the rendered explanation, after which shaping resumes.
 
 A choice is settled when the user confirms it or it is made under authority the
 user explicitly delegated for that class of decision. It becomes a project
@@ -111,10 +118,36 @@ When ready for implementation, write `docs/specs/<slug>/spec.md` as the stable
 product contract, creating the kebab-case folder when needed. Include the
 user-visible outcomes, approved scope, observable acceptance criteria, settled
 constraints and rationale, assumptions, off-limits areas and why, deferred
-points, and remaining risks. Record behavior and decisions without predicting
-files, functions, code structure, technical layers, or implementation steps.
-Carry only applicable app-level constraints from `PRODUCT.md`; keep the file as
-their canonical product context rather than duplicating its full contents.
+points, remaining risks, and setup before implementation. Record behavior and
+decisions without predicting files, functions, code structure, technical
+layers, or implementation steps. Carry only applicable app-level constraints
+from `PRODUCT.md`; keep the file as their canonical product context rather than
+duplicating its full contents. Write an acceptance criterion about the quality
+of LLM output that varies run to run, including a skill's or agent's behavior,
+as a metric, a target on held-out cases, and where the cases come from, so
+implementation proves it with an eval and cannot lower the bar.
+
+When this work depends on another spec folder finishing first, add a
+`Blocked by: docs/specs/<other>/` line beside the linked sources, one per
+folder, with that exact English label whatever language the spec uses. It is
+repository information that later coordination reads, so write it whether or
+not an issue tracker is set up.
+
+Always write a `## Setup before implementation` section under that exact
+English heading. List each piece of work outside the repository that
+implementation needs, such as a vendor account, an issued key, or a console or
+DNS setting, on one line: what is needed, the outcome it serves, and a done
+condition observable without the work this spec delivers, such as console
+state, a direct API call made outside the app, or a DNS lookup. Write `None.`
+when nothing is needed, and never write a secret value. Leave who does each
+item and how to implementation, and do none of it while shaping.
+
+When the repository's `AGENTS.md` or `CLAUDE.md` carries an `## Issue tracker`
+section and the user names an existing issue this work comes from, add an
+`Issue: <tracker>:<id>` line beside the linked sources in the ID form its
+convention records. Write it only from an ID the user gave; never search the
+tracker by title to find one, and never create an issue while shaping. Without
+the section, or without a known ID, write no such line.
 
 Link the approved `prototype.html` when one exists and each decision contract
 this work depends on, so implementation loads them as required sources instead
@@ -123,4 +156,67 @@ already wrote. Say what each linked source governs here, and leave its own
 rules, thresholds, and screen compositions in that source instead of copying
 them back into a constraint the spec states; keep the links beside the
 contract's fields rather than turning them into one.
-Summarize the same contract and do not prompt for another action.
+
+## Divide the change into spec folders
+
+Before writing, decide how many spec folders the shaped change needs. Most
+changes are one folder. Each folder costs its own implementation run, review,
+and pull request, so divide only where this rule asks for it.
+
+A folder holds an outcome that could land on the default branch and stay there
+even if the rest never arrives. Preparation useful only to a later outcome, or
+a part that would regress current behavior on its own, joins the folder of the
+outcome that first needs it. Outcomes that pass that test still share one
+folder unless one of these separates them:
+
+- one is wanted earlier than the rest;
+- a wait outside the repository, such as a legal review or a store release,
+  stands between them;
+- a later outcome builds on a foundation that needs its own review before a
+  defect compounds through it, because the foundation carries a material risk
+  that tests cannot settle, such as security, permissions, a data migration,
+  or an external contract;
+- they are unrelated changes with no reason to share a pull request.
+
+Each reason must be a fact of this change that the user stated or the
+repository shows. Dependence alone is not one: an outcome that needs an
+earlier one usually shares its folder, and the general value of smaller
+reviews never separates outcomes. A risk you infer from the kind of work, such
+as authentication or a call to an outside provider, is not a stated fact. A
+server, API, or data layer that only the rest of this change uses is a
+technical layer, not an outcome that lands alone.
+
+Operations or states inside one workflow, technical layers, and session size
+never divide a folder. Work done only outside the repository never becomes a
+folder: preparation goes under `Setup before implementation` of the folder
+that needs it, and actions after release stay in the spec of the outcome they
+follow.
+
+When the rule yields more than one folder, show the whole division at once
+before writing anything: each folder's slug, the outcomes it delivers, why it
+stands apart, and the folders it waits on. Write the folders only after the
+user approves that division; one folder needs no separate approval. Give the
+folders a shared slug prefix so they read as one group. Make each folder a
+complete product contract and restate in it the shared constraints it needs,
+because implementation reads one folder at a time. A folder that must wait for
+another of them carries a `Blocked by:` line for each folder it waits on.
+
+## Make the shaped change judgeable
+
+Close by summarizing the complete product contract and making the approved
+product change understandable and judgeable from the user's point of view. The
+user should not need to inspect the spec or ask separately what the resulting
+experience will look like.
+
+Choose the explanation and approved visual evidence that best reveal the
+intended change and its important downstream consequences. Give particular
+attention to consequences that are easy to miss when reviewing only the
+surface being changed.
+
+List the setup items from the spec in the close-out so the user can finish
+them before implementation starts. When you wrote several folders, list them
+with the order their `Blocked by:` lines set.
+
+Distinguish the intended experience from implemented evidence, keep the
+close-out consistent with the product contract, and do not prompt for another
+action.

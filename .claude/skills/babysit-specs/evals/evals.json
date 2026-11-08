@@ -26,7 +26,8 @@
         "It does not reopen the one-digest-per-interval constraint, the daily-only scope, or the daylight-saving risk, none of which the shipped work touches.",
         "It writes no change to src/, package.json, server.js, or any other product source in the fixture.",
         "It writes the revision into docs/specs/digest-schedule/spec.md in place and adds no change log section and no separate revision file.",
-        "It preserves the spec's links to prototype.html and docs/decisions/notifications.md rather than restating their contents."
+        "It preserves the spec's links to prototype.html and docs/decisions/notifications.md rather than restating their contents.",
+        "It keeps the spec's `## Setup before implementation` section and its item in the rewritten spec."
       ]
     },
     {
@@ -49,7 +50,7 @@
       "expectations": [
         "It renders prototype.html and compares its screens and states with the current product surface rather than only reading its markup.",
         "It names the preferences screen as the drifted coordinate: the prototype shows one global mute row while the shipped screen shows a per-channel list.",
-        "It either regenerates that screen through build-prototype or, when build-prototype is unavailable, records the drift as a remaining risk in spec.md.",
+        "It regenerates that screen through build-prototype rather than recording the drift as a remaining risk.",
         "It does not silently rewrite prototype.html by hand as if it were ordinary source.",
         "It reports the digest email screen as unaffected rather than regenerating every screen."
       ]
@@ -80,14 +81,14 @@
     },
     {
       "id": 5,
-      "prompt": "/babysit-specs docs/specs/search-filters/ 를 지금 코드에 맞춰줘. 이 폴더에는 tasks/ 안에 task 세 개가 있고 01은 이미 completed 야.",
-      "expected_output": "The run revises spec.md, names the tasks the revision reaches for split-into-tasks to re-cut, and leaves the completed task's evidence untouched.",
+      "prompt": "/babysit-specs docs/specs/search-filters/ 를 지금 코드에 맞춰줘. 이 spec은 저장된 필터와 필터 공유 링크를 한 폴더에 담고 있어. spec을 쓴 뒤에 공유 링크는 모바일 앱의 딥링크 처리에 기대도록 바뀌었고, 그 부분은 앱스토어 심사를 통과해야 나가. 저장된 필터는 웹만으로 지금 배포할 수 있어.",
+      "expected_output": "The run revises spec.md to the current code, does not divide the folder itself, and reports docs/specs/search-filters/ for shape-idea to re-divide because the store review now separates the two outcomes.",
       "files": [],
       "expectations": [
-        "It rewrites spec.md and does not edit any file under tasks/.",
-        "It names the specific tasks the revised outcome reaches so split-into-tasks can re-cut them.",
-        "It leaves task 01's recorded completion evidence in place rather than clearing or rewriting it.",
-        "When the revision changes what task 01 delivered, it names that task for re-verification instead of marking it incomplete itself."
+        "It rewrites spec.md in that folder and creates no new spec folder.",
+        "It does not divide or merge the folder itself.",
+        "It reports docs/specs/search-filters/ for shape-idea to re-divide.",
+        "It names the reason: saved filters can land alone, and the store review, a wait outside the repository, now stands between them and the sharing link."
       ]
     },
     {
@@ -134,7 +135,7 @@
       "files": [],
       "expectations": [
         "It revises docs/specs/webhook-delivery/spec.md to follow the settled retry policy.",
-        "It routes the reusable policy through project-knowledge, or writes it into its decision contract directly when project-knowledge is unavailable.",
+        "It routes the reusable policy through project-knowledge rather than writing the decision contract itself.",
         "It does not leave a decision future work should reuse recorded only inside the work-unit spec.",
         "It links the decision contract from the spec instead of copying the policy's rules into it."
       ]

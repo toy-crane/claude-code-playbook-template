@@ -1,0 +1,34 @@
+{
+  "skill_name": "setup-issue-tracker",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "/setup-issue-tracker 이 GitHub 저장소에서 spec 폴더를 GitHub Issues로 조정하게 설정해줘. gh 로그인은 되어 있고 AGENTS.md가 있어.",
+      "expected_output": "The response proposes one compact AGENTS.md convention that links each spec folder to its issue through an `Issue: github:#<n>` line and seven ID-addressed operations, with no title key, managed-issue listing, or spec label, and without creating issues during setup.",
+      "files": [],
+      "expectations": [
+        "It records the issue ID form as `github:#<number>` carried by an `Issue:` line in spec.md and in PR bodies.",
+        "It does not propose a `spec:<slug>` title key, a title prefix, a spec label, or a List managed issues operation.",
+        "It includes find, create, refresh the spec section, full blocker-set replacement, claim, mark ready, and close operations, each addressing an issue by its number.",
+        "Create uses the spec title, a bounded spec section as the body, and the recorded review signal, and returns the new number.",
+        "It records the exact markers that bound the spec section, matching the triage body renderer's `<!-- triage-issues:spec:start -->` and `<!-- triage-issues:spec:end -->` by default.",
+        "Its GitHub blocker update paginates every open and closed current relation before removing stale edges and adding missing ones, while Find still returns only open blockers for implementation gating.",
+        "It shows the proposed section before writing and does not create issues for existing spec folders during setup."
+      ]
+    },
+    {
+      "id": 2,
+      "prompt": "/setup-issue-tracker 기존 AGENTS.md의 GitHub Issues 설정을 점검해줘. tracker와 gh tool은 그대로 두고 싶어. 지금은 `spec:<slug>` 제목 키, `Source-Issue` 줄, List managed issues 동작을 쓰고 있어.",
+      "expected_output": "The response preserves the existing tracker identity and tool while replacing the title key, `Source-Issue` line, and managed-issue listing with the `Issue:` line and ID-addressed operations, and tells the user to rename active spec lines themselves.",
+      "files": [],
+      "expectations": [
+        "It identifies the title key, `Source-Issue` line, and managed-issue listing as an outdated convention.",
+        "It preserves the existing tracker, tool, states, claim, and close behavior.",
+        "It replaces the key with the `Issue:` line and drops the listing operation instead of upgrading it.",
+        "It adds the mark-ready operation to the core operations and upgrades additive blocker edits to remove stale edges as well as add missing ones.",
+        "It tells the user to rename `Source-Issue:` to `Issue:` in active spec folders and leaves existing title-key issues for the user to tidy.",
+        "It does not create a second instruction file or create any issues."
+      ]
+    }
+  ]
+}

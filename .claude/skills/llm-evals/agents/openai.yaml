@@ -1,0 +1,4 @@
+interface:
+  display_name: "LLM Evals"
+  short_description: "Prove LLM behavior with an approved eval and a held-out score"
+  default_prompt: "Use $llm-evals to prove this LLM behavior: ask how to reach the model, build an approved case set, runner, and grader, get one approval before the full run, measure the baseline as the red, then climb one change per round until the held-out score reaches the target."

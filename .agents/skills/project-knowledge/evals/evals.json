@@ -94,6 +94,126 @@
         "It does not create an archive folder or a superseded copy of the item.",
         "It evaluates separately whether the resolved cause is a settled reusable decision instead of promoting it automatically."
       ]
+    },
+    {
+      "id": 9,
+      "prompt": "/project-knowledge 토스트 위치를 확정했어. 토스트는 항상 화면 아래쪽 탭 바 위에 띄우고, 상단 헤더 아래에 띄우는 안은 헤더 버튼을 가려서 뺐어. 시트가 열려 있으면 시트 위에 띄워. 앞으로 화면 작업은 이 규칙을 따라야 해. 기록해줘.",
+      "expected_output": "The response records the toast-placement contract and, because the project has screen contracts but no DESIGN.md, creates root DESIGN.md: values and components copied once with their source paths, every existing screen contract mapped, rejected UI patterns linked without rule text, and one read route added to AGENTS.md.",
+      "files": [
+        "fixtures/ui-contracts-no-design/"
+      ],
+      "expectations": [
+        "It creates root DESIGN.md in the same change as the new toast contract.",
+        "The map links toast placement to the new contract and also maps the existing typography and action-progress contracts, but not data-ownership.",
+        "Rejected patterns include the header-placed toast and the full-size spinner, each as one line linking its contract; the lint alternative is not listed.",
+        "Values copy the Light and Dark color tokens, text roles, radius, and spacing from app/global.css and name that path; components list Button, Sheet, and Spinner and name components/ui/.",
+        "No rule text or rationale from a contract is copied into DESIGN.md.",
+        "AGENTS.md gains exactly one line saying work that builds or reviews screens reads DESIGN.md first."
+      ]
+    },
+    {
+      "id": 10,
+      "prompt": "/project-knowledge 토스트 위치를 확정했어. 토스트는 항상 화면 아래쪽 탭 바 위에 띄우고, 상단 헤더 아래에 띄우는 안은 헤더 버튼을 가려서 뺐어. 시트가 열려 있으면 시트 위에 띄워. 앞으로 화면 작업은 이 규칙을 따라야 해. 기록해줘.",
+      "expected_output": "The response records the toast-placement contract and adds its map and rejected-pattern lines to the existing DESIGN.md, leaving values, components, and AGENTS.md unchanged.",
+      "files": [
+        "fixtures/ui-contracts-with-design/"
+      ],
+      "expectations": [
+        "DESIGN.md gains a map line for toast placement linking the new contract.",
+        "DESIGN.md gains a rejected-pattern line for the header-placed toast linking the new contract.",
+        "The Values and Components sections are unchanged.",
+        "AGENTS.md does not gain a second DESIGN.md read route."
+      ]
+    },
+    {
+      "id": 11,
+      "prompt": "/project-knowledge 주문 상태 변경은 Orders 모듈만 쓰기로 확정했어. Billing이 직접 바꾸던 방식은 상태 경합 때문에 뺐어. 앞으로 이 규칙을 따라야 해. 기록해줘.",
+      "expected_output": "The response records a data-ownership decision and leaves DESIGN.md absent, because the contract is not a screen contract.",
+      "files": [
+        "fixtures/ui-contracts-no-design/"
+      ],
+      "expectations": [
+        "It records or updates the order-status ownership decision in docs/decisions.",
+        "It does not create DESIGN.md.",
+        "It does not add a DESIGN.md read route to AGENTS.md."
+      ]
+    },
+    {
+      "id": 12,
+      "prompt": "/project-knowledge 토스트 위치를 확정했어. 토스트는 항상 화면 아래쪽 탭 바 위에 띄우고, 상단 헤더 아래에 띄우는 안은 헤더 버튼을 가려서 뺐어. 시트가 열려 있으면 시트 위에 띄워. 앞으로 화면 작업은 이 규칙을 따라야 해. 기록해줘.",
+      "expected_output": "The response creates DESIGN.md with rejected patterns and a map but without Values or Components sections, because the project has no token source or shared component directory.",
+      "files": [
+        "fixtures/ui-contracts-no-tokens/"
+      ],
+      "expectations": [
+        "It creates root DESIGN.md with map and rejected-pattern lines for the existing and new screen contracts.",
+        "DESIGN.md has no Values or Components heading and invents no token values or component names.",
+        "AGENTS.md gains one DESIGN.md read route."
+      ]
+    },
+    {
+      "id": 13,
+      "prompt": "/project-knowledge action-progress 규칙을 시트 하단 확인 버튼에도 똑같이 적용하기로 확정했어. 시트가 저장하는 동안 확인 버튼도 라벨과 너비를 유지하고 작은 스피너만 보여줘. 앞으로 시트 작업도 이걸 따라야 해. 기록해줘.",
+      "expected_output": "The response widens the existing action-progress contract to sheet confirm buttons and, because DESIGN.md is absent, creates it with every existing screen contract mapped, including the newly covered sheet confirm button.",
+      "files": [
+        "fixtures/ui-contracts-no-design/"
+      ],
+      "expectations": [
+        "It updates docs/decisions/action-progress.md rather than creating a second contract for the same subject.",
+        "It creates root DESIGN.md whose map links the sheet confirm button's saving state to action-progress and also maps typography, but not data-ownership.",
+        "AGENTS.md gains one DESIGN.md read route."
+      ]
+    },
+    {
+      "id": 14,
+      "prompt": "/project-knowledge action-progress 규칙을 시트 하단 확인 버튼에도 똑같이 적용하기로 확정했어. 시트가 저장하는 동안 확인 버튼도 라벨과 너비를 유지하고 작은 스피너만 보여줘. 앞으로 시트 작업도 이걸 따라야 해. 기록해줘.",
+      "expected_output": "The response widens the existing action-progress contract and adds one map line for the sheet confirm button's saving state to the existing DESIGN.md, leaving values, components, and AGENTS.md unchanged.",
+      "files": [
+        "fixtures/ui-contracts-with-design/"
+      ],
+      "expectations": [
+        "DESIGN.md gains a map line for the sheet confirm button's saving state linking action-progress.",
+        "The Values and Components sections and AGENTS.md are unchanged.",
+        "No rule text, such as keeping the label and width, is copied into DESIGN.md."
+      ]
+    },
+    {
+      "id": 15,
+      "prompt": "/project-knowledge 토스트 위치를 확정했어. 토스트는 항상 화면 아래쪽 탭 바 위에 띄우고, 상단 헤더 아래에 띄우는 안은 헤더 버튼을 가려서 뺐어. 시트가 열려 있으면 시트 위에 띄워. 앞으로 화면 작업은 이 규칙을 따라야 해. 기록해줘.",
+      "expected_output": "The response adds the toast contract's lines to the hand-made DESIGN.md and, because no agent instruction routes to it yet, adds the read route to AGENTS.md.",
+      "files": [
+        "fixtures/ui-contracts-design-no-route/"
+      ],
+      "expectations": [
+        "DESIGN.md gains map and rejected-pattern lines for toast placement; its Values and Components sections are unchanged.",
+        "AGENTS.md gains exactly one line saying work that builds or reviews screens reads DESIGN.md first."
+      ]
+    },
+    {
+      "id": 16,
+      "prompt": "/project-knowledge 토스트 위치를 확정했어. 토스트는 항상 화면 아래쪽 탭 바 위에 띄우고, 상단 헤더 아래에 띄우는 안은 헤더 버튼을 가려서 뺐어. 시트가 열려 있으면 시트 위에 띄워. 앞으로 화면 작업은 이 규칙을 따라야 해. 기록해줘.",
+      "expected_output": "The response creates DESIGN.md and puts the read route where both agent clients load it: a new AGENTS.md and the existing CLAUDE.md, which does not load AGENTS.md.",
+      "files": [
+        "fixtures/ui-contracts-claude-only/"
+      ],
+      "expectations": [
+        "It creates root DESIGN.md with the existing and new screen contracts mapped.",
+        "It creates AGENTS.md carrying the DESIGN.md read route.",
+        "CLAUDE.md keeps its existing lines and gains the same read route once."
+      ]
+    },
+    {
+      "id": 17,
+      "prompt": "/project-knowledge 타이포그래피 규칙에 하나 더 확정할게. 긴 제목이 넘칠 때 글자 크기를 줄여 한 줄에 맞추는 방식(adjustsFontSizeToFit)은 Dynamic Type을 깨서 빼기로 했어. 넘치면 줄바꿈해. 앞으로 이걸 따라야 해. 기록해줘.",
+      "expected_output": "The response adds the rejected shrink-to-fit pattern to the existing typography contract and, although the contract's owned elements do not change, adds one rejected-pattern line to DESIGN.md linking it.",
+      "files": [
+        "fixtures/ui-contracts-with-design/"
+      ],
+      "expectations": [
+        "It updates docs/decisions/typography.md rather than creating a new contract.",
+        "DESIGN.md gains one rejected-pattern line for shrinking text to fit, linking typography, with no rule text or rationale.",
+        "The Values and Components sections and AGENTS.md are unchanged."
+      ]
     }
   ]
 }

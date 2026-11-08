@@ -9,6 +9,11 @@ Turn a bounded set of recorded follow-ups into independently verified pull
 requests. Preserve every item that cannot pass the reproduction and authority
 gates.
 
+This skill requires `project-knowledge`. Before doing any work, confirm it is
+installed. When it is missing, stop and report it with its install command,
+`npx skills@latest add toy-crane/skills --skill project-knowledge`, using the
+project's package manager runner where it pins one.
+
 ## Choose the execution mode
 
 - Treat an invocation without a specific follow-up path as a **sweep**. Select
@@ -137,8 +142,9 @@ When reproduction reveals a different out-of-scope defect, preserve the
 selected item and return the new symptom, observed evidence, suspected cause,
 what was tried, and proposed next step to the coordinator. Do not leave the only
 record in the disposable worker. The coordinator serializes these records in
-its own checkout through `project-knowledge` when available, or writes the same
-five fields to `docs/follow-ups/<symptom>.md`. Before cleaning up the worker,
+its own checkout through `project-knowledge`, handing it those five fields and
+keeping the `docs/follow-ups/<symptom>.md` path it reports. Before cleaning up
+the worker,
 commit that record and publish a dedicated ready-for-review follow-up-record PR;
 do not mix it into the selected item's resolution PR. A local coordinator change
 or closing-message copy is not a durable handoff.

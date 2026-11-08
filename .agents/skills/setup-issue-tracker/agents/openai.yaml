@@ -1,0 +1,4 @@
+interface:
+  display_name: "Set Up Issue Tracker"
+  short_description: "Record spec-folder tracker operations"
+  default_prompt: "Use $setup-issue-tracker to record the complete issue-tracker convention used to coordinate and reconcile this repository’s spec folders."

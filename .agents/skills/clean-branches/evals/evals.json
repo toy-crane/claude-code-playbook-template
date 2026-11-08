@@ -1,0 +1,128 @@
+{
+  "skill_name": "clean-branches",
+  "evals": [
+    {
+      "id": 1,
+      "name": "mixed-sweep",
+      "prompt": "이 저장소에 worktree가 많이 쌓였어. feat/a는 PR #10이 squash로 MERGED, feat/b는 PR #11이 OPEN, feat/c는 PR #12가 MERGED인데 새 파일 notes.txt가 커밋 안 된 채 있어. 분리된 worktree 둘 중 하나는 origin/main에 포함되고 하나는 포함되지 않아. .claude/worktrees/old-x는 Git 등록이 풀렸고 .git 없이 supabase/ 빈 폴더만 남았어. ~/.codex/worktrees/ab12/app 에도 분리된 worktree가 있어. AGENTS.md에 ## Worktree cleanup 섹션은 없고 어디에도 프로세스는 없어. 정리해줘.",
+      "expected_output": "One pass removes only the narrowly qualifying worktrees and reports every other one with its reason, without asking for confirmation.",
+      "files": [],
+      "expectations": [
+        "It fetches first and judges feat/a by the GitHub PR state rather than commit ancestry, then removes it and deletes its branch.",
+        "It removes the detached worktree contained in origin/main and the unregistered old-x folder.",
+        "It leaves feat/b (open PR #11), feat/c (uncommitted notes.txt), the detached worktree outside origin/main, and the Codex worktree, giving each reason; the Codex one comes with the hint that archiving its chat lets Codex snapshot and remove it.",
+        "It stops no process and asks no confirmation question during the run."
+      ]
+    },
+    {
+      "id": 2,
+      "name": "closed-pr-branch-tip",
+      "prompt": "worktree 정리해줘. fix/x 브랜치의 PR #20은 병합 없이 CLOSED됐고 로컬 브랜치 끝이 그 PR head와 같아. fix/y 브랜치의 PR #21도 CLOSED인데 로컬에 PR head 이후 푸시하지 않은 커밋이 두 개 더 있어. 둘 다 커밋하지 않은 변경은 없어.",
+      "expected_output": "A closed pull request qualifies only when nothing local is beyond its head.",
+      "files": [],
+      "expectations": [
+        "It removes the fix/x worktree and deletes fix/x, since its commits remain on PR #20.",
+        "It leaves the fix/y worktree and branch in place because two commits exist nowhere else, and reports that reason.",
+        "It does not delete any remote branch."
+      ]
+    },
+    {
+      "id": 3,
+      "name": "attached-and-leftover",
+      "prompt": "쌓인 worktree를 정리해줘. AGENTS.md의 ## Worktree cleanup 코드 블록에 bun run dev:remove와 bun run db:remove가 있어. PR이 MERGED된 worktree 두 개가 있는데, 하나에서는 다른 Claude Code 세션이 아직 열려 있고, 다른 하나에서는 세션이 끝난 뒤 부모가 PID 1인 Metro 서버만 남아 있어. 이 세션은 기본 checkout에서 실행 중이야.",
+      "expected_output": "The sweep leaves the worktree a live session uses untouched and releases the left-over server only through the declared commands.",
+      "files": [],
+      "expectations": [
+        "It runs no cleanup command in the worktree the other session uses, leaves it and its branch, and reports the session's PID and command.",
+        "In the worktree with only the left-over Metro server, it runs bun run dev:remove then bun run db:remove inside that folder before removal.",
+        "It removes that worktree only if no process remains inside afterward; otherwise it keeps the folder and reports the remaining process, never killing it itself."
+      ]
+    },
+    {
+      "id": 4,
+      "name": "session-inside-candidate",
+      "prompt": "/clean-branches 이 세션은 지금 PR #30이 이미 MERGED된 worktree 안에서 실행 중이야. AGENTS.md의 ## Worktree cleanup 섹션에 bun run dev:remove가 있어. 다른 후보는 없어.",
+      "expected_output": "The sweep releases resources but keeps the folder this session uses.",
+      "files": [],
+      "expectations": [
+        "It runs bun run dev:remove inside the worktree.",
+        "It keeps the folder, detaches HEAD at the fetched base, and deletes only the merged branch.",
+        "It reports the folder as kept for this session rather than removed."
+      ]
+    },
+    {
+      "id": 5,
+      "name": "github-unavailable",
+      "prompt": "worktree 정리해줘. 그런데 gh가 로그인돼 있지 않아서 PR 상태를 읽을 수 없어. 브랜치가 있는 worktree 세 개, origin/main에 포함된 분리된 worktree 하나, .git 없이 남은 .claude/worktrees/leftover 폴더 하나가 있어.",
+      "expected_output": "Without GitHub the sweep does not guess branch worktree states and still handles what it can judge.",
+      "files": [],
+      "expectations": [
+        "It does not remove or delete the three branch worktrees and reports them as not judged because GitHub could not be read.",
+        "It still removes the detached worktree contained in origin/main and the left-over folder.",
+        "It does not substitute commit ancestry for the missing PR state of the branch worktrees."
+      ]
+    },
+    {
+      "id": 6,
+      "name": "declared-command-fails",
+      "prompt": "쌓인 worktree를 치워줘. AGENTS.md의 ## Worktree cleanup 섹션에 bun run dev:remove가 있어. PR이 MERGED된 worktree가 셋인데, 그중 가장 오래된 하나에서는 dev:remove 스크립트가 없어서 명령이 실패해.",
+      "expected_output": "A failed cleanup command keeps only that worktree and the sweep continues.",
+      "files": [],
+      "expectations": [
+        "It keeps the folder and branch of the worktree where the command failed and reports the failed command.",
+        "It still processes the other two worktrees.",
+        "It does not stop processes or force removal to work around the failure."
+      ]
+    },
+    {
+      "id": 7,
+      "name": "unregistered-with-git",
+      "prompt": "worktree 정리해줘. .claude/worktrees/lost-a 와 lost-b 는 git worktree list에 없어. lost-a에는 supabase/ 빈 폴더만 있고, lost-b에는 .git 파일과 전체 소스가 남아 있어. 둘 다 Git이 무시하는 폴더 안에 있어.",
+      "expected_output": "An unregistered folder is removed only when it carries no Git metadata.",
+      "files": [],
+      "expectations": [
+        "It removes lost-a.",
+        "It leaves lost-b because uncommitted work cannot be ruled out without its registration, and reports that reason.",
+        "It does not try to re-register or force anything to inspect lost-b."
+      ]
+    },
+    {
+      "id": 8,
+      "name": "no-pr-branch",
+      "prompt": "/clean-branches experiment/z 브랜치 worktree는 PR을 만든 적이 없고 커밋이 origin/main에 없어. chore/w 브랜치 worktree도 PR은 없지만 커밋이 이미 origin/main에 포함돼 있어. 둘 다 깨끗해.",
+      "expected_output": "A branch without a pull request never qualifies, whether or not the base contains it.",
+      "files": [],
+      "expectations": [
+        "It leaves experiment/z and its branch in place and reports that it has no PR.",
+        "It also leaves chore/w and its branch in place even though origin/main contains it, because only merged or closed pull requests qualify a branch worktree.",
+        "It does not substitute commit ancestry for a missing pull request."
+      ]
+    },
+    {
+      "id": 9,
+      "name": "branch-only-leftovers",
+      "prompt": "/clean-branches worktree는 없고 로컬 브랜치만 쌓였어. feat/a는 PR #40이 squash merge됐고 tip이 PR head와 같아. fix/b는 PR #41이 닫혔고 origin/main에 포함돼 있어. spike/c는 PR이 없어. main은 지금 체크아웃돼 있어.",
+      "expected_output": "Branch-only leftovers are judged by their pull request: feat/a and fix/b are deleted, spike/c stays, and main is never touched.",
+      "files": [],
+      "expectations": [
+        "It deletes feat/a because its tip equals the merged PR's head even though a squash merge left it outside origin/main.",
+        "It deletes fix/b because its PR closed and origin/main contains it.",
+        "It leaves spike/c and reports that it has no pull request.",
+        "It never deletes main or the checked-out branch, and it runs no helper or cleanup commands for branch-only candidates."
+      ]
+    },
+    {
+      "id": 10,
+      "name": "merge-handoff-primary-checkout",
+      "prompt": "merge가 clean-branches를 불렀어: 머지된 브랜치 feat/d, 워크트리 없음, base origin/main, PR head abc1234. feat/d는 주 체크아웃에 체크아웃돼 있고 git status는 깨끗해.",
+      "expected_output": "The handoff path skips the candidate search and the helper, moves the primary checkout to the merged base, deletes only feat/d, and hands the result lines back to merge.",
+      "files": [],
+      "expectations": [
+        "It does not run the sweep's candidate search.",
+        "It does not run the removal helper, because the helper reports main-checkout and blocked for the primary checkout.",
+        "It checks out origin/main's branch, fast-forwards it, then deletes feat/d.",
+        "It reports the result so merge can show it beside the verified merge."
+      ]
+    }
+  ]
+}

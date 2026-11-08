@@ -12,5 +12,6 @@
   {"query":"현재 브랜치를 최신 origin/main에 rebase해줘.","should_trigger":false},
   {"query":"변경사항을 conventional commit으로 저장만 해줘.","should_trigger":false},
   {"query":"PR의 merge conflict 원인을 분석해서 해결 방법만 설명해줘.","should_trigger":false},
-  {"query":"PDF 두 개를 하나로 병합하고 페이지 순서를 유지해줘.","should_trigger":false}
+  {"query":"PDF 두 개를 하나로 병합하고 페이지 순서를 유지해줘.","should_trigger":false},
+  {"query":"이 저장소에 쌓인 worktree 중 병합되거나 닫힌 것들을 전부 정리해줘.","should_trigger":false}
 ]

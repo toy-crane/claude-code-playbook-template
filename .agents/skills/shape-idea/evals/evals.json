@@ -292,15 +292,13 @@
     {
       "id": 22,
       "prompt": "/shape-idea 새 앱은 NovaJS를 쓰기로 확정했지만 add-stack-context skill은 설치돼 있지 않아. find-skills에는 Nova 공식 skill과 인기 커뮤니티 skill이 있고, 공식 문서는 변경되는 llms.txt도 제공해. 이 선택을 반영하고 계속 진행해줘.",
-      "expected_output": "The response retains a concise standalone context outcome without reproducing the full audit: it discovers the official skill, approval-gates the community candidate, and preserves a live repository route to the changing llms.txt instead of copying it.",
+      "expected_output": "The response stops before the first shaping question because add-stack-context is a required skill that is not installed: it names the missing skill and its install command and changes nothing in the repository.",
       "files": [],
       "expectations": [
-        "It does not stop solely because add-stack-context is unavailable.",
-        "It uses find-skills when available and independently verifies vendor control before installing the official skill.",
-        "It does not install the community skill without explicit approval.",
-        "It does not copy the llms.txt body into the repository.",
-        "It preserves a bounded AGENTS.md or CLAUDE.md instruction to retrieve the current official source during relevant work.",
-        "It accounts for NovaJS before continuing the shaping decisions."
+        "It stops before continuing the shaping decisions instead of reproducing the stack audit inline.",
+        "It names add-stack-context as the missing required skill and gives `npx skills@latest add toy-crane/skills --skill add-stack-context` (or the project's package manager runner form).",
+        "It does not search find-skills, install any skill, or write an AGENTS.md or CLAUDE.md route itself.",
+        "It changes no file in the repository."
       ]
     },
     {
@@ -317,6 +315,30 @@
         "It links docs/decisions/billing.md as a decision contract the work depends on.",
         "It points at both linked sources rather than copying the retry rules or the approved screen compositions into spec.md.",
         "It still records the user-visible outcomes, approved scope, observable acceptance criteria, settled constraints, assumptions, off-limits areas, deferred points, and remaining risks, treating the links as sources beside those fields rather than as one of them."
+      ]
+    },
+    {
+      "id": 24,
+      "prompt": "/shape-idea 비밀번호 재설정 메일을 보내고 싶어. 메일은 Resend로 보내기로 이미 정했고, 발신 주소는 no-reply@acme.test, 링크는 30분 유효로 하자. 남은 제품 결정은 없으니 spec으로 마무리해줘.",
+      "expected_output": "The response writes spec.md with a `## Setup before implementation` section listing the Resend domain verification and API key, each on one line with the outcome it serves and a done condition checkable before any code exists, and repeats those items in the close-out.",
+      "files": [],
+      "expectations": [
+        "spec.md has a section headed exactly `## Setup before implementation`.",
+        "It lists the Resend sending-domain verification and the Resend API key as separate one-line items naming the reset email they serve.",
+        "Each done condition can be observed without the reset-email code, such as console state or a direct API call, not a delivered reset email.",
+        "No item assigns an owner or step-by-step instructions, and no secret value or environment-variable name appears.",
+        "It performs none of the setup during shaping.",
+        "The close-out lists the same setup items."
+      ]
+    },
+    {
+      "id": 25,
+      "prompt": "/shape-idea 할 일 목록에서 완료한 항목을 한 번에 지우는 버튼을 추가하고 싶어. 로컬 저장만 쓰는 앱이고 확인 대화상자 없이 실행 취소 토스트를 보여주기로 정했어. spec으로 마무리해줘.",
+      "expected_output": "The response writes spec.md whose `## Setup before implementation` section reads `None.`.",
+      "files": [],
+      "expectations": [
+        "spec.md has a `## Setup before implementation` section whose content is `None.`.",
+        "It does not invent accounts, keys, or console settings for a local-only change."
       ]
     }
   ]

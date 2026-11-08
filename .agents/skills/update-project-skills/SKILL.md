@@ -10,9 +10,8 @@ version through the current `skills.sh` CLI, then reconcile the Toycrane set
 from `https://github.com/toy-crane/skills` and materialize the custom agents
 carried by its installed skills for both Claude Code and Codex.
 
-이 프로젝트는 `Copy to all agents` 방식을 사용한다. Codex의 `.agents/skills`와
-Claude Code의 `.claude/skills`에 내용이 같은 실제 복사본을 유지한다.
-설치와 갱신에는 항상 `--agent codex claude-code --copy`를 지정한다.
+Treat `.agents/skills` as the canonical project skill copy. The CLI exposes the
+same skill files to Claude Code through relative links under `.claude/skills`.
 `skills-lock.json` records every skill the CLI installed and its source. Treat
 entries whose `source` is `toy-crane/skills` as Toycrane-managed and every
 other entry as third-party. Skills and agents without a lock entry are
@@ -41,25 +40,21 @@ package manager through `devEngines`.
    Read the project's `skills-lock.json`. The upstream list is the current
    published Toycrane set; ignore the source repository's own development-only
    dependencies under `.agents/skills`.
-3. `skills-lock.json`에 기록된 모든 소스의 설치된 스킬을 복사 방식으로 갱신한다.
-   각 소스의 공개 목록과 잠긴 이름을 비교하고, 현재 공개되어 있는 설치된 이름만
-   명시하여 재설치한다. 같은 소스와 ref의 스킬은 원본 경로가 모호하지 않을 때 묶는다.
+3. Update every locked skill in place, from every source, in one project-scoped
+   call:
 
    ```bash
-   <runner> skills@latest add <original-source> \
-     --skill <installed-skill-name> [<installed-skill-name> ...] \
-     --agent codex claude-code --copy -y
+   <runner> skills@latest update -p -y
    ```
 
-   `original-source`는 lock의 `sourceUrl` 또는 `source`를 사용하며, 기록된
-   `skillPath`와 `ref`가 있으면 해당 경로와 ref를 보존하는 소스로 지정한다.
-   원본을 특정할 수 없는 항목은 추측하여 재설치하지 말고 건너뛴 이유를 보고한다.
-   소스에서 사라진 스킬은 보고하고, Toycrane 스킬만 아래의 정리 절차를 적용한다.
-   설치된 항목 갱신에 `--all`이나 `--skill '*'`를 사용하지 않는다.
-
-   `skills update -p -y`는 내부 재설치에서 복사 방식을 보존하지 않으므로
-   사용하지 않는다. 현재 CLI의 `update`는 `--copy`도 처리하지 않는다.
-   이 스킬 자체가 갱신되어도 프로젝트 `AGENTS.md`의 복사 정책을 계속 따른다.
+   The CLI refreshes each lock entry that records a `skillPath`, one clone per
+   source, and reinstalls it for the current client plus the universal
+   `.agents` copy; existing `.claude/skills` links keep resolving because they
+   are relative. Carry three parts of its output into the final report: the
+   per-skill results, the entries it cannot update in place because they were
+   installed before `skillPath` tracking (with the reinstall hint it prints),
+   and the skills it reports as deleted upstream. Leave those last two groups
+   as reported; whether to reinstall or remove them is the user's call.
 
 ## Reconcile the Toycrane set
 
@@ -81,7 +76,7 @@ collisions stay excluded, then remove retired names from the whole project:
 <runner> skills@latest add toy-crane/skills \
   --skill <new-skill-name> [<new-skill-name> ...] \
   --agent codex claude-code \
-  --copy -y
+  -y
 <runner> skills@latest remove <retired-skill-name> [<retired-skill-name> ...] -y
 ```
 
@@ -130,9 +125,8 @@ identity before writing its canonical Claude Code and Codex pair.
 
 - Rerun `<runner> skills@latest list --json`.
 - Confirm each current Toycrane skill exists in `.agents/skills` and in
-  `skills-lock.json` with source `toy-crane/skills`.
-- `.agents/skills/<name>`과 `.claude/skills/<name>`이 symlink가 아닌 실제
-  디렉터리이고, 두 복사본의 파일 목록과 내용이 같은지 확인한다.
+  `skills-lock.json` with source `toy-crane/skills`, and that
+  `.claude/skills/<name>` is a relative link to `../../.agents/skills/<name>`.
 - Confirm retired Toycrane skills are absent from the lock and both skill
   paths, third-party lock entries still name their original sources, and
   project-local skills remain unchanged.

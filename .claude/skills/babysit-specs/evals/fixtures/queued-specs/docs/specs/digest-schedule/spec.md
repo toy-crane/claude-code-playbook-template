@@ -31,6 +31,10 @@ At the chosen hour, every event recorded since the previous digest is
 collected and sent as one email. Each event keeps its target label so the user
 can tell where it came from. An hour with no events sends nothing.
 
+## Setup before implementation
+
+- Mail provider daily sending quota raised to cover one digest per user (digest email): the provider console shows the raised quota
+
 ## Observable acceptance criteria
 
 - Turning the digest on and choosing an hour persists across a reload.

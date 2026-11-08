@@ -59,13 +59,15 @@
     },
     {
       "id": 6,
-      "prompt": "머지는 완료됐어. 이 worktree의 Portless dev server와 다른 worktree 서버가 둘 다 실행 중이니 안전하게 정리해줘.",
-      "expected_output": "The response stops only the merged worktree's owned server before removing that worktree.",
+      "name": "declared-cleanup-session-inside",
+      "prompt": "PR #64는 GitHub에서 MERGED로 확인됐어. 이 세션은 병합된 worktree 안에서 돌고 있고, AGENTS.md의 ## Worktree cleanup 섹션 코드 블록에 bun run dev:remove와 bun run db:remove가 적혀 있어. 다른 worktree의 개발 서버도 실행 중이야. 남은 정리를 해줘.",
+      "expected_output": "The response releases the merged worktree's resources with the declared commands, keeps the folder this session uses, and touches nothing else.",
       "files": [],
       "expectations": [
-        "It verifies the remote MERGED state first.",
-        "It uses the bundled helper when applicable from the worktree being removed.",
-        "It preserves the other worktree's development server and files.",
+        "It verifies the remote MERGED state before cleanup.",
+        "It runs bun run dev:remove and then bun run db:remove inside the merged worktree folder, stopping at the first failure.",
+        "Because this session works inside the worktree, it keeps the folder, detaches HEAD at the fetched base, and deletes only the merged branch.",
+        "It does not stop processes itself and leaves the other worktree's development server running.",
         "It updates the pull request's canonical base after cleanup."
       ]
     },
@@ -83,12 +85,12 @@
     {
       "id": 8,
       "prompt": "일반 checkout에서 현재 변경을 PR로 만들고 merge해줘. linked worktree는 없어.",
-      "expected_output": "The response completes the verified merge and updates the normal base checkout without worktree-specific operations.",
+      "expected_output": "The response completes the verified merge, then hands the merged branch to clean-branches, which brings the primary checkout to the merged base and deletes only the local branch.",
       "files": [],
       "expectations": [
-        "It completes the self-contained commit, PR, and merge responsibilities.",
-        "It recognizes that no linked worktree cleanup is needed.",
-        "It updates the resolved base to the verified remote result."
+        "It completes the commit, PR, and merge responsibilities through pull and pr.",
+        "It invokes clean-branches with the merged branch, the fetched base, and the merged PR's head commit instead of running worktree cleanup itself.",
+        "The local branch is deleted and the primary checkout ends on the merged base; no worktree-specific operation runs."
       ]
     },
     {
@@ -103,66 +105,284 @@
       ]
     },
     {
-      "id": 10,
-      "name": "ui-comparison",
-      "prompt": "검색 화면 변경을 PR로 올려줘. 검색 버튼을 입력창 아래에서 오른쪽으로 옮겨 결과 영역을 넓혔다. 기능 차이는 없다. Git 동기화와 검증은 끝났고 같은 head/base PR은 없다. base a111과 head b222의 검색어 coffee, 결과 3개, 1280x800 실제 화면 ./before.png와 ./after.png의 provenance가 검증됐다. 검색과 빈 결과 복귀는 실행 확인했고 모바일은 미확인이다. 저장소 push 권한이 있고 gh pr create --attach와 본문 로컬 참조 URL 치환을 지원한다. 별도 대안 검토나 미해결 정책은 없다. PR 본문을 정리한 뒤 merge까지 진행해줘. 필수 체크와 리뷰는 통과했고 병합 후 원격 상태 확인과 소유 리소스 정리가 필요하다. 다른 스킬은 설치되지 않았다.",
-      "expected_output": "The standalone merge skill prepares an understandable PR body with honest visual evidence, then preserves its existing verified-merge and cleanup boundaries.",
+      "id": 15,
+      "name": "recover-rebase-rejection",
+      "prompt": "기존 PR #72를 rebase merge로 마무리해줘. GitHub가 'This branch cannot be rebased due to conflicts'라며 머지를 거부했다. base는 main이고 PR 원격 head는 h111이다. 작업 checkout은 깨끗하다. 충돌은 base에서 바뀐 문서 링크와 PR의 설명 문장으로, 두 의도를 함께 보존할 근거가 있다. 로컬에서 rebase하면 새 head는 h222가 된다. 이전 h111의 CI는 통과했지만 h222의 빌드는 아직 pending이다. PR 브랜치에는 다른 사람이 push할 수도 있다. 머지 요청의 나머지 검증과 정리는 정상적으로 진행할 수 있다.",
+      "expected_output": "The response recovers the existing PR from GitHub's rebase rejection and merges only after the updated head passes its own checks.",
       "files": [],
       "expectations": [
-        "The body explains the concrete before/after layout and why it changed, with side-by-side Markdown images and a concise difference caption.",
-        "Publication uploads both images as GitHub attachments and verifies the remote body rather than claiming local paths are published evidence.",
-        "The body distinguishes observed desktop behavior from unverified mobile behavior and invents no alternatives or product questions.",
-        "It preserves required reviews, verified remote MERGED state before cleanup, and does not depend on another installed skill."
+        "It fetches current base and PR head, resolves the established conflict through a rebase, and updates the existing PR branch only if the remote head has not changed unexpectedly.",
+        "It waits for h222's build to finish successfully instead of using h111's green CI or ending the task at the merge error.",
+        "It checks actual required reviews and checks without imposing an unconditional personal @codex review request.",
+        "It rechecks PR head and base before retrying the merge and verifies remote MERGED before cleanup."
       ]
     },
     {
-      "id": 11,
-      "name": "partial-upload",
-      "prompt": "PR #42 생성 명령이 이미지 하나만 올리고 실패했다. stdout은 https://github.com/example/app/pull/42 이고 원격 조회 결과 OPEN ready, 본문에는 before의 업로드 URL만 있고 after는 ./after.png로 남았다. 변경은 설정 저장 버튼 위치 조정이며 실제 전후 촬영은 끝났다. after.png 업로드 재시도는 403이고 현재 허용된 다른 업로드 경로도 없다. 이 PR을 마무리해줘. PR 본문을 정리한 뒤 merge까지 진행해줘. 필수 체크와 리뷰는 통과했고 병합 후 원격 상태 확인과 소유 리소스 정리가 필요하다. 다른 스킬은 설치되지 않았다.",
-      "expected_output": "The standalone merge skill prepares an understandable PR body with honest visual evidence, then preserves its existing verified-merge and cleanup boundaries.",
+      "id": 16,
+      "name": "head-changes-during-ci-wait",
+      "prompt": "PR #73은 GitHub rebase merge 실패 후 충돌을 해결해 h222로 갱신했다. h222의 빌드가 끝나기를 기다리는 동안 다른 기여자가 PR head를 h333으로 바꿨고 base도 한 커밋 진행했다. h222 빌드는 성공했지만 h333의 비필수 빌드는 아직 pending이다. GitHub의 필수 체크와 리뷰는 모두 통과로 보인다. PR을 끝까지 머지해줘.",
+      "expected_output": "The response reevaluates the changed PR and waits for CI on the current head before any merge attempt.",
       "files": [],
       "expectations": [
-        "It reuses PR #42 rather than creating another after a nonzero create exit.",
-        "It fixes the body so no local image reference is presented as usable remote evidence, retains the available before attachment, and clearly states the missing after upload and 403 limitation.",
-        "It verifies or reports pending verification of the repaired remote body and does not report complete visual evidence.",
-        "It preserves required reviews, verified remote MERGED state before cleanup, and does not depend on another installed skill."
+        "It does not use h222's successful build as proof for h333 or merge immediately because required checks appear green.",
+        "It reevaluates mergeability against the changed base and waits for h333's relevant CI to finish successfully.",
+        "It verifies the current head, base, required gates, and remote MERGED state before cleanup."
       ]
     },
     {
-      "id": 12,
-      "name": "refresh-interaction",
-      "prompt": "OPEN PR #61 본문을 최신 변경으로 갱신해줘. 이전 head d444 이미지는 구버전이다. 현재 head e555는 사진 정렬을 즉시 저장하던 동작에서 저장 버튼을 눌러 확정하는 방식으로 바뀌었다. 실제 base와 e555에서 같은 3개 사진과 390x844 조건으로 before.png, after.png, drag-save.mp4를 촬영했고 저장 전 이탈과 저장 후 재접속 동작도 확인했다. 기존 캡처는 현재 head에 맞지 않는다. gh pr edit --attach가 지원되며 권한이 있다. PR 본문을 정리한 뒤 merge까지 진행해줘. 필수 체크와 리뷰는 통과했고 병합 후 원격 상태 확인과 소유 리소스 정리가 필요하다. 다른 스킬은 설치되지 않았다.",
-      "expected_output": "The standalone merge skill prepares an understandable PR body with honest visual evidence, then preserves its existing verified-merge and cleanup boundaries.",
+      "id": 17,
+      "name": "auto-merge-required-gate-pending",
+      "prompt": "PR #41은 head h41과 base b20이 안정적이고 관련 비필수 CI와 에이전트 검증이 성공했다. 저장소는 auto merge를 허용하며 필수 체크가 최신 base에서 통과하도록 GitHub가 강제한다. GitHub가 강제하는 통합 체크 하나만 pending이고 다른 차단 조건은 없다. squash 방식으로 끝까지 머지해줘.",
+      "expected_output": "The response enables auto-merge for this PR, then verifies the remote MERGED state before cleanup.",
       "files": [],
       "expectations": [
-        "It updates existing PR #61 with current behavior and evidence and replaces obsolete visual claims.",
-        "It uses the matched before/after images plus the actual interaction video, explaining the difference.",
-        "It attaches media and checks the published body rather than reporting simulated uploads as already complete.",
-        "It preserves required reviews, verified remote MERGED state before cleanup, and does not depend on another installed skill."
+        "It chooses squash auto-merge while only a GitHub-required gate remains pending.",
+        "It verifies auto-merge was armed but does not call that a completed merge.",
+        "It waits for remote MERGED before cleanup and issue reconciliation."
       ]
     },
     {
-      "id": 13,
-      "prompt": "기존 PR #83의 프로필 화면 본문을 마무리해줘. 변경은 아바타를 이름 옆으로 옮긴 것이며 기능 차이는 없다. 실제 before/after 촬영은 끝났고 두 캡처는 390x844, 사용자 Mina, base f111, head f222 조건이다. 현재 원격 본문은 다음과 같다: | 변경 전 | 변경 후 |\n|---|---|\n| ![before](https://github.com/user-attachments/assets/11111111-2222-4333-8444-555555555555) | ![after](./profile-after.png) |\n생성 명령이 부분 성공했으며 PR은 OPEN ready다. 남은 이미지 재시도도 502 오류가 나고, 현재 다른 업로드 경로도 사용할 수 없다. 현지 촬영 사실과 원격 공개 상태를 구분해야 한다. 본문을 작성하고 게시를 위한 명령을 제시해줘. 다른 스킬은 설치되지 않았다. 필수 체크와 리뷰는 통과했고 PR 정리 후 merge와 안전한 정리까지 요청된 상태다.",
-      "name": "heldout-preserve-uploaded-url",
-      "expected_output": "The replacement body preserves the exact available GitHub attachment URL and explains the missing after evidence without a broken local image reference.",
+      "id": 18,
+      "name": "already-mergeable-is-direct",
+      "prompt": "PR #42는 현재 head의 관련 CI와 필수 체크, 리뷰가 모두 통과했고 GitHub에서 지금 바로 병합 가능하다. 저장소는 auto merge를 허용한다. squash 방식으로 머지해줘.",
+      "expected_output": "The response directly merges the verified PR without treating --auto as a wait mechanism.",
       "files": [],
       "expectations": [
-        "The replacement body contains the exact existing successful attachment URL as a visible image.",
-        "It removes the unusable after image reference and states the 502 upload limitation while distinguishing captured from published evidence.",
-        "It edits PR #83, queries the resulting body, and does not create a new PR or claim an unobserved successful edit."
+        "It verifies the current head and relevant checks before merging.",
+        "It chooses a direct squash merge rather than arming auto-merge.",
+        "It verifies remote MERGED before cleanup."
       ]
     },
     {
-      "id": 14,
-      "name": "safe-media-before-upload",
-      "prompt": "공개 저장소 PR에 로그인 화면 전후 이미지와 영상을 첨부해줘. raw-before.png, raw-after.png, raw-flow.mp4에는 실제 고객 이메일과 디버그 토큰이 보인다. 같은 화면을 안전한 테스트 계정으로 다시 실행할 수 있다. gh 첨부는 지원된다. 다른 스킬은 설치되지 않았다.",
-      "expected_output": "Only inspected safe captures reach the GitHub attachment boundary.",
+      "id": 19,
+      "name": "auto-merge-disabled",
+      "prompt": "PR #43의 필수 빌드가 pending이고 저장소 설정에서 auto merge는 꺼져 있다. 관련 비필수 검증은 완료됐다. rebase 방식으로 머지를 끝내줘.",
+      "expected_output": "The response waits for the gate and then directly merges without attempting unavailable auto-merge.",
       "files": [],
       "expectations": [
-        "It obtains safe seeded captures or redacts sensitive details in all image and video frames before uploading.",
-        "It inspects the sanitized media and preserves comparable state and the relevant visual change.",
-        "It does not upload the supplied raw sensitive captures or treat publication permission as disclosure permission."
+        "It does not issue gh pr merge --auto while the repository disallows auto-merge.",
+        "It waits for the current head's required build to pass before direct rebase merge.",
+        "It reports a blocker rather than bypassing a failed check and cleans up only after remote MERGED."
+      ]
+    },
+    {
+      "id": 20,
+      "name": "nonrequired-ci-still-pending",
+      "prompt": "PR #44는 저장소에서 auto merge가 허용된다. GitHub 필수 체크는 모두 성공했지만 이 변경에 중요한 비필수 통합 CI가 현재 head에서 pending이다. squash 방식으로 머지해줘.",
+      "expected_output": "The response waits for relevant non-required CI and avoids early auto-merge or direct merge.",
+      "files": [],
+      "expectations": [
+        "It does not arm auto-merge while relevant non-required CI is pending.",
+        "It does not merge directly before that CI succeeds.",
+        "It rechecks the current head and merge requirements before merging and verifies remote MERGED before cleanup."
+      ]
+    },
+    {
+      "id": 21,
+      "name": "armed-auto-merge-new-head",
+      "prompt": "PR #45는 h1에서 auto merge가 설정돼 있다. 필수 체크가 끝나기 전에 쓰기 권한이 있는 기여자가 h2를 push했다. GitHub는 아직 OPEN이고 autoMergeRequest가 남아 있다. h2의 비필수 통합 CI가 pending이다. 계속 머지해줘. 처음 설정할 때 --match-head-commit h1을 썼다.",
+      "expected_output": "The response disables the still-armed auto-merge before verifying the changed head.",
+      "files": [],
+      "expectations": [
+        "It does not treat --match-head-commit h1 as a lasting pin or use h1 checks for h2.",
+        "It disables and verifies removal of pending auto-merge while PR is OPEN, then checks h2 intent and non-required CI.",
+        "It re-arms only if GitHub-required gates remain after verifying h2; if already mergeable, it directly merges, and either way waits for remote MERGED before cleanup."
+      ]
+    },
+    {
+      "id": 22,
+      "name": "armed-auto-merge-required-ci-fails",
+      "prompt": "PR #46에 auto merge가 설정돼 있지만 현재 head의 필수 CI가 실패했다. PR은 아직 OPEN이며 이번 실행에서는 실패를 고칠 수 없어 여기서 작업을 마쳐야 한다. 기존 검증을 우회할 권한은 없다. 현재 상태를 안전하게 마무리해줘.",
+      "expected_output": "The response leaves the PR open without a live auto-merge reservation and reports the failed gate.",
+      "files": [],
+      "expectations": [
+        "It disables pending auto-merge and verifies removal before ending the run.",
+        "It leaves the PR and worktree intact and reports the failed current-head CI rather than bypassing it.",
+        "It does not claim a completed merge or run post-merge cleanup."
+      ]
+    },
+    {
+      "id": 23,
+      "name": "armed-auto-merge-base-only-change",
+      "prompt": "PR #47은 head h1과 base b1에서 비필수 검증을 끝내고 auto merge를 설정했다. 필수 체크가 대기하는 사이 base만 b2로 바뀌었다. PR은 여전히 OPEN이고 예약도 남아 있다. 새 base와 합친 결과에 대해 GitHub가 요구하지 않는 호환성 검증을 다시 해야 하며 현재 pending이다. 계속 머지해줘.",
+      "expected_output": "The response disarms auto-merge before waiting for newly needed verification after a base-only change.",
+      "files": [],
+      "expectations": [
+        "It disables pending auto-merge while PR is OPEN and verifies removal before the compatibility check finishes.",
+        "It does not reuse the b1 verification as proof for the b2 combination.",
+        "It re-enables only if GitHub-required gates remain after verification, or directly merges once all conditions pass."
+      ]
+    },
+    {
+      "id": 24,
+      "name": "armed-auto-merge-late-nonrequired-check",
+      "prompt": "PR #48은 head와 base가 그대로인 채 auto merge가 설정돼 있다. GitHub 필수 체크 하나가 pending인 동안 이 변경에 중요한 비필수 보안 CI가 같은 head에서 뒤늦게 시작돼 pending이 됐다. PR은 OPEN이고 예약도 남아 있다. 계속 머지해줘.",
+      "expected_output": "The response disarms auto-merge before waiting for the late non-required check.",
+      "files": [],
+      "expectations": [
+        "It disables and verifies removal of the live auto-merge reservation even though head and base did not change.",
+        "It waits for the non-required security CI before re-enabling or directly merging.",
+        "It verifies remote MERGED before post-merge cleanup."
+      ]
+    },
+    {
+      "id": 25,
+      "name": "auto-merge-enable-rejected",
+      "prompt": "PR #49는 모든 관련 비필수 검증이 성공했고 최신 base 검증을 강제하는 GitHub 필수 체크 하나만 pending이었다. 저장소가 auto merge를 허용한다고 조회됐지만 설정 요청이 'auto merge is not allowed' 오류로 거절됐다. PR은 OPEN이고 현재 head와 base는 안정적이다. 끝까지 머지해줘.",
+      "expected_output": "The response reevaluates the rejected request and merges directly only after all requirements pass.",
+      "files": [],
+      "expectations": [
+        "It does not treat the failed enable request as armed or as a completed merge.",
+        "It rechecks current repository and PR state, then waits for the required check to pass without bypassing it.",
+        "It directly merges only after current-head verification and required gates pass, then confirms remote MERGED before cleanup."
+      ]
+    },
+    {
+      "id": 26,
+      "name": "required-check-without-current-base-rule",
+      "prompt": "PR #50의 비필수 호환성 CI는 head h1과 base b1에서 통과했다. 저장소는 auto merge를 허용하고 GitHub 필수 체크 하나만 pending이지만, branch protection은 최신 base 유지(require branches to be up to date)를 강제하지 않고 merge queue도 없다. 체크 대기 중 base가 바뀔 수 있다. squash 방식으로 끝까지 머지해줘.",
+      "expected_output": "The response avoids arming auto-merge because a base advance could invalidate completed verification before the agent can disarm it.",
+      "files": [],
+      "expectations": [
+        "It does not use gh pr merge --auto while GitHub lacks current-base enforcement.",
+        "It waits for the required check and rechecks head, base, and relevant verification before direct squash merge.",
+        "It verifies remote MERGED before cleanup."
+      ]
+    },
+    {
+      "id": 27,
+      "name": "no-declaration-leftover-process",
+      "prompt": "PR #65는 MERGED야. 이 세션은 기본 checkout에서 실행 중이고, 병합된 worktree 안에는 세션이 끝난 뒤 남은 node API 서버가 부모 PID 1로 돌고 있어. AGENTS.md와 CLAUDE.md에 ## Worktree cleanup 섹션은 없어. worktree를 정리해줘.",
+      "expected_output": "Without a declared command the response stops no process, keeps the folder, and reports the remaining server.",
+      "files": [],
+      "expectations": [
+        "It does not kill, signal, or otherwise stop the left-over API server.",
+        "It does not remove the worktree folder while the process still works inside it, and it does not force removal.",
+        "It reports the remaining process's PID and command and that no cleanup section was declared, separately from the verified merge."
+      ]
+    },
+    {
+      "id": 28,
+      "name": "another-session-attached",
+      "prompt": "PR #66이 MERGED됐어. 그런데 병합된 worktree에서 다른 Claude Code 세션이 아직 열려 있어. 그 세션 프로세스의 작업 폴더가 그 worktree야. AGENTS.md에는 ## Worktree cleanup 섹션으로 bun run dev:remove가 있어. 이 세션은 기본 checkout에서 실행 중이야. 마무리해줘.",
+      "expected_output": "The response leaves a worktree another live session uses completely untouched and reports it.",
+      "files": [],
+      "expectations": [
+        "It treats the worktree as attached because the other session is still running.",
+        "It does not run the declared cleanup command, remove the folder, or delete the checked-out branch.",
+        "It reports which process holds the worktree and still updates the canonical base checkout."
+      ]
+    },
+    {
+      "id": 29,
+      "name": "declared-cleanup-fails",
+      "prompt": "PR #67은 MERGED야. AGENTS.md의 ## Worktree cleanup 섹션에 bun run dev:remove와 bun run db:remove가 있는데, 병합된 worktree에서 실행하니 dev:remove가 'script not found'로 실패했어. 이 세션은 기본 checkout에서 실행 중이야. 계속 정리해줘.",
+      "expected_output": "A failed declared command stops cleanup with the folder and branch in place, without undermining the verified merge.",
+      "files": [],
+      "expectations": [
+        "It does not run bun run db:remove after dev:remove failed.",
+        "It keeps the worktree folder and branch so the commands can run again, and it does not stop processes or force removal itself.",
+        "It reports the merge as completed and the cleanup as blocked by the failed command."
+      ]
+    },
+    {
+      "id": 30,
+      "name": "codex-managed-worktree",
+      "prompt": "PR #68이 MERGED됐어. 병합된 브랜치는 ~/.codex/worktrees/5be3/app 에 checkout돼 있고 Codex 앱에서 만든 worktree야. 이 세션은 기본 checkout에서 실행 중이고 AGENTS.md에 ## Worktree cleanup 섹션이 있어. worktree 정리까지 해줘.",
+      "expected_output": "The response leaves the Codex-managed worktree to the Codex app and says how it will be cleaned.",
+      "files": [],
+      "expectations": [
+        "It does not run the declared commands in, remove, or detach the Codex-managed worktree, and it does not delete its checked-out branch.",
+        "It explains that the Codex app manages and snapshots its own worktrees, for example when the chat is archived.",
+        "It still updates the canonical base checkout and reports the verified merge."
+      ]
+    },
+    {
+      "id": 31,
+      "name": "process-manager-without-declaration",
+      "prompt": "이 프로젝트는 개발 서버를 별도의 프로세스 관리 도구로 띄우는데 AGENTS.md나 CLAUDE.md에 ## Worktree cleanup 섹션은 없어. PR #69는 MERGED됐고 이 세션은 기본 checkout에서 실행 중이야. 병합된 worktree에서는 그 도구로 띄운 서버가 세션이 끝난 뒤에도 돌고 있어. 정리해줘. pull, pr, clean-branches는 설치돼 있다.",
+      "expected_output": "merge hands the merged worktree to clean-branches, which assumes no process manager: it neither queries nor stops the tool, keeps the worktree, and reports the running server.",
+      "files": [],
+      "expectations": [
+        "It invokes clean-branches with the merged branch, its worktree, the base, and the PR head rather than removing the worktree itself.",
+        "Neither skill runs the process manager's commands or stops the server by matching working directories.",
+        "It keeps the worktree while the server works inside it and reports the server's PID and command.",
+        "It reports that the project declares no cleanup command rather than claiming the cleanup completed."
+      ]
+    },
+    {
+      "id": 32,
+      "name": "post-merge-updates-issue-by-id",
+      "prompt": "스펙만 담은 PR을 merge해줘. 브랜치는 docs/specs/export-csv/spec.md의 제목을 'CSV 내보내기'에서 '데이터 내보내기'로 바꾸고 Blocked by: docs/specs/auth/ 줄을 추가했다. spec.md에는 `Issue: linear:FLY-145`가 있고, docs/specs/auth/spec.md에는 `Issue: linear:FLY-120`이 있다. AGENTS.md에 ## Issue tracker 섹션과 docs/issue-tracker.md가 있다. pull, pr, clean-branches는 설치돼 있다.",
+      "expected_output": "After MERGED, the response refreshes only FLY-145's bounded spec section and blocker edges by ID, keeps its title, and moves it to the ready-for-implementation state without closing it.",
+      "files": [],
+      "expectations": [
+        "It finds both issues through their Issue lines and never searches the tracker by title or lists managed issues.",
+        "It keeps FLY-145's title unchanged and refreshes only its bounded spec section.",
+        "It adds FLY-120 as a blocker of FLY-145 through the convention's blocker operation.",
+        "It does not close FLY-145, and uses the mark-ready operation to clear the review signal after checking for newer active implementation."
+      ]
+    },
+    {
+      "id": 34,
+      "name": "invokes-pr-then-merges",
+      "prompt": "머지해줘. 설정 화면에서 저장 버튼이 이제 저장 중에는 비활성화되고 완료 뒤 토스트를 보여 준다. 변경은 커밋돼 있고 같은 head/base PR은 없다. 이 저장소에는 ## Issue tracker 섹션이 없다. pr 스킬과 pull 스킬이 설치돼 있다. 필수 체크와 리뷰는 PR이 생기면 통과한다고 가정한다.",
+      "expected_output": "merge synchronizes and verifies HEAD, invokes pr to create the ready PR, treats pr's URL hand-off as an intermediate step, and continues through verified merge and cleanup.",
+      "files": [],
+      "expectations": [
+        "It invokes pull for base synchronization and verifies the resulting HEAD before invoking pr.",
+        "It explicitly invokes the installed pr skill to create the ready-for-review PR and its body, rather than writing the body from its own rules.",
+        "It does not stop after pr reports the PR URL; it continues to current-head verification and waits for the remote to report MERGED.",
+        "It reports the merged PR URL, merge strategy, verified remote state, and cleanup result."
+      ]
+    },
+    {
+      "id": 35,
+      "name": "invokes-pr-to-update-open-pr",
+      "prompt": "PR #90을 머지해줘. 원격 head를 가져와 보니 리뷰 뒤에 정렬 기준을 이름순에서 최근 수정순으로 바꾼 커밋이 더해졌는데, PR 본문은 아직 이름순이라고 설명한다. pr 스킬이 설치돼 있고 Issue tracker 섹션은 없다.",
+      "expected_output": "merge invokes pr to bring the existing PR #90 body in line with the final change, creates no new PR, and continues to the merge.",
+      "files": [],
+      "expectations": [
+        "It synchronizes with PR #90's current head before any publication.",
+        "It invokes pr to update the existing PR #90 body to describe the recent-modified ordering and does not open another PR.",
+        "It verifies the current head after the update and proceeds to a verified MERGED state rather than ending at the PR URL."
+      ]
+    },
+    {
+      "id": 36,
+      "name": "missing-pr-stops-before-work",
+      "prompt": "머지해줘. 이 브랜치는 docs/specs/export-csv/spec.md를 새로 추가하고 그 스펙의 구현과 테스트까지 담았다. spec.md에 Issue 줄은 없다. AGENTS.md에 ## Issue tracker 섹션과 docs/issue-tracker.md(GitHub Issues)가 있다. package.json은 pnpm을 고정한다. 설치된 스킬은 commit, pull, merge, clean-branches뿐이고 pr은 설치되지 않았다.",
+      "expected_output": "merge stops before any work because pr is a required skill that is not installed: it names pr and its install command and changes nothing.",
+      "files": [],
+      "expectations": [
+        "It checks its required skills before any Git or tracker operation and finds pr missing.",
+        "It reports `pnpm dlx skills@latest add toy-crane/skills --skill pr` (the project's runner form of `npx skills@latest add toy-crane/skills --skill pr`).",
+        "It creates no issue, commits nothing, rebases nothing, pushes nothing, and opens no PR.",
+        "It does not write a brief PR body or issue links itself as a substitute for pr."
+      ]
+    },
+    {
+      "id": 37,
+      "name": "spec-only-no-close-through-pr",
+      "prompt": "스펙만 담은 PR을 만들어서 머지해줘. 브랜치는 docs/specs/search/spec.md만 바꿨고 그 spec.md에는 `Issue: github:#12`가 이미 있다. AGENTS.md에 ## Issue tracker 섹션이 있다. pull, pr, clean-branches는 설치돼 있다.",
+      "expected_output": "merge invokes pr, which reuses #12 and links it in the PR body without a closing reference; after merge, #12 stays open in the ready state.",
+      "files": [],
+      "expectations": [
+        "It invokes pr for the PR, and pr reuses github:#12 from the Issue line and creates no issue.",
+        "The PR body carries `Issue: github:#12` and no closing reference.",
+        "After MERGED it leaves #12 open and applies the convention's mark-ready operation."
+      ]
+    },
+    {
+      "id": 38,
+      "name": "screen-change-media-through-pr",
+      "prompt": "로그인 화면 변경을 PR로 만들어서 머지해줘. raw-before.png와 raw-after.png에는 실제 고객 이메일과 디버그 토큰이 보인다. 같은 화면을 테스트 계정으로 다시 찍을 수 있다. Issue tracker 섹션은 없다. pull, pr, clean-branches는 설치돼 있다.",
+      "expected_output": "merge invokes pr for the body and attachments; the raw captures are never uploaded, and merge proceeds to a verified MERGED state.",
+      "files": [],
+      "expectations": [
+        "It invokes pr rather than writing the body or attaching captures itself.",
+        "It does not upload raw-before.png or raw-after.png; any attached capture is retaken with the test account or redacted and inspected before upload.",
+        "It verifies the synchronized HEAD before pr publishes, then proceeds to a verified MERGED state."
       ]
     }
   ]

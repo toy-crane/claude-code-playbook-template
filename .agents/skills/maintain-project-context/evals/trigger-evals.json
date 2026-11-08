@@ -40,6 +40,10 @@
     "should_trigger": true
   },
   {
+    "query": "default branch의 spec 폴더와 issue tracker의 spec: 이슈가 서로 어긋나 있어. 빠진 이슈, 오래된 본문과 blocker, 고아 이슈를 전체 점검해서 맞춰줘.",
+    "should_trigger": true
+  },
+  {
     "query": "무료 체험이 끝났지만 아직 기능을 쓸 수 있는 사용자를 부를 새 용어를 정해서 용어집에 기록해줘.",
     "should_trigger": false
   },

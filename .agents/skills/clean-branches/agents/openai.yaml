@@ -1,0 +1,4 @@
+interface:
+  display_name: "Clean Branches"
+  short_description: "Remove merged, closed, and left-over branches and worktrees"
+  default_prompt: "Use $clean-branches to remove this repository's finished local branches and stale worktrees and report what stayed and why."

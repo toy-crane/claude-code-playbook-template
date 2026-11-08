@@ -131,6 +131,44 @@
         "It preserves any qualifying reusable decision before deleting the confirmed shipped spec.",
         "It does not report absent optional files as maintenance failures."
       ]
+    },
+    {
+      "id": 11,
+      "prompt": "/maintain-project-context 원격 default branch의 spec 폴더들과 설정된 issue tracker를 포함해 전체 맥락을 정리해줘. docs/specs/checkout/spec.md에는 `Issue: linear:FLY-31`이 있는데 이슈의 스펙 구역과 blocker가 오래됐어. docs/specs/payments/spec.md에는 Issue 줄이 없어. docs/specs/profile/spec.md는 닫힌 FLY-40을 가리켜. 트래커에는 폴더가 사라진 열린 이슈 FLY-12와, 제목이 같은 이슈 두 개도 있어. 한 이슈 댓글에는 아직 확인하지 않은 새 제품 요구도 적혀 있어.",
+      "expected_output": "The response fetches each folder's issue by its Issue line from the fetched remote default branch, refreshes only FLY-31's spec section and blockers, reports payments without creating an issue, leaves closed and unrelated issues alone, and does not promote tracker prose into durable context.",
+      "files": [],
+      "expectations": [
+        "It reads spec folders from the fetched remote default branch rather than unmerged local changes, and fetches issues only by their Issue line IDs.",
+        "It refreshes only FLY-31's bounded spec section and replaces its blocker set while preserving its title, the rest of its body, assignee, and open or closed state.",
+        "It reports docs/specs/payments/ as having no Issue line and creates no issue for it.",
+        "It does not reopen FLY-40 merely because its folder remains.",
+        "It does not list issues, search by title, close FLY-12 as an orphan, or try to resolve the same-title issues.",
+        "It does not copy the unconfirmed issue-comment requirement into PRODUCT.md, a spec, the glossary, or a decision contract."
+      ]
+    },
+    {
+      "id": 12,
+      "prompt": "/maintain-project-context 원격 default branch의 docs/specs/results/spec.md에는 `Issue: github:#50`과 `Blocked by: docs/specs/search/`가 있어. 그런데 docs/specs/search/spec.md에는 Issue 줄이 없고, #50에는 지금 #31 blocker edge가 있어. 전체 tracker를 맞춰줘.",
+      "expected_output": "The response reports that the blocker folder has no Issue line and preserves #50's complete blocker relation set instead of guessing the blocker's issue, while still refreshing #50's spec section.",
+      "files": [],
+      "expectations": [
+        "It reports docs/specs/search/ as a blocker folder without an Issue line.",
+        "It does not search the tracker by title to find the search spec's issue.",
+        "It leaves every blocker relation on #50 unchanged, including the existing #31 edge.",
+        "It may still refresh #50's bounded spec section because that content is unambiguous."
+      ]
+    },
+    {
+      "id": 13,
+      "prompt": "/maintain-project-context issue tracker가 설정돼 있지만 docs/issue-tracker.md가 아직 예전 규약이야. 이슈는 `spec:<slug>` 제목 키와 List managed issues로 찾고, 스펙에는 `Source-Issue:` 줄을 쓰라고 적혀 있어. 원격 default branch 기준으로 가능한 만큼 전체 맥락을 정리해줘.",
+      "expected_output": "The response does not run the outdated title-key or listing operations, tells the user to rerun setup-issue-tracker and rename Source-Issue lines, and still completes the repository context cleanup.",
+      "files": [],
+      "expectations": [
+        "It does not list managed issues or match issues by a `spec:<slug>` title.",
+        "It does not read `Source-Issue:` lines as issue links.",
+        "It recommends rerunning setup-issue-tracker and tells the user to rename `Source-Issue:` to `Issue:` in active spec folders.",
+        "It finishes the repository context cleanup and does not claim the tracker was reconciled."
+      ]
     }
   ]
 }
