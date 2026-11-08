@@ -1,0 +1,14 @@
+[
+  {"query":"worktree가 너무 많이 쌓였어. 병합된 거랑 남은 폴더 다 정리해줘.","should_trigger":true},
+  {"query":"clean up all the stale git worktrees in this repo","should_trigger":true},
+  {"query":"머지되거나 닫힌 PR의 worktree들을 한 번에 치워줘.","should_trigger":true},
+  {"query":"detached worktree랑 등록이 풀린 worktree 폴더들 정리해줘.","should_trigger":true},
+  {"query":"이 저장소 worktree 목록 보고 지워도 되는 건 전부 지워줘.","should_trigger":true},
+  {"query":"PR #72를 머지하고 이 worktree 정리해줘.","should_trigger":false},
+  {"query":"이미 머지된 이 PR의 worktree만 안전하게 치워줘.","should_trigger":false},
+  {"query":"새 worktree를 하나 만들어서 feature 브랜치 작업을 준비해줘.","should_trigger":false},
+  {"query":"git stash 목록에서 오래된 항목을 정리해줘.","should_trigger":false},
+  {"query":"node_modules랑 빌드 캐시를 지워서 디스크 공간을 확보해줘.","should_trigger":false},
+  {"query":"머지된 로컬 브랜치들 정리해줘. 워크트리는 안 쓰고 main에서 바로 작업해.","should_trigger":true},
+  {"query":"clean up the merged local branches in this repo","should_trigger":true}
+]

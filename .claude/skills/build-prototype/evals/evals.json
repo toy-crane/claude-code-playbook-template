@@ -215,7 +215,8 @@
         "The spec states the approved reservation outcomes and scope rather than merely listing screen decisions.",
         "The spec includes observable acceptance criteria for viewing, rescheduling, cancelling, and irreversible cancellation.",
         "It records applicable constraints, assumptions, off-limits areas, deferrals, and risks without inferring behavior from source order or visual proximity.",
-        "It omits predicted files, functions, code structure, technical layers, and step-by-step implementation work."
+        "It omits predicted files, functions, code structure, technical layers, and step-by-step implementation work.",
+        "spec.md carries a `## Setup before implementation` section, listing outside setup on one line each with a done condition, or `None.` when nothing is needed, and holds no secret value."
       ]
     },
     {

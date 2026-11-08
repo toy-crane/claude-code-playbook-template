@@ -12,6 +12,15 @@ Separate the product layer from the decision layer: `prototype.html` holds the
 canonical product screens and flows; a temporary `compare.html` resolves the
 user's current question in its specific situation. Scope the comparison by what
 the decision needs, whether a component, a screen, or a short flow.
+
+When it is unclear where the user needs to open the preview, ask once whether
+they will review it only on the computer running the work or also on another
+device. Use a nonblocking question when the host supports one; otherwise finish
+the access-independent build before asking. Do not infer the review device from
+the execution host or treat no answer as a choice. Select the execution and
+hosting method from the available environment; do not prescribe a particular
+platform.
+
 For a local comparison request, go directly to **Compare one decision** and
 limit building and verification to that decision. The whole-surface inventory,
 review, and preservation gates apply to the prototype, not to this intermediate.
@@ -143,18 +152,23 @@ cheap agent-chosen defaults as overridable assumptions. Ask about or explicitly
 defer consequential behavior not settled by the approved surface, and record
 its impact as a remaining risk without reopening unrelated screen review.
 
-When every consequential implementation-relevant product decision is settled
-or explicitly deferred and every cheap agent-chosen default is labeled as an
-overridable assumption, reuse an identified work-unit folder or derive a
-kebab-case slug. Record confirmed behavior alongside those explicitly labeled
+When every consequential implementation-relevant product decision is settled or
+explicitly deferred and every cheap agent-chosen default is labeled as an
+overridable assumption, reuse an identified work-unit folder or derive a kebab-
+case slug. Record confirmed behavior alongside those explicitly labeled
 assumptions and deferrals in `docs/specs/<slug>/spec.md`, creating or updating
-the same stable product contract used by shaping. Record or preserve its
-user-visible outcomes, approved scope, observable acceptance criteria, settled
+the same stable product contract used by shaping. Record or preserve its user-
+visible outcomes, approved scope, observable acceptance criteria, settled
 constraints and rationale, assumptions, off-limits areas and why, deferrals,
-and risks. Omit predicted files, functions, code structure, technical layers,
-and implementation steps. Save and link the approved surface as
-`docs/specs/<slug>/prototype.html`. Never infer navigation, order, or behavior
-from source order or visual proximity.
+risks, and setup before implementation. Under a `## Setup before
+implementation` heading, list each piece of work outside the repository that
+implementation needs, such as a vendor account, an issued key, or a console or
+DNS setting, on one line: what is needed, the outcome it serves, and a done
+condition observable without the work the spec delivers. Write `None.` when
+nothing is needed, and never write a secret value. Omit predicted files,
+functions, code structure, technical layers, and implementation steps. Save and
+link the approved surface as `docs/specs/<slug>/prototype.html`. Never infer
+navigation, order, or behavior from source order or visual proximity.
 
 Promote only user-confirmed, reusable, non-obvious trade-offs from the spec into
 a project decision contract.

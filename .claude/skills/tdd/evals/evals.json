@@ -1,0 +1,66 @@
+{
+  "skill_name": "tdd",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "/tdd 배송비 계산 함수 shippingFee(order)를 만들어줘. 상품 합계 5만원 이상이면 무료, 아니면 3000원이고 제주는 항상 3000원이 더 붙어. 스펙 문서는 없어.",
+      "expected_output": "The response derives the expected behavior from the request, writes the tests before the behavior, stubs the missing function so each test fails on an assertion, may write several tests before implementing, then implements and hands back each test with the requirement it serves and its observed failing assertion.",
+      "files": [],
+      "expectations": [
+        "It derives expected behavior from the request without asking for a spec.",
+        "Every new-behavior test is written before the code that makes it pass.",
+        "It stubs the missing function so the first failure is an assertion, not a missing-symbol or import error.",
+        "It may write several tests before implementing; it does not require one test at a time.",
+        "Expected values come from the request, not from running the implementation.",
+        "Its hand-back lists each new test with the requirement or named reason it serves and an excerpt of the observed failing assertion."
+      ]
+    },
+    {
+      "id": 2,
+      "prompt": "/tdd cartTotal에 버그가 있어. 정액 쿠폰이 합계보다 크면 총액이 음수로 나와. 0이어야 해. 고쳐줘.",
+      "expected_output": "The response writes a reproduction test first and shows it failing against the unchanged code on the wrong total, an assertion such as expected 0 but got a negative number, before changing cartTotal. It then fixes the code, runs the existing tests that cover cartTotal, and never weakens a failing test.",
+      "files": [],
+      "expectations": [
+        "It writes the reproduction test before changing cartTotal.",
+        "The reproduction fails against the existing code on an assertion about the wrong total, not on a compile or import error.",
+        "It finds and runs the existing tests that cover cartTotal before finishing.",
+        "It does not delete, skip, or weaken a failing test to reach green."
+      ]
+    },
+    {
+      "id": 3,
+      "prompt": "/tdd 비밀번호 강도 검사기를 만들어줘. 테스트 하나 쓰고 통과시키고 다음 테스트로, 하나씩 번갈아 진행해줘.",
+      "expected_output": "The response follows the user's explicit one-test-at-a-time request: one failing test, the code that passes it, then the next test.",
+      "files": [],
+      "expectations": [
+        "It alternates one failing test with the code that makes it pass, as the user asked.",
+        "Each test is still seen failing on an assertion before its code is written."
+      ]
+    },
+    {
+      "id": 4,
+      "prompt": "/tdd implement가 넘긴 작업이야. 진행 중인 결과는 '주문 취소'이고, 자동 테스트로 증명할 기준은 2.1 취소 시 재고 복구, 2.2 배송 시작 후 취소 거부, 2.3 취소 알림 문구가 화면에 보임이야. 스펙 전체는 docs/specs/orders/spec.md이고, 같은 spec의 다음 결과인 '부분 환불'은 아직 시작 전이야.",
+      "expected_output": "The response designs from the order-cancellation outcome, selects the public seams itself, writes tests for 2.1 and 2.2 before the behavior and sees them fail on assertions, does not build partial refunds, and hands back 2.3 as a criterion no automated test here can prove, with the reason, alongside each new test's criterion and observed failure.",
+      "files": [],
+      "expectations": [
+        "It builds only order cancellation and does not implement the later partial-refund outcome.",
+        "It selects the public test seams itself.",
+        "Tests for 2.1 and 2.2 are written before the behavior and seen failing on assertions.",
+        "It writes no test that names neither a criterion nor a protected bug, risk, or touched existing behavior.",
+        "It hands back 2.3 as not provable by an automated test here, with the reason, so implement can cover it through runtime evidence.",
+        "Its hand-back lists each new test with its criterion and an excerpt of the observed failing assertion."
+      ]
+    },
+    {
+      "id": 5,
+      "prompt": "/tdd implement가 넘긴 작업이야. 결과물은 '환불 문의 분류'이고, 자동 테스트로 증명할 기준은 3.1 분류 결과가 refund/other 중 하나로 저장된다, 3.2 환불 문의 분류 정확도가 held-out 사례에서 90% 이상이다야. 분류는 src/triage.js에서 Claude를 호출해서 해.",
+      "expected_output": "The response tests the code around the model, such as storing the label and handling a malformed response, with the model call mocked, writes those tests before the behavior and sees them fail on assertions, and hands 3.2 back as not provable by a test against a mocked model call because it concerns LLM output quality.",
+      "files": [],
+      "expectations": [
+        "It tests 3.1 and the surrounding code test-first with the model call mocked.",
+        "It does not claim 3.2 proven by a test against a mocked model call.",
+        "It hands 3.2 back with the reason that a mocked call proves only the code around the model."
+      ]
+    }
+  ]
+}

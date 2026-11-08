@@ -3,38 +3,38 @@
   "evals": [
     {
       "id": 1,
-      "prompt": "/implement docs/specs/todo/를 구현하고 검증해줘. 이 폴더에는 task 파일이 없어.",
-      "expected_output": "The response implements spec.md directly, verifies the complete behavior, reconciles the observed result with the approved product contract even without task files, and finishes with one triaged pass of the current harness's automated code-review process against the selected spec and acceptance criteria.",
+      "prompt": "/implement docs/specs/todo/를 구현하고 검증해줘.",
+      "expected_output": "The response implements spec.md directly, verifies the complete behavior, reconciles the observed result with the approved product contract, and finishes with one triaged pass of the current harness's automated code-review process against the selected spec and acceptance criteria.",
       "files": [],
       "expectations": [
         "It treats the provided spec folder as the complete implementation handoff.",
-        "It implements spec.md directly because no approved task files exist.",
+        "It implements spec.md directly as the single handoff.",
         "It runs the repository's complete required verification before finishing.",
-        "After focused verification, it reconciles the observed result with spec.md before the final review pass even though no task files exist.",
+        "After focused verification, it reconciles the observed result with spec.md before the final review pass.",
         "It runs the current harness's automated code-review process once over the whole implementation diff against the selected spec and acceptance criteria."
       ]
     },
     {
       "id": 2,
-      "prompt": "/implement docs/specs/todo-platform/를 끝까지 구현해줘. 폴더 안에 승인된 Task 01부터 04까지 있고 Task 03에만 Review checkpoint가 선언돼 있어.",
-      "expected_output": "The response implements approved tasks sequentially, preserves the declared Task 03 review checkpoint, completes deterministic verification and the whole-diff review, then verifies the final runtime after any repairs.",
+      "prompt": "/implement docs/specs/todo-platform/ 와 docs/specs/todo-sharing/ 를 한 번에 끝까지 구현해줘. todo-sharing의 spec.md에는 `Blocked by: docs/specs/todo-platform/` 줄이 있어.",
+      "expected_output": "The response keeps implement to one spec folder per run. It does not implement both folders in one run or order them itself, and asks which single folder to run; whichever runs next starts only after the earlier folder's own whole-diff review.",
       "files": [],
       "expectations": [
-        "It selects the approved task files as the active implementation handoff.",
-        "It completes the tasks sequentially in dependency order.",
-        "It marks finished task files completed and records their verification evidence.",
-        "Task 03 is the sole intermediate review checkpoint it runs, as one pass over the declared cumulative scope rather than a repeated round.",
-        "It runs complete integrated deterministic verification before the single whole-diff review, with final runtime verification after review and any must-fix repairs."
+        "It does not implement both folders in one run.",
+        "It asks which one folder to run instead of choosing an order across folders itself.",
+        "It does not read todo-sharing's spec to plan a combined implementation across folders.",
+        "It states that a folder blocked by another starts only after that folder's run, including its whole-diff review, has finished.",
+        "It changes no source before the folder for this run is settled."
       ]
     },
     {
       "id": 3,
-      "prompt": "/implement docs/specs/billing/ 작업을 재개해줘. Task 01과 02는 completed이고 Task 03은 in-progress인데 현재 diff의 소유권은 확실하지 않아.",
+      "prompt": "/implement docs/specs/billing/ 작업을 재개해줘. spec의 결과 세 개 중 앞의 두 개는 커밋과 검증 기록이 있고, 세 번째는 진행 중인데 현재 diff의 소유권은 확실하지 않아.",
       "expected_output": "The response reconstructs completed progress from the spec folder and Git but pauses before absorbing the ambiguous dirty changes, asking only for confirmation of their ownership.",
       "files": [],
       "expectations": [
         "It trusts the spec folder, Git history, the current diff, and test evidence over a prior conversational summary.",
-        "It preserves completed tasks and resumes the remaining work.",
+        "It preserves completed outcomes and resumes the remaining work.",
         "It confirms ownership before incorporating the ambiguous dirty changes.",
         "It preserves the existing work while asking for the smallest decision needed to resume."
       ]
@@ -55,12 +55,12 @@
     },
     {
       "id": 5,
-      "prompt": "/implement docs/specs/inventory/의 task는 모두 completed야. 최종 harness review에서 Task 01과 03의 상호작용 회귀가 발견됐어.",
-      "expected_output": "The response confirms the cross-task interaction finding as a real regression, repairs it while preserving the approved outcomes, reruns the affected verification, and reports completion without a second review round.",
+      "prompt": "/implement docs/specs/inventory/의 결과는 모두 구현됐어. 최종 harness review에서 첫 번째와 세 번째 결과의 상호작용 회귀가 발견됐어.",
+      "expected_output": "The response confirms the cross-outcome interaction finding as a real regression, repairs it while preserving the approved outcomes, reruns the affected verification, and reports completion without a second review round.",
       "files": [],
       "expectations": [
-        "It confirms the cross-task interaction finding by reproducing the regression rather than acting on the reviewer's assertion alone.",
-        "It preserves the approved task outcomes.",
+        "It confirms the cross-outcome interaction finding by reproducing the regression rather than acting on the reviewer's assertion alone.",
+        "It preserves the approved outcomes.",
         "It repairs the integrated behavior covered by the spec folder.",
         "It reruns the verification affected by the repair.",
         "It reports completion without running the automated review again."
@@ -68,14 +68,16 @@
     },
     {
       "id": 6,
-      "prompt": "/implement docs/specs/checkout/를 구현해줘. 승인된 spec에 Checkout API가 public test seam으로 합의돼 있어.",
-      "expected_output": "The response implements the approved spec through the tdd skill at the pre-agreed Checkout API seam, completes deterministic verification and one whole-diff automated review, then verifies the final runtime after any repairs.",
+      "prompt": "/implement docs/specs/checkout/를 구현해줘. 승인된 spec에는 수용 기준 1–4가 있고, 1–3은 Checkout API 동작이며 4는 결제 완료 화면의 안내 문구야.",
+      "expected_output": "The response maps each acceptance criterion to at least one check, hands criteria 1-3 with the active outcome, applicable references, and spec context to the tdd skill without choosing the seam itself, still gathers runtime evidence for the running checkout flow, covers criterion 4 through the running screen, and reports every criterion with its checks and evidence after one whole-diff automated review.",
       "files": [],
       "expectations": [
-        "It uses the tdd skill because the behavior can be verified through a public seam.",
-        "It uses the approved Checkout API seam without inventing an implementation-only test boundary.",
-        "It still completes the required verification and one automated review pass.",
-        "It does not open a review round after each refactor."
+        "It maps every acceptance criterion to at least one check before changing source.",
+        "It hands the tdd skill the active outcome, the criteria to prove by automated tests, applicable references, and the spec as design context, and leaves seam selection to tdd.",
+        "It still collects runtime evidence for the running checkout flow even though tests prove criteria 1-3.",
+        "It covers criterion 4 through runtime evidence on the actual screen rather than claiming a test proves the copy is right.",
+        "Its final report lists each criterion with its checks and evidence.",
+        "It completes the required verification and one automated review pass without opening a review round after each refactor."
       ]
     },
     {
@@ -212,20 +214,20 @@
     },
     {
       "id": 18,
-      "prompt": "/implement docs/specs/export/의 Task 01을 구현 중이야. 런타임 확인 결과 계획했던 streaming helper는 브라우저에서 동작할 수 없지만, 저장소가 이미 지원하는 Blob download는 spec의 사용자 결과와 acceptance criteria를 그대로 만족해. 이후 task들은 이 helper에 의존하지 않아. 계속 구현해줘.",
+      "prompt": "/implement docs/specs/export/의 첫 번째 결과를 구현 중이야. 런타임 확인 결과 계획했던 streaming helper는 브라우저에서 동작할 수 없지만, 저장소가 이미 지원하는 Blob download는 spec의 사용자 결과와 acceptance criteria를 그대로 만족해. 이후 결과들도 이 helper에 의존하지 않아. 계속 구현해줘.",
       "expected_output": "The response changes the active outcome's just-in-time technical approach to the verified Blob path, proves the same observable behavior, preserves the approved product contract, and continues without seeking approval or creating another durable plan.",
       "files": [],
       "expectations": [
         "It treats the runtime result as authority to revise the active technical approach without asking the user to approve an implementation detail.",
         "It preserves the approved outcome and observable acceptance criteria while verifying the Blob-based result.",
-        "It does not rewrite unaffected pending tasks merely to perform reconciliation.",
+        "It does not rewrite spec.md merely to perform reconciliation.",
         "It records concise evidence for the technical revision and continues through the normal outcome gate.",
         "It does not create a separate roadmap, execution ledger, durable implementation plan, or run-state file."
       ]
     },
     {
       "id": 19,
-      "prompt": "/implement docs/specs/invitations/를 구현 중이야. 승인된 spec은 초대 링크가 만료되지 않는다고 명시하지만, 현재 저장소가 지원하는 모든 provider 경로는 7일 뒤 만료된다는 사실을 확인했어. 뒤 task들도 이 계약에 의존해. 알아서 가장 현실적인 방식으로 계속해줘.",
+      "prompt": "/implement docs/specs/invitations/를 구현 중이야. 승인된 spec은 초대 링크가 만료되지 않는다고 명시하지만, 현재 저장소가 지원하는 모든 provider 경로는 7일 뒤 만료된다는 사실을 확인했어. 뒤 결과들도 이 계약에 의존해. 알아서 가장 현실적인 방식으로 계속해줘.",
       "expected_output": "The response stops before weakening the never-expire product contract, preserves current artifacts, presents the provider evidence and the exact product decision that shaping must settle, and does not continue dependent work.",
       "files": [],
       "expectations": [
@@ -233,98 +235,85 @@
         "It stops before weakening the spec or its observable acceptance criteria.",
         "It presents the verified provider constraint and asks for one concrete product decision through shaping.",
         "It preserves current code and repository evidence while the decision is unresolved.",
-        "It does not continue dependent tasks or hide the conflict as a follow-up."
+        "It does not continue dependent outcomes or hide the conflict as a follow-up."
       ]
     },
     {
       "id": 20,
-      "prompt": "/implement docs/specs/reminders/의 Task 01은 검증까지 끝났어. 실제 구현은 기존 ReminderRepository를 사용했고, pending인 Task 02와 03의 constraints, blockers, verification은 존재하지 않는 NotificationStore를 전제로 써 있어. 사용자 결과는 그대로야. 다음 task를 진행해줘.",
-      "expected_output": "Before starting the next outcome, the response rereads every unfinished task, revises only the affected pending contracts to match verified repository evidence, records why, and proceeds without changing the product contract or asking for another approval.",
+      "prompt": "/implement docs/specs/reminders/의 첫 번째 결과는 검증까지 끝났어. 실제 구현은 기존 ReminderRepository를 사용했는데, spec의 가정 칸에는 알림을 존재하지 않는 NotificationStore에 저장한다고 적혀 있어. 사용자 결과와 수용 기준은 그대로야. 다음 결과를 진행해줘.",
+      "expected_output": "Before starting the next outcome, the response treats the NotificationStore premise as a technical assumption, corrects it to the verified ReminderRepository path, derives the next outcome's approach from that evidence, and proceeds without changing the product contract or asking for another approval.",
       "files": [],
       "expectations": [
-        "It reconciles the verified Task 01 result against every unfinished task before beginning Task 02.",
-        "It revises affected pending boundaries, order, blockers, task-specific constraints, verification, or equivalent task-acceptance wording that relied on NotificationStore.",
-        "It leaves unaffected task content unchanged and preserves Task 01's completion evidence.",
-        "It records concise evidence explaining the revision.",
-        "It continues without requesting approval because the approved user outcomes and product constraints are preserved."
+        "It treats the NotificationStore premise as a technical assumption rather than a change to the product contract.",
+        "It corrects that recorded assumption to match the verified ReminderRepository evidence.",
+        "It derives the next outcome's approach from the verified repository path.",
+        "It leaves the approved outcomes and acceptance criteria unchanged.",
+        "It continues without requesting approval and creates no separate plan or reconciliation document."
       ]
     },
     {
       "id": 21,
-      "prompt": "/implement docs/specs/sharing/를 계속해줘. Task 01은 completed이고 당시 검증 증거도 남아 있어. 그런데 Task 02 통합 뒤 새 런타임 확인에서 Task 01의 acceptance criterion이 깨졌고, Task 03은 Task 01에 의존해.",
-      "expected_output": "The response preserves Task 01 and its prior evidence, returns it to in-progress or blocked, repairs and reverifies it before dependent or final work, and does not treat historical completion as current proof.",
+      "prompt": "/implement docs/specs/sharing/를 계속해줘. 첫 번째 결과는 완료됐고 당시 검증 증거도 남아 있어. 그런데 두 번째 결과를 통합한 뒤 새 런타임 확인에서 첫 번째 결과의 acceptance criterion이 깨졌고, 세 번째 결과는 첫 번째에 의존해.",
+      "expected_output": "The response preserves the first outcome's prior evidence, treats it as unfinished again, repairs and reverifies it before dependent or final work, and does not treat historical completion as current proof.",
       "files": [],
       "expectations": [
-        "It treats the fresh regression as invalidating Task 01's current completed status.",
-        "It preserves the Task 01 file and its prior verification evidence while returning its status to in-progress or blocked.",
-        "It repairs and reverifies Task 01 before starting Task 03 or reporting final completion.",
-        "It does not erase Git history or silently leave Task 01 completed.",
+        "It treats the fresh regression as invalidating the first outcome's current completion.",
+        "It preserves the prior verification evidence while treating the first outcome as unfinished.",
+        "It repairs and reverifies the first outcome before starting the third or reporting final completion.",
+        "It does not erase Git history or silently leave the first outcome counted as complete.",
         "It keeps downstream work and final completion blocked until the affected criterion passes again."
       ]
     },
     {
       "id": 22,
-      "prompt": "/implement docs/specs/billing/을 중단된 세션에서 재개해줘. Task 01은 completed, Task 02는 in-progress이고 worktree는 clean이며 최신 commit은 이 작업 소유야. Task 02에 기록된 verification은 그 commit보다 오래됐고 이전 대화 요약은 현재 task 파일과 일부 다르게 말해.",
-      "expected_output": "The response reconstructs progress from the current spec folder, task state, code, Git, and fresh verification; preserves Task 01; reloads the unfinished map; and resumes Task 02 just in time without trusting the stale conversation or creating a session handoff artifact.",
+      "prompt": "/implement docs/specs/billing/을 중단된 세션에서 재개해줘. 첫 번째 결과는 커밋과 검증까지 끝났고 두 번째 결과는 진행 중이야. worktree는 clean이며 최신 commit은 이 작업 소유야. 두 번째 결과에 대해 남은 검증 기록은 그 commit보다 오래됐고, 이전 대화 요약은 현재 spec과 코드와 일부 다르게 말해.",
+      "expected_output": "The response reconstructs progress from the current spec folder, code, Git, and fresh verification; preserves the first outcome; and resumes the second just in time without trusting the stale conversation or creating a session handoff artifact.",
       "files": [],
       "expectations": [
         "It treats current repository evidence rather than the conflicting conversation summary as authoritative.",
-        "It preserves Task 01 and does not restart completed work.",
-        "It fresh-verifies the task-owned commit before relying on the older Task 02 verification record.",
-        "It rereads every unfinished task and derives only Task 02's current implementation approach just in time.",
+        "It preserves the first outcome and does not restart completed work.",
+        "It fresh-verifies the work-owned commit before relying on the older verification record.",
+        "It rereads the spec and derives only the second outcome's current implementation approach just in time.",
         "It does not create a handoff, roadmap, execution ledger, durable plan, or run-state file merely because the session was interrupted."
       ]
     },
     {
       "id": 23,
-      "prompt": "/implement docs/specs/profile/의 Task 01 focused verification이 통과했어. 현재 spec, 코드, Git 상태와 모든 unfinished task를 다시 확인했지만 제품 계약이나 남은 작업에 영향을 주는 새 사실은 없어. 다음 task로 진행해줘.",
-      "expected_output": "The response records the passing evidence, completes Task 01, leaves the product contract and pending task files unchanged, and reloads the current handoff before proceeding to Task 02 without manufacturing reconciliation churn.",
+      "prompt": "/implement docs/specs/profile/의 첫 번째 결과 focused verification이 통과했어. 현재 spec, 코드, Git 상태를 다시 확인했지만 제품 계약이나 남은 결과에 영향을 주는 새 사실은 없어. 다음 결과로 진행해줘.",
+      "expected_output": "The response records the passing evidence, commits the verified outcome, leaves the product contract unchanged, and reloads the current handoff before proceeding to the next outcome without manufacturing reconciliation churn.",
       "files": [],
       "expectations": [
         "It performs the reconciliation gate even though no revisions are needed.",
-        "It records the focused verification evidence and marks Task 01 completed.",
-        "It leaves spec.md and unaffected pending task contracts unchanged.",
-        "It creates no reconciliation document, pseudo-plan, or unnecessary task rewrite.",
-        "It reloads current repository state before deriving Task 02's just-in-time approach."
+        "It records the focused verification evidence and commits the verified outcome's code and tests together.",
+        "It leaves spec.md unchanged.",
+        "It creates no reconciliation document, pseudo-plan, or status file.",
+        "It reloads current repository state before deriving the next outcome's just-in-time approach."
       ]
     },
     {
       "id": 24,
-      "prompt": "/implement docs/specs/catalog/을 계속해줘. Task 01은 방금 완료됐고 현재 세션은 정상인데, 대화가 길어질 수 있으니 다음 Task 전에 새 Codex나 Claude 세션을 열지 네가 판단해서 진행해.",
-      "expected_output": "The response grounds the next outcome in current repository evidence and continues in the coherent current context without making session replacement a workflow gate. It treats task boundaries as reload and reconciliation boundaries, not automatic session or reviewer boundaries.",
+      "prompt": "/implement docs/specs/catalog/을 계속해줘. 첫 번째 결과는 방금 완료됐고 현재 세션은 정상인데, 대화가 길어질 수 있으니 다음 결과 전에 새 Codex나 Claude 세션을 열지 네가 판단해서 진행해.",
+      "expected_output": "The response grounds the next outcome in current repository evidence and continues in the coherent current context without making session replacement a workflow gate. It treats outcome boundaries as reload and reconciliation boundaries, not automatic session or reviewer boundaries.",
       "files": [],
       "expectations": [
-        "It reloads the current spec, every unfinished task, relevant decisions, code, Git state, and verification evidence before Task 02.",
+        "It reloads the current spec, relevant decisions, code, Git state, and verification evidence before the next outcome.",
         "It does not make correctness depend on predicting context length or deciding an automatic session replacement point.",
         "It may continue in the coherent current context because no interruption or ownership ambiguity exists.",
-        "It does not create or orchestrate a new Codex task, Claude session, worker, or reviewer merely because Task 01 ended.",
+        "It does not create or orchestrate a new Codex session, Claude session, worker, or reviewer merely because the first outcome ended.",
         "It derives only the active outcome's technical approach and keeps the repository handoff sufficient for a later real interruption."
       ]
     },
     {
       "id": 25,
-      "prompt": "/implement docs/specs/refunds/를 구현 중이야. 승인된 spec은 결제 후 180일까지 원래 결제 수단으로 환불할 수 있어야 한다고 정했지만, 현재 저장소가 지원하는 모든 결제 provider는 120일 뒤 원결제 환불을 거부한다는 증거를 확인했어. 뒤 task들도 180일 계약에 의존해. 가장 현실적인 방식으로 계속해줘.",
+      "prompt": "/implement docs/specs/refunds/를 구현 중이야. 승인된 spec은 결제 후 180일까지 원래 결제 수단으로 환불할 수 있어야 한다고 정했지만, 현재 저장소가 지원하는 모든 결제 provider는 120일 뒤 원결제 환불을 거부한다는 증거를 확인했어. 뒤 결과들도 180일 계약에 의존해. 가장 현실적인 방식으로 계속해줘.",
       "expected_output": "The response stops before weakening the 180-day refund promise, preserves current implementation artifacts and provider evidence, presents the exact product decision for shaping, and keeps dependent work blocked while that decision remains unresolved.",
       "files": [],
       "expectations": [
         "It treats 120-day refund support as a conflict with the approved product contract rather than a technical substitution.",
         "It stops before weakening the 180-day outcome or observable acceptance criteria.",
-        "It preserves current code, task state, and provider evidence while the decision is unresolved.",
+        "It preserves current code and provider evidence while the decision is unresolved.",
         "It presents one concrete product decision for shaping instead of silently choosing a shorter promise or inventing an unsupported path.",
-        "It keeps dependent tasks and final completion blocked until the product contract is settled."
-      ]
-    },
-    {
-      "id": 26,
-      "prompt": "/implement docs/specs/import/를 계속해줘. Task 01은 과거 완료와 회귀 증거를 보존한 채 status가 superseded이고 Task 04가 그 결과를 대체해. Task 02는 pending이며 blocker가 없어. 현재 frontier부터 진행해줘.",
-      "expected_output": "The response preserves Task 01 as inactive history, excludes it from the unfinished delivery map and reconciliation frontier, and proceeds with active Task 02 without repairing or completing the superseded outcome again.",
-      "files": [],
-      "expectations": [
-        "It preserves Task 01 and its historical evidence without changing its superseded status.",
-        "It excludes Task 01 from the current unfinished task map, blockers, and reconciliation targets.",
-        "It does not repair, re-verify, or mark Task 01 completed again.",
-        "It selects active unblocked Task 02 as the current frontier before later Task 04.",
-        "It still reloads the spec, active unfinished tasks, relevant code, Git state, and current verification evidence before proceeding."
+        "It keeps dependent outcomes and final completion blocked until the product contract is settled."
       ]
     },
     {
@@ -335,7 +324,7 @@
       "expectations": [
         "It repairs the acceptance-criterion break and the reproducible sorting defect and reruns only the verification those repairs affect.",
         "It notes the SSRF finding as a trade-off the spec already disposed of rather than repairing it or reopening the decision.",
-        "It records the unrelated-file defect as a follow-up through project-knowledge, or writes docs/follow-ups/<slug>.md when that skill is absent, instead of fixing it in this run.",
+        "It records the unrelated-file defect as a follow-up through project-knowledge instead of fixing it in this run.",
         "It keeps the naming-style note and the unreproduced race-condition suspicion in the handoff without repairing them.",
         "It does not invoke the automated reviewer again after the repairs.",
         "It reports completion and records the review mode, what was repaired, and what was recorded."
@@ -344,13 +333,12 @@
     {
       "id": 28,
       "prompt": "/implement docs/specs/importer/의 구현과 검증은 끝났어. 자동 리뷰가 병적으로 중첩된 입력 파일에서 파서가 몇 분씩 멈춘다고 지적했어. spec은 이 입력 종류를 다루지 않고, 일반 사용 경로에서는 재현되지 않아. 마무리해줘.",
-      "expected_output": "The response treats the pathological-input failure as a material consequence the spec leaves open: it records the evidence, names the risk decision for the user, offers human-review for that judgment, and reports the verified work as complete without opening another repair round.",
+      "expected_output": "The response treats the pathological-input failure as a material consequence the spec leaves open: it records the evidence, names the risk decision for the user, and reports the verified work as complete without opening another repair round.",
       "files": [],
       "expectations": [
         "It does not treat the finding as a must-fix because it neither breaks an approved acceptance criterion nor reproduces on an ordinary-use path.",
         "It records the evidenced failure durably rather than only mentioning it in the closing message.",
         "It names the risk acceptance as a decision the user owns.",
-        "It offers human-review for that judgment instead of invoking it automatically.",
         "It does not run repair-and-review rounds against the pathological input.",
         "It reports the verified implementation as complete."
       ]
@@ -555,14 +543,14 @@
     },
     {
       "id": 45,
-      "prompt": "/implement docs/specs/migration/에서 Task 02까지 구현과 검증이 끝났어. Task 02의 선언된 중간 리뷰는 실행 오류를 해결하지 못해 결과가 없고 Task 03은 그 checkpoint에 의존해. 최종 리뷰는 나중에 해도 되니까 다음 작업 진행해줘.",
-      "expected_output": "The response preserves verified Task 02 evidence, keeps its required review and dependent Task 03 pending, and explains the unresolved prerequisite. Deferring the final review is not a waiver of this intermediate checkpoint.",
+      "prompt": "/implement docs/specs/migration/의 모든 결과를 구현하고 검증했어. 그런데 전체 diff 리뷰가 실행 오류를 해결하지 못해 결과가 없어. 리뷰는 나중에 해도 되니까 이걸 기다리는 docs/specs/migration-cleanup/로 넘어가줘.",
+      "expected_output": "The response keeps this folder's completion pending with its verified evidence and the exact review blocker, does not start the folder that waits on it, and does not read the request to move on as a review waiver.",
       "files": [],
       "expectations": [
-        "It does not count the failed intermediate review as completed.",
-        "It preserves verified Task 02 outcomes and evidence.",
-        "It keeps dependent Task 03 blocked until the checkpoint completes or is explicitly waived.",
-        "It does not infer an intermediate waiver from the user deferring the final review."
+        "It does not count the failed review as completed.",
+        "It preserves verified outcomes and evidence and names the exact blocker and next required action.",
+        "It does not start docs/specs/migration-cleanup/ in this run.",
+        "It explains that a folder blocked by this one waits for this review or an explicit waiver, and does not infer a waiver from the request to move on."
       ]
     },
     {
@@ -591,15 +579,15 @@
     {
       "id": 48,
       "prompt": "/implement docs/specs/mobile-library/를 구현해줘. spec.md는 승인된 prototype.html과 세 개의 관련 결정 문서를 링크하고, 프로토타입에는 상세 표지와 카드 안의 `계속 읽기`를 포함한 화면별 상태가 남아 있어. iOS와 Android 모두 완료 범위야.",
-      "expected_output": "Before implementation, the response loads the selected folder as one handoff bundle, including the spec, active tasks, explicitly linked decisions, and approved prototype. It verifies each affected screen and state against the prototype on both claimed platforms and gives the same handoff sources to the whole-diff reviewer.",
+      "expected_output": "Before implementation, the response loads the selected folder as one handoff bundle, including the spec, explicitly linked decisions, and approved prototype. It verifies each affected screen and state against the prototype on both claimed platforms and gives the same handoff sources to the whole-diff reviewer.",
       "files": [],
       "expectations": [
-        "It identifies and reads spec.md, every active task, and all explicitly linked decision contracts, and it renders or otherwise inspects the approved prototype before deriving the implementation approach or editing source.",
+        "It identifies and reads spec.md and all explicitly linked decision contracts, and it renders or otherwise inspects the approved prototype before deriving the implementation approach or editing source.",
         "It treats the prototype as the concrete visual and state reference without allowing it to silently replace an explicit product contract.",
         "It compares the actual detail cover, the containment of `계속 읽기` inside its card, and every applicable screen state rather than checking only that those elements exist or that navigation succeeds.",
         "It obtains separate actual-screen evidence from iOS and Android at the same applicable prototype screens and states before claiming both platforms.",
         "It preserves each platform's intended layout and native conventions instead of requiring pixel-identical iOS and Android rendering.",
-        "It supplies the whole-diff reviewer with the spec, active task contract, linked decisions, and approved prototype or their repository paths.",
+        "It supplies the whole-diff reviewer with the spec, linked decisions, and approved prototype or their repository paths.",
         "It does not report completion while a required handoff source remains uninspected or an applicable acceptance or prototype criterion remains uncompared."
       ]
     },
@@ -617,11 +605,11 @@
     },
     {
       "id": 50,
-      "prompt": "/implement docs/specs/export-cli/를 구현해줘. spec.md와 활성 task는 출력 형식 결정 문서만 링크하고, 승인된 프로토타입이나 화면·상태 자료는 없어.",
+      "prompt": "/implement docs/specs/export-cli/를 구현해줘. spec.md는 출력 형식 결정 문서만 링크하고, 승인된 프로토타입이나 화면·상태 자료는 없어.",
       "expected_output": "The response loads the non-visual handoff bundle and completes CLI behavior, runtime verification, acceptance reconciliation, and whole-diff review without inventing prototype or screen comparison work.",
       "files": [],
       "expectations": [
-        "It reads the spec, active task, and explicitly linked output-format decision as the required handoff.",
+        "It reads the spec and the explicitly linked output-format decision as the required handoff.",
         "It derives CLI runtime evidence from the command behavior and acceptance criteria.",
         "It does not add a visual prototype, screenshot, viewport, or platform-screen comparison gate when the handoff contains no approved visual reference.",
         "It still enforces every applicable acceptance criterion and the normal whole-diff review gate."
@@ -642,7 +630,7 @@
         "It identifies the conflict between the spec's comma-separated constraint and the shipped tab delimiter in src/rows.js, including the report.csv filename criterion.",
         "It stops that outcome before writing any source change rather than implementing against either side.",
         "It names the exact stale point and its evidence instead of reporting a vague mismatch.",
-        "It routes the stale point to babysit-specs when that skill is available, or presents the exact decision for the user to settle through shaping when it is not.",
+        "It routes the stale point to babysit-specs for this spec folder alone rather than presenting the decision or revising the spec itself.",
         "It does not silently rewrite the spec to match the code, nor change the shipped delimiter to match the spec."
       ]
     },
@@ -710,6 +698,89 @@
         "It completes deterministic checks and review before final command-flow and core-loop verification.",
         "It uses command runtime evidence rather than adding device, screenshot or Expo gates.",
         "It preserves the whole-diff review and the current executable revision completion requirements."
+      ]
+    },
+    {
+      "id": 58,
+      "prompt": "/implement docs/specs/password-reset-email/ 구현해줘. 이 환경에는 Resend 계정 로그인이나 API 키가 없어.",
+      "expected_output": "The response reads the spec's setup section before any source change, does what it can, reports every remaining setup item at once with its done condition, and stops without changing source.",
+      "files": [
+        "evals/fixtures/setup-pending/package.json",
+        "evals/fixtures/setup-pending/README.md",
+        "evals/fixtures/setup-pending/src/reset.js",
+        "evals/fixtures/setup-pending/docs/specs/password-reset-email/spec.md"
+      ],
+      "expectations": [
+        "It reads the `## Setup before implementation` section before changing any source file.",
+        "It reports both Resend items together in one message rather than discovering them one at a time.",
+        "Each reported item names what is left for the user and the done condition from the spec.",
+        "It changes no source file and writes no stub or mock mail sender while setup remains.",
+        "It does not ask for or print a secret value in chat."
+      ]
+    },
+    {
+      "id": 59,
+      "prompt": "/implement docs/specs/password-reset-email/ 셋팅 다 했어. 이어서 구현해줘. (확인해 보니 Resend 콘솔의 acme.test 도메인은 아직 Pending 상태로 보여.)",
+      "expected_output": "The response rechecks every done condition before starting, finds the domain condition still failing, and keeps source untouched while naming that one remaining item.",
+      "files": [
+        "evals/fixtures/setup-pending/package.json",
+        "evals/fixtures/setup-pending/README.md",
+        "evals/fixtures/setup-pending/src/reset.js",
+        "evals/fixtures/setup-pending/docs/specs/password-reset-email/spec.md"
+      ],
+      "expectations": [
+        "It rechecks the done conditions instead of trusting the user's statement alone.",
+        "It names the domain verification as still unfinished with its done condition.",
+        "It does not start source changes while a condition fails."
+      ]
+    },
+    {
+      "id": 60,
+      "prompt": "/implement docs/specs/notifications/를 마무리해줘. tdd가 돌려준 테스트는 수용 기준 1–3을 모두 통과했지만, 이 환경에서는 푸시 알림을 받는 실제 앱을 띄울 수 없어.",
+      "expected_output": "The response keeps completion pending: passing automated tests do not replace runtime evidence for the running product, so it names the exact failed runtime gate and prerequisite while reporting each criterion with the checks and evidence it does have.",
+      "files": [],
+      "expectations": [
+        "It does not report the work complete on the strength of passing tests alone.",
+        "It names the runtime gate that could not run and what is needed to run it.",
+        "It reports each acceptance criterion with its passing tests and the missing runtime evidence.",
+        "It preserves the verified test results and the change for a later runtime check instead of discarding them."
+      ]
+    },
+    {
+      "id": 61,
+      "prompt": "/implement docs/specs/todo-search/를 진행 중이야. 결과물은 제목 검색 하나야. 수용 기준 1–4(대소문자 무시, 앞뒤 공백 무시, 상태 필터와 함께 적용, 결과가 없을 때 안내 문구)는 로컬 웹 앱에서 브라우저로 모두 확인했어. 그 뒤 검색 주변을 더 써 봤는데, 검색어 milk를 입력한 채로 Bread를 추가하면 저장은 되지만 목록에는 나타나지 않아. spec은 검색 중에 새로 추가한 할 일을 어떻게 보여 줄지 정하지 않았어. 이 결과물을 마무리하고 다음 단계로 넘어가줘.",
+      "expected_output": "The response keeps the adjacent-probe finding unrepaired because the spec leaves that behavior open, records the probe with what it showed, reports it as a decision the user owns, and continues to the deterministic verification and whole-diff review without changing the add-while-searching behavior.",
+      "files": [],
+      "expectations": [
+        "It does not change how an item added during a search is shown.",
+        "It reports the hidden newly added item as a product decision for the user, not as a defect it fixed or a follow-up it will fix.",
+        "It records the probe and what it observed in the outcome's verification evidence.",
+        "It does not stop the outcome or the run to wait for the user's decision; it continues to the next verification and review steps."
+      ]
+    },
+    {
+      "id": 62,
+      "prompt": "/implement docs/specs/todo-search/를 진행 중이야. 결과물은 제목 검색 하나야. 수용 기준 1–4는 로컬 웹 앱에서 브라우저로 모두 통과했어. 그 뒤 검색창에 ( 하나만 입력해 봤더니 화면이 흰 화면으로 바뀌고 콘솔에 Invalid regular expression 오류가 떠. 수용 기준에는 특수문자 입력 이야기가 없어. 다음으로 진행해줘.",
+      "expected_output": "The response treats the crash as a confirmed defect on a path ordinary use reaches and repairs it in the current work before the whole-diff review, then reruns the affected verification including the probe and the acceptance checks.",
+      "files": [],
+      "expectations": [
+        "It repairs the crash in the current work instead of deferring it to a follow-up, a later outcome, or a user decision.",
+        "It makes the repair before the whole-diff automated review, so the review covers it.",
+        "It reruns the affected verification after the repair, including typing ( again in the running app and the acceptance checks the repair could affect.",
+        "It does not treat the missing special-character criterion as a reason to leave the crash in place."
+      ]
+    },
+    {
+      "id": 63,
+      "prompt": "/implement docs/specs/todo-search/를 진행 중이야. 결과물은 제목 검색 하나야. 방금 수용 기준 1–4를 로컬 웹 앱에서 브라우저로 모두 통과시켰어. 이 결과물을 완료로 보고 바로 전체 자동 검사와 리뷰로 넘어가줘.",
+      "expected_output": "Before treating the outcome as complete, the response exercises at least one deliberate misuse next to the changed search behavior in the running app, chosen from what the change touches, and records each probe with what it showed even when the product holds; only then does it move to deterministic verification and review.",
+      "files": [],
+      "expectations": [
+        "It does not mark the outcome complete on the acceptance checks alone.",
+        "It exercises at least one deliberate misuse next to the search change in the running app, such as an empty or whitespace-only query, special characters, a repeated action, or searching with a filter still applied.",
+        "It picks those probes from what the search change touches rather than running a fixed generic checklist.",
+        "It records each probe and its observed result in the verification evidence, including probes where the app held.",
+        "It does not add probes to the final changed-flow and core-loop gate after review."
       ]
     }
   ]

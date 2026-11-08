@@ -1,0 +1,27 @@
+@theme {
+  --radius-sm: 6px;
+  --radius-md: 12px;
+  --spacing-unit: 4px;
+}
+
+@layer theme {
+  :root {
+    --color-background: #ffffff;
+    --color-foreground: #111318;
+    --color-muted: #6b7280;
+    --color-accent: #3b5bdb;
+    --color-danger: #d6336c;
+  }
+  .dark {
+    --color-background: #0f1115;
+    --color-foreground: #f1f3f5;
+    --color-muted: #9aa0a6;
+    --color-accent: #748ffc;
+    --color-danger: #f06595;
+  }
+}
+
+/* Text roles */
+.text-title { font-size: 22px; line-height: 28px; font-weight: 700; }
+.text-body { font-size: 16px; line-height: 24px; font-weight: 400; }
+.text-caption { font-size: 13px; line-height: 18px; font-weight: 400; }

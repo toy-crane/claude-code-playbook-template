@@ -1,0 +1,15 @@
+[
+  {"query": "환불 문의 분류 프롬프트가 제대로 동작하는지 eval로 증명해줘.", "should_trigger": true},
+  {"query": "Claude로 만든 요약 기능 품질 점수를 목표치까지 올려줘.", "should_trigger": true},
+  {"query": "이 스킬 본문을 고친 게 실제로 나아졌는지 여러 번 돌려서 측정해줘.", "should_trigger": true},
+  {"query": "에이전트가 도구를 제대로 쓰는지 사례 세트로 채점하는 평가를 만들어줘.", "should_trigger": true},
+  {"query": "LLM judge로 답변 품질을 채점하는 eval을 만들고 기준선 점수를 재줘.", "should_trigger": true},
+  {"query": "상담 챗봇 답변 정확도가 지금 70%인데 프롬프트를 고쳐서 85%까지 끌어올려줘.", "should_trigger": true},
+  {"query": "GPT로 뽑는 송장 필드 추출이 얼마나 정확한지 점수로 보여줘.", "should_trigger": true},
+  {"query": "배송비 계산 함수를 TDD로 만들어줘.", "should_trigger": false},
+  {"query": "기존 테스트 전부 돌려서 결과만 알려줘.", "should_trigger": false},
+  {"query": "이 스킬이 맞는 요청에서 트리거되는지 확인해줘.", "should_trigger": false},
+  {"query": "Claude Opus 모델 가격이 얼마야?", "should_trigger": false},
+  {"query": "시스템 프롬프트에 있는 오타 하나만 고쳐줘.", "should_trigger": false},
+  {"query": "상담 챗봇 화면의 버튼 색을 바꿔줘.", "should_trigger": false}
+]

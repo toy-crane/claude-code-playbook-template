@@ -32,11 +32,11 @@
     "should_trigger": false
   },
   {
-    "query": "docs/specs/checkout/를 독립적으로 배포 가능한 task들로 나눠줘.",
+    "query": "docs/specs/checkout/를 독립적으로 배포 가능한 여러 spec 폴더로 나눠줘.",
     "should_trigger": false
   },
   {
-    "query": "docs/specs/billing/ 폴더를 구현해줘. 승인된 task가 있으면 순서대로 끝까지 실행하고 검증해.",
+    "query": "docs/specs/billing/ 폴더를 구현해줘. spec에 적힌 결과를 끝까지 실행하고 검증해.",
     "should_trigger": false
   }
 ]

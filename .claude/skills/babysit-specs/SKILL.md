@@ -5,13 +5,19 @@ description: Revise active `docs/specs/SLUG/` specs so they match what has shipp
 
 # Babysit Specs
 
+This skill requires `project-knowledge` and `build-prototype`. Before doing
+any work, confirm each one is installed. When one is missing, stop and report
+it with its install command,
+`npx skills@latest add toy-crane/skills --skill <name>`, using the project's
+package manager runner where it pins one.
+
 ## Select the specs and establish the baseline
 
 Take the spec folders the user names. With none named, take every folder
 present under `docs/specs/`. Handle one spec at a time.
 
-For each spec, read `spec.md`, the active task files, the prototype and
-decision contracts the spec links, and `GLOSSARY.md` when it exists, since a
+For each spec, read `spec.md`, the prototype and decision contracts the spec
+links, and `GLOSSARY.md` when it exists, since a
 term the shipped work renamed now lives there.
 
 The baseline is that spec's last commit, including a previous revision of your
@@ -69,29 +75,41 @@ correction is an assumption under standing veto, never a settled constraint.
 
 ## Write the revision
 
-Rewrite `spec.md` in place under the same slug. Keep the product contract's
-own fields: user-visible outcomes, approved scope, observable acceptance
-criteria, settled constraints and rationale, assumptions, off-limits areas and
-why, deferred points, and remaining risks. Preserve its links to the approved
-prototype and to the decision contracts the work depends on, pointing at each
-rather than restating it. Where a deferred point's interim behavior is stated
-again elsewhere in the contract, keep it marked interim there.
+Rewrite `spec.md` in place under the same slug. Keep the product contract's own
+fields: user-visible outcomes, approved scope, observable acceptance criteria,
+settled constraints and rationale, assumptions, off-limits areas and why,
+deferred points, remaining risks, and setup before implementation. Preserve its
+links to the approved prototype and to the decision contracts the work depends
+on, pointing at each rather than restating it. Where a deferred point's interim
+behavior is stated again elsewhere in the contract, keep it marked interim
+there.
 
 Add no change log section and no revision file; Git holds the history. Never
 edit product source, configuration, or dependencies, and run any experiment in
 a scratch directory outside the working tree. Record a settled outcome that
-future work should reuse through `project-knowledge` when it is available, and
-write it into its decision contract directly when it is not.
+future work should reuse through `project-knowledge`, handing it the decision,
+its rationale, and the rejected alternatives, and link the
+`docs/decisions/<subject>.md` path it reports from the spec.
 
 ## Hand off what you do not own
 
-- A revised outcome that reaches a task: name that task for `split-into-tasks`
-  to re-cut. Leave task files unedited.
-- A completed task whose delivered outcome the revision changed: leave its
-  evidence untouched and name it for re-verification.
+- A folder whose revised outcomes no longer belong together: report it for
+  `shape-idea` to re-divide, and do not split or merge folders yourself. A
+  folder belongs together when its outcome could land on the default branch
+  and stay there even if the rest never arrives, and nothing separates its
+  parts. It no longer fits when the revision lets one part land alone while
+  that part is wanted earlier than the rest, a wait outside the repository
+  such as a legal review or store release now stands between the parts, a
+  later part builds on a foundation whose material risk tests cannot settle,
+  such as security, permissions, a data migration, or an external contract,
+  or the parts became unrelated; or when the folder's outcome can no longer
+  land without work held in another folder. Each reason must be a fact the
+  shipped work or the user establishes. Dependence between parts, a risk
+  inferred from the kind of work, or a technical layer never separates them.
 - A drifted prototype: regenerate the affected screens through
-  `build-prototype` when available; otherwise record the drift as a remaining
-  risk in the spec.
+  `build-prototype`, handing it the drifted screens and states and the
+  current surface they must match; it hands back the updated
+  `prototype.html`, which the spec keeps linking.
 - A spec whose acceptance criteria all pass against the current repository:
   report it as a retirement candidate. Deleting the folder belongs to
   `maintain-project-context` or the user.
@@ -105,5 +123,6 @@ decision. Report, in conversation and without writing a report file:
   meaning;
 - what you asked and how it settled;
 - which specs are retirement candidates;
-- which task files and prototypes await a follow-up pass;
+- which folders await re-dividing and which prototypes await a follow-up
+  pass;
 - any comparison that was weaker than a rendered or committed one, and why.

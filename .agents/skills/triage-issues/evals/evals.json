@@ -1,0 +1,63 @@
+{
+  "skill_name": "triage-issues",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "/triage-issues\n\nGitHub Issues 규약이 있다. 열린 이슈:\n- #30: needs-decision 라벨과 Triage 요약 구역이 있다. 질문 뒤에 사람이 \"B안으로 가요\"라고 댓글을 달았다.\n- #33: 라벨과 요약 구역이 없다. 이미 합쳐진 #28과 같은 요청이다.\n- #35: 라벨과 요약 구역이 없다. 어떤 알림을 줄일지 정하지 않은 \"알림을 덜 받고 싶다\"는 요청이다.",
+      "expected_output": "The run treats #30 as already triaged and leaves it alone despite the new reply, closes #33 as a duplicate with linked evidence, and leaves a needs-decision request on #35.",
+      "files": [],
+      "expectations": [
+        "It does not select #30 or treat the new comment as a reason to act on it.",
+        "It closes #33 through the convention's completed disposition with a link to the earlier delivery.",
+        "It leaves #35 with a focused decision request, options, and a recommendation, and applies needs-decision.",
+        "Every outcome writes the Triage 요약 section."
+      ]
+    },
+    {
+      "id": 2,
+      "prompt": "/triage-issues github:#44\n\nGitHub Issues 규약이 있다. #44는 라벨과 요약 구역이 없는 새 이슈다: \"목록 정렬 기본값을 최신순으로 바꿔줘. 사용자가 고른 정렬은 그대로.\" 다른 열린 새 이슈도 있다.",
+      "expected_output": "The run handles #44 alone, judges it clear and small, and raises one verified implementation PR carrying Issue: github:#44 and the closing reference, without inspecting other issues.",
+      "files": [],
+      "expectations": [
+        "It handles #44 alone and does not list or judge other issues.",
+        "It claims #44 with the bundled claim helper before any write.",
+        "It raises one ready-for-review implementation PR whose body carries Issue: github:#44 and the convention's closing reference.",
+        "It raises the PR by invoking the available pr skill."
+      ]
+    },
+    {
+      "id": 3,
+      "prompt": "/triage-issues github:#30\n\n#30에는 이미 needs-decision 라벨과 Triage 요약 구역이 있다. 질문 뒤에 사람이 답 댓글을 달았다.",
+      "expected_output": "The run reports that #30 was already triaged, with its current state, and stops without interpreting the reply, rewriting the summary, or posting a comment.",
+      "files": [],
+      "expectations": [
+        "It recognizes #30 as already triaged.",
+        "It reports the current state instead of triaging again.",
+        "It does not interpret the person's reply or continue the decision."
+      ]
+    },
+    {
+      "id": 4,
+      "prompt": "/triage-issues github:#51\n\nGitHub Issues 규약이 있다. #51은 라벨과 요약 구역이 없는 새 이슈다: \"팀 단위로 알림 설정을 공유하고 싶다. 개인 설정이 팀 설정을 덮어쓸 수 있어야 한다.\" 여러 화면과 저장 구조가 바뀌는 큰 변경이다. pr 스킬이 설치돼 있다.",
+      "expected_output": "The run writes a spec with `Issue: github:#51`, raises the spec PR through pr, which reuses #51 and adds no closing reference.",
+      "files": [],
+      "expectations": [
+        "It writes docs/specs/<slug>/spec.md with `Issue: github:#51` beside its source links before raising the PR.",
+        "It raises the spec PR by invoking the pr skill.",
+        "The PR reuses #51, creates no other issue, and its body carries `Issue: github:#51` without a closing reference.",
+        "It does not start implementation."
+      ]
+    },
+    {
+      "id": 5,
+      "prompt": "/triage-issues github:#52\n\nGitHub Issues 규약이 있다. #52는 라벨과 요약 구역이 없는 새 이슈다: \"설정 화면의 '알림 끄기' 문구를 '알림 받지 않기'로 바꿔 줘.\" 설치된 스킬은 triage-issues뿐이고 pr은 설치되지 않았다.",
+      "expected_output": "The run stops before any work because pr is a required skill that is not installed: it names pr and its install command and neither claims the issue nor changes the repository.",
+      "files": [],
+      "expectations": [
+        "It checks its required skills first and finds pr missing.",
+        "It reports `npx skills@latest add toy-crane/skills --skill pr`, in the project's package manager runner form when one is pinned.",
+        "It does not claim #52, implement the copy change, or open a PR with a brief body as a substitute for pr."
+      ]
+    }
+  ]
+}
