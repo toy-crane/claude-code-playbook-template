@@ -103,11 +103,17 @@ at execution time for installing, signing in, linking, and pushing migrations.
   for this platform or through the project's package manager.
 - When it is not signed in, ask the user to run the CLI's browser sign-in once
   in their own terminal and to tell you when it is done. Sign-in belongs to the
-  user. If any CLI step asks for a token, database password, or other secret,
-  the user enters it in their terminal; never take it through the conversation.
+  user.
 - After sign-in, link the repository to the selected hosted project and push
-  the migrations yourself. Then confirm that the remote migration history lists
-  them.
+  the migrations yourself, first without a database password. A signed-in CLI
+  normally reaches the hosted database through its own temporary login role, so
+  do not ask for, reset, or hand off the database password in advance, and do
+  not hand linking to the user because nobody knows the generated password.
+  Then confirm that the remote migration history lists the migrations.
+- Only when a CLI step you ran actually fails for lack of a database password,
+  token, or other secret, show the user the CLI's message and ask them to enter
+  the value in their own terminal; never take it through the conversation.
+  Continue from that step once they are done.
 - Creating the CLI's project folder for migrations is part of this step.
   Starting a local Supabase stack or Docker is not.
 
