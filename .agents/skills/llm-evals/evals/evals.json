@@ -84,6 +84,91 @@
         "It asks how to reach the model before running.",
         "It shows the noise floor, and that two cases make the result directional, before asking for approval."
       ]
+    },
+    {
+      "id": 8,
+      "prompt": "/llm-evals 지금 refund-triage 능력 평가 2라운드까지 돌았어. 연습 40건에서 62점으로 시작해 지금 74점이고 목표는 90점이야. 잡음 폭은 ±13점. 방금 3라운드로 분류 지침 한 줄을 고쳤는데 이제 뭘 돌려야 하지? 시험 20건도 같이 돌릴까?",
+      "expected_output": "The response runs the train split only for this round and leaves the held-out split untouched, keeping the change if the train score rises outside the train noise floor and reverting it otherwise. It says the held-out split is scored at a gate, which opens when train first reaches 90, rather than every round.",
+      "files": [],
+      "expectations": [
+        "It scores the train split only for this round.",
+        "It leaves the held-out 20 cases unrun and ungraded.",
+        "It decides keep or revert from the train score against the noise floor.",
+        "It names the gate at the target as when the held-out split is next scored."
+      ]
+    },
+    {
+      "id": 9,
+      "prompt": "/llm-evals refund-triage 5라운드에서 연습이 91점이 됐어. 목표 90 넘었다. 이제 어떻게 해?",
+      "expected_output": "The response opens a gate and scores the held-out split and the project's regression suite at the current variant. Green needs the held-out score; a held-out score that does not follow train means the climb fitted train, so it reverts to the last gate that passed and bisects the changes between them.",
+      "files": [],
+      "expectations": [
+        "It opens a gate and scores the held-out split now.",
+        "It also runs the project's regression suite at this gate.",
+        "Green requires the held-out score rather than the train score.",
+        "A held-out score that does not follow train reverts to the last passing gate and bisects."
+      ]
+    },
+    {
+      "id": 10,
+      "prompt": "/llm-evals refund-triage 관문에서 시험 20건이 91점 나왔어. 기준선은 58점이고 잡음 폭 ±13이야. 목표 90도 넘었고. 끝난 거지?",
+      "expected_output": "The response treats green as the start of graduation rather than the end. It reruns the final variant over the whole set, moves the cases that passed on every repetition and this eval's grader into regression/<slug>/ under the eval root, deletes the rest of the eval's folder, appends one scored line to regression/log.md, and records the eval root's path in the project's agent instructions.",
+      "files": [],
+      "expectations": [
+        "It graduates the eval rather than stopping at the hand-back.",
+        "Only cases that passed on every repetition move into the regression suite.",
+        "The grader moves whole, rubric included, rather than being reduced to code checks.",
+        "The variant folders and traces are deleted and one scored line is kept in regression/log.md.",
+        "It writes the eval root's path into AGENTS.md, and into CLAUDE.md when that file does not load AGENTS.md."
+      ]
+    },
+    {
+      "id": 11,
+      "prompt": "/llm-evals 졸업시키려고 최종본으로 60건을 두 번씩 돌렸는데, 52건은 두 번 다 통과하고 8건은 한 번만 통과했어. 목표는 넘었으니 이 기준은 닫을 거야. 8건도 회귀에 넣을까?",
+      "expected_output": "The response graduates only the 52 repeatable passes and keeps the 8 unstable cases out of the regression suite, because a suite that starts amber reports nothing. With the criterion closing, it records those 8 as known failures instead of leaving them in a capability eval.",
+      "files": [],
+      "expectations": [
+        "It moves only the 52 repeatable passes into the regression suite.",
+        "It keeps the 8 unstable cases out, naming that a suite starting amber reports nothing.",
+        "It records the 8 as known failures because the criterion is closing.",
+        "It does not weaken the grader or re-split the set to make the 8 pass."
+      ]
+    },
+    {
+      "id": 12,
+      "prompt": "/llm-evals implement가 넘긴 기준이야. 목표는 환불 분류 정확도 85점이고 사례는 fixtures/tickets.jsonl에서 뽑았어. 기준선을 재 보니 연습 40건에서 83점, 시험 20건에서 84점이 나왔는데 이제 라운드 돌리면 되지?",
+      "expected_output": "The response does not start the climb. The baseline already sits inside the noise floor of the 85 target, so there is no hill: it reports that the cases are too easy for this behavior and asks for harder ones from the named source.",
+      "files": [],
+      "expectations": [
+        "It declines to start the climb at this baseline.",
+        "It names the cases as too easy for the behavior rather than the behavior as already good enough.",
+        "It asks for harder cases instead of proceeding.",
+        "It does not raise the target or re-split the set to manufacture a gap."
+      ]
+    },
+    {
+      "id": 13,
+      "prompt": "/llm-evals 새 기준이야. '정보가 모자라면 되묻는다', 목표 90점, 사례는 운영 로그에서 20건쯤 뽑을 수 있어. 우리 apps/api/eval/ 에 이미 regression/ 이 있고 거기 52건 들어 있어.",
+      "expected_output": "The response builds a small capability eval under the existing eval root at apps/api/eval/, names its folder after the spec folder whose criterion it proves, and leaves the existing regression suite in place to run at this climb's gates rather than every round.",
+      "files": [],
+      "expectations": [
+        "It puts the new capability eval under apps/api/eval/ rather than a default path.",
+        "It names the eval folder after the spec folder whose criterion it proves.",
+        "It keeps the existing regression/ suite and runs it at the gates.",
+        "It does not merge the new cases into the regression suite before green."
+      ]
+    },
+    {
+      "id": 14,
+      "prompt": "/llm-evals 회귀 묶음을 돌렸더니 52건 중 3건이 떨어졌어. 이 3건 때문에 계속 빨간불인데 빼도 될까? 제품 쪽에서 그 동작을 바꾸기로 한 건 없어.",
+      "expected_output": "The response refuses to remove the three cases: a failing score is never the reason, and with no decision to change that behavior they stay. It treats the red as a question with three answers, a real regression, an intentional change, or a stale check, and reports which one the evidence supports.",
+      "files": [],
+      "expectations": [
+        "It does not remove or weaken the three cases.",
+        "It names the absence of a decision to change the behavior as the reason.",
+        "It separates a real regression from an intentional change and from a stale check.",
+        "It reports the red rather than making it disappear."
+      ]
     }
   ]
 }

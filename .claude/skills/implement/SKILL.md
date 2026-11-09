@@ -111,7 +111,12 @@ back the behavior change, the baseline and final held-out scores with their
 noise floor, each round's change, and where the eval lives; an unreached
 target comes back with the best score and failure causes, and that criterion
 stays incomplete. Report each eval criterion with its baseline and final
-scores as evidence. Behavior in the running product
+scores as evidence. When the project holds a regression suite and this change
+touches the behavior it guards, run that suite and report its result as
+evidence beside the criterion's own checks; the eval root named in the
+project's agent instructions says where it lives, or the folder its existing
+evals sit in when the instructions name none, and a project holding no suite
+needs nothing here. Behavior in the running product
 still owes runtime evidence when a test also proves it. Hand the `tdd` skill
 the active outcome, the criteria to prove by automated tests, the approved
 references that apply to it, and `spec.md` as design context; the handoff does

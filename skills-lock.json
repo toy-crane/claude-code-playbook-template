@@ -61,14 +61,14 @@
       "source": "toy-crane/skills",
       "sourceType": "github",
       "skillPath": "skills/workflow/implement/SKILL.md",
-      "computedHash": "58d643207dfeb9bc1ac06c00127108cc86dc7d6321ae13017fb494825879735c",
+      "computedHash": "8c275144e1725a3f915ffa8e71c2421b1f2a97f5f35013b6c3b2eb5bbd0ebb83",
       "installMode": "copy"
     },
     "llm-evals": {
       "source": "toy-crane/skills",
       "sourceType": "github",
       "skillPath": "skills/workflow/llm-evals/SKILL.md",
-      "computedHash": "2699fbdf1c380e6d6370d8047906930520c226631bad622c3280c758a2e17e0c",
+      "computedHash": "8651f8f00e66351feb7d4c4e5bbb747ba8092f99d7cb93b048d440ba519a6c76",
       "installMode": "copy"
     },
     "maintain-project-context": {
@@ -127,6 +127,20 @@
       "computedHash": "46058adca827721e097fe217899744b81b32f6b0830948e4bb18e3831960d072",
       "installMode": "copy"
     },
+    "review-sessions": {
+      "source": "toy-crane/skills",
+      "sourceType": "github",
+      "skillPath": "skills/workflow/review-sessions/SKILL.md",
+      "computedHash": "6488a1fe8ff343bff8872cd8873bf4a28556433abeb9ab8a84de9c81ef396f73",
+      "installMode": "copy"
+    },
+    "setup-issue-tracker": {
+      "source": "toy-crane/skills",
+      "sourceType": "github",
+      "skillPath": "skills/workflow/setup-issue-tracker/SKILL.md",
+      "computedHash": "5a3e99f8ecb44d979072ce535a80cc98a7d3e272d58c3b9c2d19294d5385c20d",
+      "installMode": "copy"
+    },
     "shadcn": {
       "source": "shadcn-ui/ui",
       "sourceType": "github",
@@ -146,6 +160,13 @@
       "sourceType": "github",
       "skillPath": "skills/workflow/tdd/SKILL.md",
       "computedHash": "6dd53202863eda47c34e1004cec94e8f5b6fa7863a594b0031e4f3c3c7a01c9f",
+      "installMode": "copy"
+    },
+    "triage-issues": {
+      "source": "toy-crane/skills",
+      "sourceType": "github",
+      "skillPath": "skills/workflow/triage-issues/SKILL.md",
+      "computedHash": "3af12923aace60ade9536b94b442b0cd8b5f282f5ff6e53b746b929d8c97dc56",
       "installMode": "copy"
     },
     "update-project-skills": {
