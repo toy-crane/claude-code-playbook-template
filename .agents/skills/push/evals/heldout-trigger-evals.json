@@ -1,8 +1,0 @@
-[
-  {"query":"이 detached commit이 사라지지 않게 feature/invoice 브랜치로 origin에 게시해줘.","should_trigger":true},
-  {"query":"로컬 브랜치의 새 커밋을 GitHub에 업로드하되 pull request는 만들지 마.","should_trigger":true},
-  {"query":"history rewrite가 끝났으니 다른 사람 작업을 덮지 않는 방식으로 remote branch를 갱신해줘.","should_trigger":true},
-  {"query":"웹 푸시 구독 버튼과 service worker를 구현해줘.","should_trigger":false},
-  {"query":"npm package를 registry에 publish하는 release script를 작성해줘.","should_trigger":false},
-  {"query":"GitHub에 코드 리뷰 요청을 만들고 링크를 공유해줘.","should_trigger":false}
-]

@@ -1,6 +1,0 @@
-[
-  {"query":"내 작업 브랜치가 기본 브랜치보다 뒤처졌어. merge commit 없이 따라잡게 해줘.","should_trigger":true},
-  {"query":"가장 최근 origin main 뒤에 로컬 패치를 순서대로 다시 얹어줘.","should_trigger":true},
-  {"query":"Git LFS에 있는 대용량 모델 파일을 내려받아줘.","should_trigger":false},
-  {"query":"pull request #120의 discussion만 요약해줘.","should_trigger":false}
-]

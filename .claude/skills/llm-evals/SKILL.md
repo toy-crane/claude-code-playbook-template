@@ -32,7 +32,7 @@ implementation set its own bar. Invoked directly, derive the criterion from the
 request and ask the user for the metric and target when it gives none.
 
 When the project already holds an eval that measures the same behavior, such
-as an `evals/` folder beside a skill or a flow under `.claude/hillclimb/`, use
+as a skill's eval folder or a flow under `.claude/hillclimb/`, use
 it instead of building another. It still goes through the access choice and
 the approval below.
 
@@ -74,9 +74,14 @@ confirm any revision made after seeing failures on cases not seen before.
 
 **Runner.** Call the product's real entry point; never rebuild the model call
 from the prompt you found. Write each (case, rep) as it finishes, so a restart
-skips what is already written. The project chooses where its eval root lives:
+skips what is already written. The same holds across the whole climb: never
+run a (variant, case, rep) that already has a scored row from the same cases
+and grader; read that row instead. An attempt recorded only in `errors.jsonl`
+has no row and runs again. The project chooses where its eval root lives:
 use the one its agent instructions name, else the folder its existing evals sit
-in, else `.claude/hillclimb/`. The layout under that root is fixed. The root
+in, else `.claude/hillclimb/`. Never put it inside a folder that ships to
+users, such as a skill's own folder: installers copy that folder whole, and
+its users never need the eval. The layout under that root is fixed. The root
 holds the runner, `regression/`, and one folder per capability eval. Name that
 folder for the spec folder whose criterion it proves, and for the criterion too
 when that spec has more than one of them, so two criteria handed over
@@ -122,8 +127,14 @@ show:
 
 - every case, or a balanced sample when the set is large;
 - graded pilot samples with their transcripts;
+- the repetition count as its own choice: recommend 2, and 3 only when the
+  set stays under 10 cases or the behavior is known to vary run to run. Never
+  accept fewer than 2, since graduation keeps only cases that passed on every
+  repetition and one pass cannot tell a stable case from a lucky one. Answer a
+  request for more than 3 with more cases instead: repetitions show only how
+  one case varies, and the noise floor shrinks slowly with them;
 - the run size, cases × reps, and the model, counting the baseline, the
-  rounds, the gates, and the rerun graduation needs after green;
+  rounds, and the gates, but no run whose row will already exist;
 - the noise floor next to the gain the target needs;
 - the cost estimated from the pilot's usage and the spend ceiling, or on a
   subscription the expected usage-limit draw with dollars only as the API
@@ -150,6 +161,9 @@ rounds:
   noise floor; revert one that does not.
 - Open a gate when the train score first reaches the target, and again at the
   end. A gate scores the held-out split and the project's regression suite.
+  On a set too small to split, the round already scored the whole set, so the
+  gate takes that round's score and runs only the regression suite; a second
+  gate on a variant already gated takes the first gate's score.
   When the held-out score does not follow train, the climb fitted train:
   revert to the last gate that passed and bisect the changes between them.
   A gate fails the same way when the suite drops below the baseline recorded
@@ -170,8 +184,10 @@ cases or the grader to pass.
 ## Graduate the eval, then hand back
 
 Green ends the capability eval, so finish it instead of leaving it in place.
-Run the final variant over the whole set once more and take the cases it passed
-on every repetition. Move their `cases.jsonl` rows and this eval's grader into
+Take the cases the final variant passed on every repetition from the rows it
+already has: train from its round and held-out from the final gate, or the
+whole set from its round when the set was not split. Do not run it again for
+graduation. Move their `cases.jsonl` rows and this eval's grader into
 `regression/` under the eval root, in a folder named the way this eval's was,
 and carry the grader whole: the code checks and the rubric both go, because
 dropping the rubric stops guarding the regressions only a judge can see. Carry

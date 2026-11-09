@@ -1,6 +1,0 @@
-[
-  {"query":"현재 checkout의 parser 수정과 회귀 테스트를 하나의 독립적인 history entry로 확정해줘.","should_trigger":true},
-  {"query":"방금 저장한 변경에 lint 수정이 빠졌어. 이전 Git 기록에 포함해서 다시 확정해줘.","should_trigger":true},
-  {"query":"release/v2 커밋을 현재 브랜치에 cherry-pick해줘.","should_trigger":false},
-  {"query":"현재 HEAD에 v2.4.0 annotated tag를 만들어줘.","should_trigger":false}
-]
