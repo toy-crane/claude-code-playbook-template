@@ -106,6 +106,39 @@ Use the current official [User Management](https://supabase.com/docs/guides/auth
 [Google Auth](https://supabase.com/docs/guides/auth/social-login/auth-google)
 guides only when their branch applies.
 
+## Start Auth screens from the official UI block
+
+When Auth is selected, build sign-up, sign-in, sign-out, the auth callback, and
+session refresh from Supabase UI Library's official shadcn block for the
+selected method instead of writing them from scratch. Repeated runs then share
+one structure, and the screens use the project's shadcn components and tokens.
+For Next.js, use [Password-based Auth](https://supabase.com/ui/docs/nextjs/password-based-auth)
+for email and password and [Social Auth](https://supabase.com/ui/docs/nextjs/social-auth)
+for Google. For another framework, use the UI Library's matching block when one
+exists. When no block fits the framework or the project does not use shadcn/ui,
+build the same flow from the official guides above.
+
+The block is written for a generic project, not this one. Before installing it,
+read the block's current documentation and its registry item to learn which
+files, dependencies, shadcn components, and environment variables it brings.
+Then adapt it to the project as it stands at execution time:
+
+- Check every framework file convention the block relies on against the
+  installed framework version's own documentation, and use what that version
+  expects. Blocks can lag behind framework releases, for example in where
+  request-time session refresh lives.
+- Merge the block into the existing Supabase clients, environment variable
+  names, routes, layouts, and shadcn configuration instead of letting the
+  install overwrite them or add duplicates. Run the shadcn CLI through the
+  project's package manager, and let shared components resolve to the
+  project's own shadcn style and tokens.
+- Keep the block inside this setup's scope. Use the selected provider instead
+  of the block's example provider. Limit its route protection to `/settings`
+  instead of redirecting every unauthenticated request. Send post-auth
+  redirects to real app destinations instead of the block's example page. Keep
+  email-confirmation pages and routes only while confirmation stays enabled,
+  and remove screens for excluded features such as password reset.
+
 ## Verify observable behavior
 
 Do not treat files, policies, or UI presence as proof of completion. Exercise the
@@ -134,8 +167,9 @@ when the official skills are unavailable, the target Cloud project is unclear,
 or existing configuration conflicts cannot be resolved safely. State where work
 stopped and the single next user action needed; do not claim completion.
 
-At the end, report the selected choices, official skills and documentation used,
-Cloud and repository changes, runtime evidence, and any remaining user action.
+At the end, report the selected choices, official skills, documentation, and UI
+block used, how the block was adapted to the project, Cloud and repository
+changes, runtime evidence, and any remaining user action.
 
 Keep password reset, Magic Link, OTP, phone Auth, MFA, SSO, extra providers,
 RBAC, account deletion, Storage, custom SMTP, and general production hardening
