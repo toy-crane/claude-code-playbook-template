@@ -82,8 +82,34 @@ than a memorized procedure.
   preserve the official cookie-based session refresh behavior; do not authorize
   from client state or an unverified session user alone.
 - Do not require the Supabase MCP server, an agent plugin, local Supabase, Docker,
-  or deployment automation. Use an existing migration workflow when present, but
-  do not introduce a local database workflow solely for this setup.
+  or deployment automation. The Supabase CLI is required only to apply schema
+  changes to the hosted project, as described below. Use an existing migration
+  workflow when present, but do not introduce a local database workflow solely
+  for this setup.
+
+## Prepare the Supabase CLI before schema changes
+
+Apply tables, triggers, grants, and RLS to the hosted project yourself through
+the Supabase CLI, so the remote migration history matches the repository.
+Handing migration SQL to the user to paste into the dashboard leaves that
+history out of step, so do not use it as the path. Follow the current
+[Supabase CLI documentation](https://supabase.com/docs/guides/local-development/cli/getting-started)
+at execution time for installing, signing in, linking, and pushing migrations.
+
+- Before the first schema change, confirm that the CLI runs and is signed in
+  with a real authenticated call, such as listing the account's projects. A
+  binary on the path or a token file is not proof.
+- When the CLI is missing, install it with the method the documentation gives
+  for this platform or through the project's package manager.
+- When it is not signed in, ask the user to run the CLI's browser sign-in once
+  in their own terminal and to tell you when it is done. Sign-in belongs to the
+  user. If any CLI step asks for a token, database password, or other secret,
+  the user enters it in their terminal; never take it through the conversation.
+- After sign-in, link the repository to the selected hosted project and push
+  the migrations yourself. Then confirm that the remote migration history lists
+  them.
+- Creating the CLI's project folder for migrations is part of this step.
+  Starting a local Supabase stack or Docker is not.
 
 ## Add the minimal authenticated experience
 
@@ -163,8 +189,9 @@ the owner-only boundary. If email confirmation is enabled, verify that flow too.
 ## Stop and report honestly
 
 Pause when the next step requires user login, consent, or secret entry. Also stop
-when the official skills are unavailable, the target Cloud project is unclear,
-or existing configuration conflicts cannot be resolved safely. State where work
+when the official skills are unavailable, the Supabase CLI cannot be installed
+or signed in, the target Cloud project is unclear, or existing configuration
+conflicts cannot be resolved safely. State where work
 stopped and the single next user action needed; do not claim completion.
 
 At the end, report the selected choices, official skills, documentation, and UI
