@@ -782,6 +782,29 @@
         "It records each probe and its observed result in the verification evidence, including probes where the app held.",
         "It does not add probes to the final changed-flow and core-loop gate after review."
       ]
+    },
+    {
+      "id": 64,
+      "prompt": "/implement docs/specs/reply-ask-back/ 이 폴더로 진행해 줘. 참고로 이 저장소 AGENTS.md에 평가 루트가 apps/api/eval/ 이라고 적혀 있고, 거기 regression/ 에 답장 초안 기준 52건이 들어 있어. 이번 변경은 그 답장 초안 프롬프트를 건드려.",
+      "expected_output": "Alongside the criterion's own checks, the response runs the regression suite at apps/api/eval/regression/ because the change touches the behavior it guards, and reports its result as evidence.",
+      "files": [],
+      "expectations": [
+        "It finds the eval root from AGENTS.md rather than guessing a path.",
+        "It runs the regression suite because the change touches the behavior that suite guards.",
+        "It reports the suite's result as evidence beside the criterion's own checks.",
+        "It does not treat the suite passing as a substitute for the criterion's own checks."
+      ]
+    },
+    {
+      "id": 65,
+      "prompt": "/implement docs/specs/digest-schedule/ 진행해 줘. 이 프로젝트엔 eval이 아직 하나도 없어.",
+      "expected_output": "The response proceeds with the ordinary checks for the folder's criteria and neither looks for nor invents a regression suite, because the project holds none.",
+      "files": [],
+      "expectations": [
+        "It does not look for or invent a regression suite.",
+        "It proceeds with the criteria's own checks.",
+        "It does not add a regression suite as part of this run."
+      ]
     }
   ]
 }

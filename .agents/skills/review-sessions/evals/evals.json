@@ -1,0 +1,40 @@
+{
+  "skill_name": "review-sessions",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "/review-sessions 지난 2주 세션을 돌아보고 결정론으로 옮길 후보를 보고서로 만들어줘.",
+      "expected_output": "The run counts every session with the bundled script, reads only the windows and five strict-read summaries the script selected, writes candidates.json with a proposed form and owner per candidate, renders one offline HTML report, shares its address, and leaves one line in the conversation. It edits no skill, hook, setting, or repository file.",
+      "files": [],
+      "expectations": [
+        "It runs the bundled scan before reading anything and never loads whole session logs into context.",
+        "Every candidate names a deterministic form and owner, the judgment that stays with the agent, and what a re-measurement would confirm.",
+        "Harness-owned friction and product-judgment corrections appear in the collapsed buckets, not as candidates.",
+        "The report opens offline and the conversation carries only the candidate count and the most expensive one.",
+        "No fix, pull request, follow-up file, or instruction edit is made."
+      ]
+    },
+    {
+      "id": 2,
+      "prompt": "/review-sessions pr 위임을 고친 #127이 머지된 뒤 효과가 있었는지 재측정해줘.",
+      "expected_output": "The run splits the signal table by the SKILL.md text hash sessions loaded (from skill_versions in findings.json) rather than by merge date alone, chooses the hash of the skill whose text changed, reports before/after and unclassified counts for the delegation signal, and says which sessions ran an older installed copy.",
+      "files": [],
+      "expectations": [
+        "It uses --split-hash with the newer text hash of the skill whose text changed (merge or triage-issues, not pr, which the missed sessions never loaded), or explains why only a date split was possible.",
+        "It reports before and after counts for delegation_pr and does not claim the fix worked from a date split alone.",
+        "It writes nothing except the report folder."
+      ]
+    },
+    {
+      "id": 3,
+      "prompt": "/review-sessions 어제 하루만 봐줘.",
+      "expected_output": "With no signal past the threshold, the run renders the report in its empty state with the re-measurement table and strict reads only, and says no candidate passed.",
+      "files": [],
+      "expectations": [
+        "candidates.json has an empty candidates list and the report shows the empty state.",
+        "It does not lower the threshold to manufacture a candidate.",
+        "It still lists the strict-read sessions it sampled."
+      ]
+    }
+  ]
+}
