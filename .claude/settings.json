@@ -1,3 +1,14 @@
 {
-  "outputStyle": "natural-korean"
+  "outputStyle": "natural-korean",
+  "extraKnownMarketplaces": {
+    "toycrane": {
+      "source": {
+        "source": "github",
+        "repo": "toy-crane/skills"
+      }
+    }
+  },
+  "enabledPlugins": {
+    "secret-env@toycrane": true
+  }
 }
