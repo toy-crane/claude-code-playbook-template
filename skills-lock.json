@@ -40,7 +40,7 @@
       "source": "toy-crane/skills",
       "sourceType": "github",
       "skillPath": "skills/workflow/define-product/SKILL.md",
-      "computedHash": "d057afa43e76db9f31f1f3e3f2180c48991b321935995e324971bea689b3f385",
+      "computedHash": "eb32ac56dcadb378777a2e9e992873251eff2c89263952f531a274d02cfb7db8",
       "installMode": "copy"
     },
     "explain-visually": {
