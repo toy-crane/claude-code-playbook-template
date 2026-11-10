@@ -156,9 +156,48 @@ Keep the file product-only:
 Do not create a work-unit spec or begin shaping or implementation as part of
 this skill.
 
+## Propose the first work unit
+
+After writing `PRODUCT.md`, check whether the repository already runs the core
+loop once from its first step to its last. Judge this from repository evidence,
+such as code and tests that carry a user through every step, not from whether
+this run created or revised `PRODUCT.md`.
+
+When no such pass exists, end the completion report with one next work-unit
+candidate: the thinnest outcome that runs the confirmed core loop once from
+start to end.
+
+- Build it only from the confirmed core loop, its users, and its boundaries.
+  Add no user, feature, screen, or step the user did not confirm, and never
+  offer a foundation such as authentication or a data layer on its own.
+- When the loop has several possible paths, take the simplest one; shaping
+  settles the rest.
+- Label it as an AI proposal the user may correct or ignore, apart from the
+  confirmed meaning.
+- Add a request sentence the user can hand to `shape-idea`.
+- When the repository cannot show whether the loop runs, still give the
+  candidate and say that you could not confirm it.
+- Write the candidate and the request in the user's language.
+
+```text
+Next work-unit candidate (an AI proposal, not confirmed product meaning)
+- One pass through the core loop: {first step} → … → {last step}, in its thinnest form.
+- To continue: /shape-idea {one-sentence request for that outcome}
+```
+
+Name one candidate only. Do not list features, give an order, or suggest what
+follows it. Do not ask the user about the candidate, write it into
+`PRODUCT.md`, create a spec, or start shaping; whether to shape it is the
+user's choice.
+
+Propose nothing when this run did not write `PRODUCT.md`, such as while the
+interview is still open, or when the repository already runs the core loop.
+Choosing each later work unit stays with the user.
+
 ## Finish
 
 Finish when the user has confirmed the complete product direction and a later
 agent can understand it quickly without mistaking a guess for intent. Report
 the updated `PRODUCT.md`, the material meaning established or changed, choices
-made under delegation, and accepted assumptions or intentional unknowns.
+made under delegation, and accepted assumptions or intentional unknowns, then
+the next work-unit candidate when the previous section calls for one.
