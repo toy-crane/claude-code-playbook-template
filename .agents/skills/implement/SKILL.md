@@ -1,12 +1,12 @@
 ---
 name: implement
-description: Implement or resume settled work from one selected spec folder as one handoff bundle. Use when the user provides a `docs/specs/SLUG/` folder and wants its settled spec completed in the current checkout with verification, one completed and triaged automated code review, and a runnable product handoff when the repository exposes one through a local server.
+description: Implement or resume settled work from one selected spec folder as one handoff bundle. Use when the user provides a `docs/specs/SLUG/` folder and wants its settled spec completed in the current checkout with verification, one completed and triaged automated code review, a ready-for-review pull request brought through CI and review bots, and a runnable product handoff when the repository exposes one through a local server.
 ---
 
 # Implement
 
-This skill requires `tdd`, `llm-evals`, `babysit-specs`, and
-`project-knowledge`. Before
+This skill requires `tdd`, `llm-evals`, `babysit-specs`,
+`project-knowledge`, `pr`, and `babysit-pr`. Before
 doing any work, confirm each one is installed. When one is missing, stop and
 report it with its install command,
 `npx skills@latest add toy-crane/skills --skill <name>`, using the project's
@@ -112,8 +112,10 @@ noise floor, each round's change, and where the eval lives; an unreached
 target comes back with the best score and failure causes, and that criterion
 stays incomplete. Report each eval criterion with its baseline and final
 scores as evidence. When the project holds a regression suite and this change
-touches the behavior it guards, run that suite and report its result as
-evidence beside the criterion's own checks; the eval root named in the
+touches the behavior it guards, run that suite's upper tier, and its lower
+tier too when the model the product runs on differs from the one that tier
+last ran on, and report the result as evidence beside the criterion's own
+checks; the eval root named in the
 project's agent instructions says where it lives, or the folder its existing
 evals sit in when the instructions name none, and a project holding no suite
 needs nothing here. Behavior in the running product
@@ -280,6 +282,24 @@ unconfirmed finding, in the handoff; and a material consequence the spec leaves
 open, such as a security trade-off or a pathological-input failure, as a
 decision the user owns.
 
+Size each repair to the case you reproduced. When several repairs would fix
+it, choose one that deletes code or narrows a condition before one that adds
+code, and add a new lock, cache, helper, or option only when nothing smaller
+fixes that case. Leave the rest of what the finding points at unrepaired:
+other paths it might reach, rare inputs, small performance differences, extra
+compatibility, and tests or defensive code the spec's intent does not call
+for. Record them by the rules above, or name the spec constraint that already
+rules them out.
+
+When you disagree with a finding, say so in the handoff with the evidence that
+settles it: the file and line, a test, or the output of running the case.
+Accept a finding on that evidence or a reproduction, not to close the review.
+
+Once the repairs pass their affected verification, read the whole diff against
+the spec's intent again. Remove code that no acceptance criterion or named
+reason requires, whether a repair added it or it was already there, and rerun
+the verification that removal affects. This reading adds no review pass.
+
 ## Verify the final product after review and repairs
 
 After the whole-diff review is complete and triaged and any must-fix repairs
@@ -331,12 +351,39 @@ Do not organize this account around files or tests, although report relevant
 verification separately. Do not present a prototype or stale capture as proof
 of the delivered revision, and name anything important that could not be shown.
 
+## Open the pull request and bring it to ready
+
+When the completion conditions above all hold, invoke `pr` to open a
+ready-for-review pull request for this work, handing it the verification
+evidence and the reviewable account above for its body; it hands back the
+pull request URL. Then invoke `babysit-pr` with that pull request; it answers
+CI and review bots and hands back the end state, ready or needs a person, with
+what it fixed, declined, and left. Never open a draft and never merge: merging
+belongs to the user's later request.
+
+An incomplete or blocked run opens no pull request; report the blocker as
+above. Skip both steps, and hand off as below, when the user asked for no pull
+request or the repository has no GitHub remote, and say which applied.
+
+## When no person is present
+
+When the invoking skill says no person is present, skip the local server
+handoff below and put the screen and behavior evidence in the pull request
+body instead. Ask the user anything through the harness's question tool, not
+as chat text, and pass the same signal to `babysit-pr`. Without that signal,
+everything here applies as written.
+
 ## Hand off the runnable product
 
-After that report, when the repository exposes the actual result through a
-user-reviewable local server, run it through the supported development or
-preview path. Verify the changed routes and essential states, share a
-reachable address, and name what to review.
+After `babysit-pr` finishes, or when no pull request was opened, and when the repository exposes the actual result through a user-reviewable local
+server, run it through the supported development or preview path. Verify the
+changed routes and essential states, share a reachable address, and name what
+to review. When `babysit-pr` pushed fixes, they are executable repairs: repeat
+the final changed-flow and core-loop gate on the revision it left before this
+handoff, without a second review pass. The final
+message puts together the pull request link, the state `babysit-pr` returned
+with what remains for a person, the address, and what to check there, so one
+look at the final code can decide the merge.
 
 Reuse a healthy server owned by the current checkout or start an isolated one
 while preserving other checkouts and unrelated processes. Keep that server

@@ -8,10 +8,10 @@ description: Carry the current repository change through a verified GitHub pull 
 Carry the current request's change through a pull request, verified merge, and
 safe local cleanup. Complete the necessary commit, synchronization, publication,
 and PR work, using the `pull` skill for base synchronization, the `pr` skill to
-create or update the pull request, and the `clean-branches` skill for the
-cleanup after the merge.
+create or update the pull request, the `babysit-pr` skill to bring it to
+ready, and the `clean-branches` skill for the cleanup after the merge.
 
-This skill requires `pull`, `pr`, and `clean-branches`. Before doing any work,
+This skill requires `pull`, `pr`, `babysit-pr`, and `clean-branches`. Before doing any work,
 confirm each one is installed. When one is missing, stop and report it with
 its install command, `npx skills@latest add toy-crane/skills --skill <name>`,
 using the project's package manager runner where it pins one.
@@ -36,10 +36,52 @@ observed.
 When the repository's `AGENTS.md` or `CLAUDE.md` carries an `## Issue tracker`
 section, read its linked detailed convention when present; legacy inline
 conventions also work, without a separate setup skill installation. Without
-the section, skip every issue step in this skill. For a configured tracker,
-read the `Spec-Folder: docs/specs/<slug>/` trailers from the branch's commits
-before merging, while the branch still exists and before a squash can drop
-them, and keep those folders for the steps below.
+the section, skip every issue step in this skill except reporting a
+post-release check it could not open. Read the
+`Spec-Folder: docs/specs/<slug>/` trailers from the branch's commits before
+merging, while the branch still exists and before a squash can drop them, and
+keep those folders for the tracker and post-release check steps below.
+
+## Respect merge order
+
+Before rebasing, read the `Blocked by:` lines in the `spec.md` of each spec
+folder the branch carries, found through its `Spec-Folder` trailers or the
+`docs/specs/<slug>/` folders its diff touches. When a blocking folder's work
+is not on the fetched base yet, for example because the PR that delivers it
+is still open, leave this PR open and report which folder it waits on. Pull
+requests without such a block merge in the order they meet their merge
+conditions: whichever is ready first merges first, and the rest rebase
+afterwards and pass the rebase checks below.
+
+## Check what a rebase carried
+
+Run these checks after every rebase of the PR branch and before publishing
+it: the one `pull` hands back, a rebase repeated to recover a rejected merge,
+and one already sitting unpublished in the checkout.
+
+First compare the PR's commits before and after the rebase, one by one, with
+`git range-diff <old-base>..<old-head> <new-base>..<new-head>`. The old head
+is the remote PR branch just observed, or `ORIG_HEAD` and the reflog when the
+rebase happened earlier. Each rebased commit should carry the same intended
+change. Also read the incoming base commits against the PR's changes, because
+range-diff shows an unchanged patch when the base already holds the same
+change elsewhere. When a change the PR intends is missing, or the rebased
+branch adds again what the base already holds, such as a second copy of an
+entry, function, or fix, correct the branch before publishing. When the
+intended result is unclear, keep the PR open and report the blocker.
+
+Then list the base commits that arrived since the PR branched and find the
+ones that overlap it: they touch a file the PR changes, or change behavior the
+PR calls or relies on, such as a default value, a shared constant, or a
+helper's name or signature. For each overlap, re-verify on the current head
+the behaviors that the PR's spec acceptance criteria or PR body state and the
+overlap could affect, by running or exercising them. Passing tests and CI do
+not settle this when they do not exercise the assumption the overlap changed.
+Correct the PR when its intended behavior is clear; otherwise keep the PR open
+and report the blocker. Without an overlap, the verification below is enough;
+a rebase does not by itself call for repeating every check. An overlap decides
+only how much to re-verify, never whether to rebase: a branch behind its base
+still goes through `pull` and these checks before it merges.
 
 ## Create or update the PR with `pr`
 
@@ -52,6 +94,15 @@ is an intermediate step, so continue to the merge below instead of stopping to
 report. Invoke it again only when the change itself makes the body outdated,
 not when a rebase merely moves the head.
 
+## Bring the PR to ready with `babysit-pr`
+
+After `pr` hands back the pull request, and before any merge step below,
+invoke `babysit-pr` with it. It answers CI and review bots and hands back
+ready or needs a person. Continue to the merge only on ready, and recheck that
+the head it reported is still the current head; when a later step moves the
+head, invoke it again before merging. On needs a person, keep the
+pull request open, enable no auto-merge, and report the reason it gave.
+
 With a tracker configured, confirm on the remote PR before merging what the
 reconciliation below reads back: each spec folder the PR carries has its one
 issue, named by the `Issue: <tracker>:<id>` line in its `spec.md` and repeated
@@ -59,6 +110,14 @@ in the PR body, and the body carries the convention's closing reference only
 when the PR delivers implementation. If a linked convention cannot be read,
 report the missing information rather than guessing issue operations or
 claiming that the issue was linked or closed.
+
+## When no person is present
+
+When the invoking skill says no person is present, ask the user anything
+through the harness's question tool, not as chat text. When no answer comes,
+stop without merging, leave the pull request open with no auto-merge armed,
+and report the question. Pass the same signal to `babysit-pr`. Without that
+signal, everything here applies as written.
 
 ## Merge and clean up
 
@@ -85,6 +144,16 @@ chosen method after rechecking the current head and base. `gh pr merge --auto`
 can merge an already-mergeable PR immediately;
 it is not a general wait flag. If enabling auto-merge fails, reassess the PR
 and use direct merge only after its verification and requirements pass.
+
+Right before merging, directly or by enabling auto-merge, fetch the base
+again and compare it with the base your last passing verification ran on,
+for example with `git log --name-only <verified-base>..<remote>/<base>`. Run
+this comparison as its own command and read its output before deciding; never
+chain the fetch and the merge in one command, because the merge then runs
+before anyone sees what landed. When a commit that landed touches this PR's
+files, do not merge on that verification: rebase again, run the rebase checks
+above on the new head, and merge only once they and the current head's
+verification pass.
 
 While waiting, recheck the current head, base, relevant CI, and required checks
 and reviews. If the head or base changes, reassess mergeability and repeat
@@ -159,11 +228,39 @@ issue's closure only when that PR's diff
 and verification establish actual implementation delivery. A linked spec PR or
 trailer alone is insufficient. For a merged spec-only PR, retry the recorded
 mark-ready operation when the issue still carries its
-review or active signal and no newer implementation has started. Report
-missing evidence or a failed retry. This catch-up works after the original
-branch and trailers disappear in a squash merge.
+review or active signal and no newer implementation has started. For a delivered
+folder with a post-release check and no check issue, retry its creation with
+the due date counted from the original merge timestamp. Report missing
+evidence or a failed retry. This catch-up works after the original branch and
+trailers disappear in a squash merge.
+
+## Open a post-release check
+
+After a PR that actually delivered implementation, by the same evidence used
+for closing above, look at each implemented folder's `spec.md` on the merged
+base, whether or not a tracker is configured. When it has a `## Post-release check` section whose content is not
+`None.`, and the tracker convention has a `Check issue` item, open one check
+issue for that folder through that item. A spec-only merge, a direct fix with
+no spec folder, a missing section, or `None.` opens nothing.
+
+First look for an existing check issue for the folder through the item's
+lookup, which matches the `Spec-Folder: docs/specs/<slug>/` line in the check
+section, in any state; when one exists, create nothing and report it. The due
+date is the remote's merge timestamp plus the period the section states,
+taken as a calendar date in the time zone the `Due date` item names, or UTC
+when it names none, and written in that item's form. The body is the item's bounded
+check section: the `Spec-Folder:` line, the merged PR, a `Merge-Commit:` line
+with the merge commit the remote reports on the base, the due date, and the
+section's content copied as written. The commit keeps the measurement file
+readable after the spec folder is retired. Do not run the measurement or judge the
+target here; the check is read when it comes due. When the repository has no
+tracker convention, the convention has no `Check issue` item, its tool is
+unavailable, or the section states no period, create nothing and report the
+check that was not opened and which of these stopped it. Verify the created
+issue's state and due date, and report its link.
 
 Finish with the merged pull request URL, merge strategy, verified remote state,
-cleanup result, and the tracker issues created, updated, or closed. Keep a
+cleanup result, the tracker issues created, updated, or closed, and each
+post-release check issue opened, found, or skipped with its reason. Keep a
 cleanup or tracker failure visible without misreporting the already verified
 merge.

@@ -50,10 +50,48 @@ If general-issue triage is configured, also specify its open scope including
 Backlog; `needs-triage`, `needs-info`, and `needs-decision` state/label mapping;
 the not-yet-judged query, which returns open general issues with neither the
 `<!-- triage-issues:triage:start -->` nor the spec section and none of those
-results, oldest first; active work and linked PR lookup; comment and evidence
+results, leaving out issues whose due date is still ahead, with due issues
+first, earliest due date first, then the rest oldest first; active work and linked PR lookup; comment and evidence
 publishing; duplicate disposition; the stale-review query, which returns open
 issues carrying the review signal with no open linked PR; the return to a
 non-active state when a spec PR closes unmerged; and a bounded AI-section body update that
 preserves the latest human report and verifies the result. Record whether the
 tracker supports conditional updates; if not, report the remaining human-edit
 race.
+
+Due date: <how an issue's due date is set and read as a calendar date: the
+tracker's native field, or a `Due: <YYYY-MM-DD>` body line when it has none.
+The not-yet-judged query returns it with each issue.>
+Record the time zone that turns a merge timestamp into a due date; UTC
+when none is named.
+
+Check issue: created by `merge` after an implementation PR whose spec folder
+has a `## Post-release check` section other than `None.`.
+- Title: <form, such as `Post-release check: <spec title>`>.
+- State: <an open state the not-yet-judged query returns, never an active or
+  review state; the label that narrows the lookup, when the tracker has labels>.
+- Assignee: <none, or who owns release results>.
+- Body, as the whole issue body:
+
+```markdown
+<!-- triage-issues:check:start -->
+## Post-release check
+
+Spec-Folder: docs/specs/<slug>/
+Merged: <merged PR URL> at <merge timestamp>
+Merge-Commit: <merge commit SHA on the base>
+Due: <YYYY-MM-DD>
+
+<the spec's `## Post-release check` content, copied as written>
+<!-- triage-issues:check:end -->
+```
+
+- Find an existing one: <command; returns issues in every state whose check
+  section carries the folder's exact `Spec-Folder:` line>.
+- Create: <command; title, state, due date, body; returns the new ID>.
+
+Notifications: None.
+Replace `None` with the method that copies each triage report to people, such
+as a chat channel and the verified tool that posts to it, only when the user
+asks for one. The tracker stays the record; a failed send is reported and
+never fails a run.

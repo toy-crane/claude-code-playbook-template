@@ -438,6 +438,33 @@ class SyncCompanionAgentsTest(unittest.TestCase):
         self.assertIn("local-name.md", result.stdout)
         self.assertIn("duplicate native identity", result.stdout)
 
+    def test_installs_agents_from_a_version_2_skills_lock(self) -> None:
+        self.add_managed_companion_skill()
+        self.write_json(
+            "skills-lock.json",
+            {
+                "version": 2,
+                "skills": {
+                    "expo-smoke-test": {
+                        "source": "toy-crane/skills",
+                        "sourceType": "github",
+                        "skillPath": "skills/expo/expo-smoke-test/SKILL.md",
+                        "computedHash": "0" * 64,
+                    }
+                },
+            },
+        )
+
+        result = self.run_sync()
+
+        self.assertEqual(result.returncode, 0, result.stderr)
+        self.assertTrue(
+            (self.project / ".claude/agents/expo-smoke-runner.md").is_file()
+        )
+        self.assertTrue(
+            (self.project / ".codex/agents/expo-smoke-runner.toml").is_file()
+        )
+
     def test_rejects_an_unknown_skills_lock_version_without_retiring_agents(
         self,
     ) -> None:
@@ -447,7 +474,7 @@ class SyncCompanionAgentsTest(unittest.TestCase):
         original_lock = (
             self.project / ".agents/toycrane-agents-lock.json"
         ).read_bytes()
-        self.write_json("skills-lock.json", {"version": 2, "skills": {}})
+        self.write_json("skills-lock.json", {"version": 3, "skills": {}})
 
         result = self.run_sync()
 

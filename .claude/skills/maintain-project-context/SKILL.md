@@ -106,7 +106,14 @@ recur.
   definition only when the project's language has already changed.
 - For each `docs/specs/<slug>/` confirmed as shipped, first preserve every
   qualifying reusable decision in its owning contract, then delete the folder.
-  If shipment is unclear, leave it and ask. In active specs, update only links
+  A shipped folder whose `## Post-release check` holds a check, not `None.`,
+  stays until that check is done, because a later session runs the
+  measurement file at its recorded path inside the folder. With an issue
+  tracker convention, find the folder's check issue through the convention's
+  `Check issue` lookup by its `Spec-Folder:` line; the check is done when that
+  issue is closed. Keep the folder and report it when no check issue exists
+  yet. Without a tracker convention, ask. If shipment is unclear, leave it and
+  ask. In active specs, update only links
   and terms already confirmed elsewhere.
 - In always-loaded instructions, keep repository working rules and a route to
   the decision index. Remove copied decision or product content without changing

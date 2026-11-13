@@ -114,11 +114,20 @@ the product needs while it stays open is written under the deferred point,
 naming the decision that replaces it; where the contract states that behavior
 again so it can be built and tested, mark it interim there too.
 
+Give each deferred point the one thing that brings it back, because a point
+nothing reopens is forgotten: a date, a condition on the result of other work,
+or an issue in the repository's tracker. When that condition is a post-release
+check falling short, write the follow-on work as that check's miss action
+instead of a separate deferred point. When the point needs an issue and the
+user gave no issue ID for it, leave it unlinked in the spec and list it in the
+close-out as an issue to file; never create one while shaping.
+
 When ready for implementation, write `docs/specs/<slug>/spec.md` as the stable
 product contract, creating the kebab-case folder when needed. Include the
 user-visible outcomes, approved scope, observable acceptance criteria, settled
 constraints and rationale, assumptions, off-limits areas and why, deferred
-points, remaining risks, and setup before implementation. Record behavior and
+points, remaining risks, setup before implementation, and the post-release
+check. Record behavior and
 decisions without predicting files, functions, code structure, technical
 layers, or implementation steps. Carry only applicable app-level constraints
 from `PRODUCT.md`; keep the file as their canonical product context rather than
@@ -141,6 +150,21 @@ condition observable without the work this spec delivers, such as console
 state, a direct API call made outside the app, or a DNS lookup. Write `None.`
 when nothing is needed, and never write a secret value. Leave who does each
 item and how to implementation, and do none of it while shaping.
+
+Always write a `## Post-release check` section under that exact English
+heading. It holds what can only be judged once real use has run for a while,
+such as a rate in production data, and a later session reads it without this
+conversation to schedule and run each check. A check belongs here only when
+the user set a success measure that waits on real use, or a decision was
+deferred until real-use data arrives; behavior the acceptance criteria can
+verify before release is not a check, and you add none on your own. Give each check five fields on
+their own lines: the metric, the pass criterion, the period as a number of
+days after release, the measurement as a file path inside this spec folder,
+and what to do when the criterion is not met. The measurement is a file anyone
+can run and get the same value, and it reports pass or fail against the
+criterion itself, so whoever runs it never copies or compares numbers by hand.
+Say what it reads and what it prints; implementation writes the file with the
+rest of the spec. Write `None.` when nothing needs checking after release.
 
 When the repository's `AGENTS.md` or `CLAUDE.md` carries an `## Issue tracker`
 section and the user names an existing issue this work comes from, add an
@@ -189,8 +213,8 @@ technical layer, not an outcome that lands alone.
 Operations or states inside one workflow, technical layers, and session size
 never divide a folder. Work done only outside the repository never becomes a
 folder: preparation goes under `Setup before implementation` of the folder
-that needs it, and actions after release stay in the spec of the outcome they
-follow.
+that needs it, and actions after release stay in the `Post-release check` of
+the outcome they follow.
 
 When the rule yields more than one folder, show the whole division at once
 before writing anything: each folder's slug, the outcomes it delivers, why it
@@ -214,8 +238,10 @@ attention to consequences that are easy to miss when reviewing only the
 surface being changed.
 
 List the setup items from the spec in the close-out so the user can finish
-them before implementation starts. When you wrote several folders, list them
-with the order their `Blocked by:` lines set.
+them before implementation starts. List each post-release check with its
+period, and each deferred point waiting for an issue the user has not given,
+under "issues to file" with a title and what should bring it back. When you
+wrote several folders, list them with the order their `Blocked by:` lines set.
 
 Distinguish the intended experience from implemented evidence, keep the
 close-out consistent with the product contract, and do not prompt for another

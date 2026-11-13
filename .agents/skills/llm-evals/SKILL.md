@@ -82,7 +82,8 @@ use the one its agent instructions name, else the folder its existing evals sit
 in, else `.claude/hillclimb/`. Never put it inside a folder that ships to
 users, such as a skill's own folder: installers copy that folder whole, and
 its users never need the eval. The layout under that root is fixed. The root
-holds the runner, `regression/`, and one folder per capability eval. Name that
+holds the runner, `regression/` (its `log.md`, its `cell-history.json`, and
+one folder per graduated criterion), and one folder per capability eval. Name that
 folder for the spec folder whose criterion it proves, and for the criterion too
 when that spec has more than one of them, so two criteria handed over
 separately never land on the same folder. This eval's folder holds
@@ -91,7 +92,8 @@ train and test ids, the access choice, the approved spend), and one results
 folder per variant named `baseline` or `v<N>`, in the shape claude-api's report
 tools read. Each variant holds `results.jsonl`, one row per (case, rep) with
 `prompt_id`, `rep`, `tags`, `grade` as `{metric: number}`, `status`, `model`
-read from the response, and `usage`; `traces/<id>_rep<k>.json` with the whole
+read from the response, and `usage`, keeping each check's verdict so its cells
+can be counted; `traces/<id>_rep<k>.json` with the whole
 exchange; and `errors.jsonl` for attempts that failed before a scorable output. An infra
 failure is recorded with its class there, never scored as zero. Give each case
 a wall-clock ceiling, back off with jitter on rate limits, and fail an attempt
@@ -136,6 +138,9 @@ show:
 - the run size, cases × reps, and the model, counting the baseline, the
   rounds, and the gates, but no run whose row will already exist;
 - the noise floor next to the gain the target needs;
+- for each case you expect to pass already at the baseline, what it guards
+  against, such as a behavior the change could push too far; record the
+  answer as the case's `guards` field;
 - the cost estimated from the pilot's usage and the spend ceiling, or on a
   subscription the expected usage-limit draw with dollars only as the API
   equivalent.
@@ -193,7 +198,14 @@ and carry the grader whole: the code checks and the rubric both go, because
 dropping the rubric stops guarding the regressions only a judge can see. Carry
 what the grader reads as well, since the rest of the folder is about to go —
 the frozen baseline outputs a pairwise judge compares against, its fixtures,
-and the expected answers it scores from. Delete the rest of this eval's folder, append
+and the expected answers it scores from. Add each graduating cell — one case
+judged by one check — to the cell history with its trials and passes from those
+rows, their results in order as its recent results, and its result at this
+climb's baseline. A cell that failed at the
+baseline goes to the upper tier. A cell that already passed at the baseline
+goes to the upper tier only when its case's `guards` states what it guards
+against, and to the lower tier otherwise; a suite with no `lower_tier_model`
+yet takes the climb's model as it. Delete the rest of this eval's folder, append
 one line to `regression/log.md` with the date, the criterion, the baseline and
 final scores, the noise floor, the model, and the commit, and record the eval
 root's path in the project's agent instructions — `AGENTS.md`, created when
@@ -203,11 +215,6 @@ later work finds the suite without guessing.
 A case whose passes were not repeatable does not graduate: a suite that starts
 amber reports nothing. Leave it in a capability eval while the criterion is
 open, and record it as a known failure once the criterion closes.
-
-A regression suite is scored against the level its cases reached, over the same
-repetitions, so a drop outside the noise floor means something broke. Change or
-remove one of its cases only when a decision to change that behavior exists, or
-when the feature it covers is gone; a failing score is never that reason.
 
 Cases, graders, the runner, and everything under `regression/` are ready to
 commit. The variant results folders are not, and graduation deletes them.
@@ -223,3 +230,46 @@ Hand back:
   stays open;
 - for an unreached target, the best held-out score and the failure buckets,
   so the criterion stays incomplete.
+
+## Run the regression suite in two tiers
+
+A regression suite is scored against the level its cases reached, over the same
+repetitions, so a drop outside the noise floor means something broke. Change or
+remove one of its cases only when a decision to change that behavior exists, or
+when the feature it covers is gone; a failing score is never that reason, and
+neither is passing. A cell whose most recent 10 trials all passed may be
+demoted to the lower tier, never deleted: answer a request to delete one by
+offering demotion instead and deleting nothing. Tell the user that demotion is
+proposed from the cell history by the `audit-evals` skill, which moves only the
+cells they approve, and that it installs with
+`npx skills@latest add toy-crane/skills --skill audit-evals` when it is not
+installed; this skill does not run it.
+
+Every suite run, at a gate or for `implement`, runs the upper tier. It runs the
+lower tier too only when this run's model differs from the model the lower tier
+last ran on. A lower-tier cell that fails outside the noise floor is a
+regression: report it as one and propose moving it back to the upper tier,
+which happens once the user approves.
+
+After each suite run, add every cell's trials and passes to the cell history
+and append each new result to the end of its `recent` results, dropping the
+oldest so it keeps the last 10; then set the suite's `last_run_model`, and its
+`lower_tier_model` when the lower tier ran. The history grows only from runs that happen anyway; never run
+the suite to fill it. A suite that predates the history starts it on its next
+run, every cell in the upper tier with an unknown baseline. Keep the run's
+answers and judge reasoning only until the next suite run replaces them,
+uncommitted: they are for reading the failure just seen, and the counts already
+live in the history.
+
+The cell history is `regression/cell-history.json`: per cell, cumulative counts
+and its most recent 10 results, oldest first (`p` pass, `f` fail), rather than
+a row per run, so its size does not grow with the number of runs. A cell's
+`recent` holds as many results as its trials, up to 10:
+
+```json
+{"version": 2, "suites": {"<criterion folder>": {
+  "reps": 2, "last_run_model": "<model>", "lower_tier_model": "<model or null>",
+  "checks": {"<check>": {"grader": "code or judge", "judge_call": "<id shared by checks judged in one call>"}},
+  "cells": {"<case>": {"<check>": {"tier": "upper or lower", "baseline": "pass, fail, or null",
+    "trials": 14, "passes": 13, "recent": "pppppppppp"}}}}}}
+```
