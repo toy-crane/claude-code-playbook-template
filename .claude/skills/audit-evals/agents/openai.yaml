@@ -1,0 +1,4 @@
+interface:
+  display_name: "Audit Evals"
+  short_description: "Find regression eval cells that no longer earn their run"
+  default_prompt: "Use $audit-evals to read this project's regression cell history, report cells whose recent 10 trials all passed, identical, flipping, and always-failing cells, and propose demotions with the runs and judge calls they save; apply only the ones I approve."

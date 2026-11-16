@@ -6,7 +6,7 @@ import sys
 from pathlib import Path
 
 
-TITLES = {"triage": "Triage 요약", "spec": "Spec"}
+TITLES = {"triage": "Triage 요약", "spec": "Spec", "check": "Post-release check"}
 
 
 def upsert(body: str, section: str, content: str) -> str:
