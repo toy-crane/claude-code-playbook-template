@@ -70,6 +70,27 @@ Settle these items:
   issue whose spec PR closed unmerged returns to a non-active state such as
   Backlog; this clears a stale review signal and does not make the issue new. Do not add a decision-maker field or
   treat an assignee or label as an atomic lock.
+- **Due date**: how an issue's due date is set and read, as a calendar date.
+  Use the tracker's native due-date field when it has one, and otherwise a
+  `Due: <YYYY-MM-DD>` body line. The not-yet-judged query returns each issue's
+  due date, so triage can leave out issues whose date is still ahead.
+- **Check issue**: how a post-release check issue is created after a merge:
+  its title form, initial state, assignee, the label that narrows the
+  duplicate lookup when the tracker has labels, and its body. The body is a
+  bounded section between `<!-- triage-issues:check:start -->` and
+  `<!-- triage-issues:check:end -->` titled `## Post-release check`, holding a
+  `Spec-Folder: docs/specs/<slug>/` line, the merged PR, a `Merge-Commit:`
+  line with the merge commit on the base, the due date, and
+  the spec's `## Post-release check` content copied as written. Record the
+  lookup that finds an existing check issue for one spec folder, open or
+  closed, by that line, so a retry never creates a second one. The initial
+  state is one the not-yet-judged query returns, never an active or review
+  state. Verify or create its label as for the triage labels.
+- **Notifications**, optional: how the triage report is copied to people,
+  such as a chat channel through a verified tool, or `None`. Ask once whether
+  the user wants one, unless the request already answers it, and accept
+  `None` without follow-up questions; the
+  tracker stays the record, so every skill works without it.
 
 Start from the matching template and adjust it to what exploration found:
 [templates/github.md](templates/github.md),
@@ -91,7 +112,9 @@ ID-based operations while preserving its tracker, tool, states, and
 already-compatible operations. Also replace an additive-only blocker update
 with the complete stale-removal and missing-addition operation. Treat triage
 items that re-select waiting issues on a human reply or body edit as outdated
-too, and replace them with the not-yet-judged query. The old names
+too, and replace them with the not-yet-judged query. A convention without
+`Due date`, `Check issue`, or `Notifications` keeps working; offer to add them,
+writing `Notifications: None` unless the user names a method. The old names
 are not read for compatibility, so tell the user to rename `Source-Issue:` to
 `Issue:` in active spec folders themselves; leave existing title-key issues
 for the user to tidy in the tracker.
@@ -101,8 +124,9 @@ require an explicit user request before resuming an issue already in progress,
 and link issues through PRs and close them when implementation merges. A spec
 PR never closes its issue. Add a task-time link to `docs/issue-tracker.md`;
 write the repository's issue ID form, verified tool, state and claim
-conventions, closing reference, seven spec operations, and any triage
-operations there. Load that file only for issue work. Preserve
+conventions, closing reference, seven spec operations, any triage operations,
+and the `Due date`, `Check issue`, and `Notifications` items there, under
+exactly those names, which other skills look up. Load that file only for issue work. Preserve
 repository-specific choices and non-obvious
 behavior; use the current tool schema or CLI help for exact arguments instead
 of copying exhaustive field lists into either document. General tool guidance

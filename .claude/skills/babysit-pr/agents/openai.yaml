@@ -1,0 +1,4 @@
+interface:
+  display_name: "Babysit Pull Request"
+  short_description: "Answer a PR's CI and review bots until it is ready to merge"
+  default_prompt: "Use $babysit-pr to watch this pull request's checks and review threads, fix confirmed findings, answer and resolve each thread, rerun flakes, and report whether it is ready to merge or needs a person."

@@ -100,9 +100,14 @@ def relative_source(companion_dir: Path, value: object, label: str) -> Path:
     return source
 
 
+# skills.sh writes version 2 since its lock gained skillPath and computedHash;
+# both versions keep the skills map and per-entry source this script reads.
+SUPPORTED_SKILLS_LOCK_VERSIONS = (1, 2)
+
+
 def discover_agents(project: Path) -> tuple[dict[str, CompanionAgent], set[str]]:
     skills_lock = read_json(project / SKILLS_LOCK)
-    if skills_lock.get("version") != 1:
+    if skills_lock.get("version") not in SUPPORTED_SKILLS_LOCK_VERSIONS:
         raise SyncError(f"Unsupported skills lock: {project / SKILLS_LOCK}")
     skill_entries = skills_lock.get("skills")
     if not isinstance(skill_entries, dict):

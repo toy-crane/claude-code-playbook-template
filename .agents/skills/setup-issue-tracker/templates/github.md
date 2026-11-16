@@ -68,9 +68,10 @@ duplicate disposition. Verify the labels in the repository before use. Record
 the not-yet-judged query: `gh issue list --state open --limit 1000 --json
 number,createdAt,labels,body`, which excludes PRs; raise `--limit` above the
 open-issue count, since the default of 30 drops older issues. Keep issues whose
-body has neither the `<!-- triage-issues:triage:start -->` nor the spec section
-and which carry none of `needs-info`, `needs-decision`, the review label, or the
-active label, oldest first; filter the returned bodies locally rather than through search. Record
+body has neither the `<!-- triage-issues:triage:start -->` nor the spec section,
+which carry none of `needs-info`, `needs-decision`, the review label, or the
+active label, and whose `Due:` line, when present, is today or earlier; order
+issues with a due date first, earliest first, then the rest oldest first; filter the returned bodies locally rather than through search. Record
 the stale-review query: `gh issue list --state open --label <review label>
 --limit 1000 --json number,body`, then keep issues with no open linked PR, read
 through the timeline's cross-referenced PRs and PR bodies carrying their
@@ -80,3 +81,44 @@ and updates only bounded AI-managed sections while preserving human content.
 GitHub REST conditional `PATCH` is not generally supported: verify the body
 after writing, recover an observed concurrent edit when possible, and report
 the remaining race instead of claiming atomic preservation.
+
+Due date: GitHub Issues has no due-date field, so a due date is a
+`Due: <YYYY-MM-DD>` line in the issue body; a check issue carries it inside
+its check section. Read it from the bodies the not-yet-judged query returns.
+Record the time zone that turns a merge timestamp into a due date; UTC
+when none is named.
+
+Check issue: created by `merge` after an implementation PR whose spec folder
+has a `## Post-release check` section other than `None.`.
+- Title: `Post-release check: <spec title>`.
+- State: open, with the `post-release-check` label and none of `needs-info`,
+  `needs-decision`, the review label, or the active label, so the
+  not-yet-judged query returns it once its due date arrives. Verify the label
+  exists before use.
+- Assignee: none, unless the repository names who owns release results.
+- Body, as the whole issue body:
+
+```markdown
+<!-- triage-issues:check:start -->
+## Post-release check
+
+Spec-Folder: docs/specs/<slug>/
+Merged: <merged PR URL> at <merge timestamp>
+Merge-Commit: <merge commit SHA on the base>
+Due: <YYYY-MM-DD>
+
+<the spec's `## Post-release check` content, copied as written>
+<!-- triage-issues:check:end -->
+```
+
+- Find an existing one: `gh issue list --state all --label post-release-check
+  --limit 1000 --json number,state,body`, keeping the issue whose check
+  section carries the folder's exact `Spec-Folder:` line.
+- Create: `gh issue create --title "<title>" --label post-release-check
+  --body-file -`; read the new number from the returned URL.
+
+Notifications: None.
+Replace `None` with the method that copies each triage report to people, such
+as a chat channel and the verified tool that posts to it, only when the user
+asks for one. The tracker stays the record; a failed send is reported and
+never fails a run.

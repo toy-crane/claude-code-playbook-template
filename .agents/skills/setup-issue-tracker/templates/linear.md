@@ -56,8 +56,10 @@ appropriate, and verify the selected `needs-info` and `needs-decision` labels.
 Record the not-yet-judged query: the team's open issues, including Triage and
 Backlog, whose description has neither the `<!-- triage-issues:triage:start -->`
 nor the spec section and which carry no `needs-info` or `needs-decision` label
-and no review or active state, oldest first; filter the returned descriptions
-locally rather than through search. Record linked PR lookup, evidence
+and no review or active state, and whose due date, when set, is today or
+earlier; order issues with a due date first, earliest first, then the rest
+oldest first. Filter the returned descriptions locally rather than through
+search. Record linked PR lookup, evidence
 attachments, and duplicate disposition. Record the stale-review query: the
 team's open issues in the review state, kept when no linked PR is open. Record
 the move to Backlog for an issue whose spec PR closed unmerged; it clears the
@@ -67,3 +69,45 @@ sections while preserving human content.
 Record whether the available tool conditionally updates descriptions;
 otherwise re-read and verify after writing, recover any observed human edit,
 and report the remaining race.
+
+Due date: Linear's native issue due date, set and read as a calendar date.
+The not-yet-judged query returns it with each issue. A check issue also
+repeats it as the `Due:` line of its check section for readers.
+
+Check issue: created by `merge` after an implementation PR whose spec folder
+has a `## Post-release check` section other than `None.`.
+- Title: `Post-release check: <spec title>`.
+- State: the team's verified Backlog or another open state the not-yet-judged
+  query returns, never Triage, a review state, or an active state, with a
+  verified `post-release-check` label.
+- Assignee: none, unless the repository names who owns release results.
+- Due date: the merge date plus the section's period, set on the native field.
+- Body, as the whole description:
+Record the time zone that turns a merge timestamp into a due date; UTC
+when none is named.
+
+```markdown
+<!-- triage-issues:check:start -->
+## Post-release check
+
+Spec-Folder: docs/specs/<slug>/
+Merged: <merged PR URL> at <merge timestamp>
+Merge-Commit: <merge commit SHA on the base>
+Due: <YYYY-MM-DD>
+
+<the spec's `## Post-release check` content, copied as written>
+<!-- triage-issues:check:end -->
+```
+
+- Find an existing one: list the team's issues in every state carrying the
+  `post-release-check` label and keep the issue whose check section carries
+  the folder's exact `Spec-Folder:` line; filter descriptions locally rather
+  than through search.
+- Create: create the issue in the team with the title, state, label, due
+  date, and description above, and return its identifier.
+
+Notifications: None.
+Replace `None` with the method that copies each triage report to people, such
+as a chat channel and the verified tool that posts to it, only when the user
+asks for one. The tracker stays the record; a failed send is reported and
+never fails a run.

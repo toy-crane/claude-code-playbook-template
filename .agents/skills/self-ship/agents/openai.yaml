@@ -1,0 +1,6 @@
+interface:
+  display_name: "Self-Ship Spec"
+  short_description: "Carry one spec folder through implementation and merge with no person present"
+  default_prompt: "Use $self-ship to carry docs/specs/<slug>/ through implementation, pull request, CI and review bots, merge, and cleanup with no person present."
+policy:
+  allow_implicit_invocation: false

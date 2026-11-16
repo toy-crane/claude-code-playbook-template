@@ -94,11 +94,26 @@ its root cause stays open, or when an out-of-scope defect or suspected cause is
 observed with evidence. Work that closed inside the session, a guess without
 evidence, and a defect already fixed in the current change do not qualify.
 
-Write each qualifying item at the moment of discovery to its own
-`docs/follow-ups/<slug>.md` using the
-[follow-up template](./templates/follow-up.md), naming the slug for the symptom.
-An item must let a later session act without this conversation. Reporting the
-discovery in conversation does not preserve it.
+Record each qualifying item at the moment of discovery, and choose where by who
+must move next. An item must let a later session act without this
+conversation. Reporting the discovery in conversation does not preserve it.
+
+- An agent can reproduce and fix it alone because the correct behavior is
+  already settled: write it to its own `docs/follow-ups/<slug>.md` using the
+  [follow-up template](./templates/follow-up.md), naming the slug for the
+  symptom.
+- It needs a person's decision, or time must pass before anyone can act, such
+  as a measurement that needs real use first: when `AGENTS.md` or `CLAUDE.md`
+  carries an `## Issue tracker` section, create an issue through that section
+  and its linked convention instead of a file. Give it the template's five
+  facts plus the decision a person must make or the moment to act. When the
+  item has a date, set it with the convention's `Due date` method, and report
+  the issue's ID. A file
+  would wait for an agent sweep that cannot settle it; an issue reaches the
+  person who can.
+- Without that section, or when its tool or its `Due date` method is
+  unavailable, write the file as for the first case and say in your report
+  that the item went to a file, or lacks its date, and why.
 
 A follow-up records an open question, not a settled decision, so it does not
 enter `GLOSSARY.md` or a decision contract until its outcome settles on its own

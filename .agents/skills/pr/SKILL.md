@@ -21,7 +21,10 @@ base; when the change is already represented on that remote base, report the
 state instead of duplicating it.
 
 Create the pull request ready for review with a title and body describing the
-actual change. When the repository's `AGENTS.md` or `CLAUDE.md` carries an
+actual change. The title follows the repository's title convention and says
+the effect on users or the system, not which files or mechanism changed:
+`fix(search): keep results visible while typing`, not
+`fix(search): update debounce in SearchBox.tsx`. When the repository's `AGENTS.md` or `CLAUDE.md` carries an
 `## Issue tracker` section, read it and its linked detailed convention when
 present; legacy inline conventions also work without the setup skill installed.
 Without the section, skip every issue step below and leave the body unchanged.
