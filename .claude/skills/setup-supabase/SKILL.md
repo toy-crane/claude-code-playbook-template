@@ -128,8 +128,25 @@ When Auth is selected:
   and enable owner-only access with RLS.
 - Reuse an existing profile name field. If none exists, add only one editable
   display name field. Do not add avatars, bios, roles, or public profiles.
+- Give every profile a creation time, a last-updated time, and the user's
+  email. Set both times when the profile is created. Let the database, not
+  application code, move the last-updated time forward on every profile update
+  while the creation time stays fixed. Copy the email from the Auth user once,
+  when the profile is created, and do not keep it in sync afterwards, because
+  this setup builds no email-change path. When an existing profiles table lacks
+  any of these, add only the missing columns and fill existing rows: the email
+  from their Auth user and the times from when the change is applied.
 - Protect `/settings`. It should expose only the minimal profile view and edit
-  behavior needed to prove the authenticated path.
+  behavior needed to prove the authenticated path. Show the email there as
+  read-only; the display name stays the only editable field.
+- Put the authentication state in the app's shared header. Signed out, it shows
+  only a sign-in link. Signed in, it shows a settings link and a sign-out
+  action, and no sign-in link. The header must change right after sign-up,
+  sign-in, and sign-out without a manual reload. Where the header is rendered
+  in a shared server layout, that layout does not re-render on client
+  navigation by itself, so each of those actions must also refresh the
+  server-rendered UI. Check this against the installed framework version's
+  documentation.
 
 Use the current official [User Management](https://supabase.com/docs/guides/auth/managing-user-data),
 [RLS](https://supabase.com/docs/guides/database/postgres/row-level-security),
@@ -170,6 +187,15 @@ Then adapt it to the project as it stands at execution time:
   redirects to real app destinations instead of the block's example page. Keep
   email-confirmation pages and routes only while confirmation stays enabled,
   and remove screens for excluded features such as password reset.
+- The block's sign-up form always sends the user to a "check your email" page,
+  even when sign-up already returned a session. With email confirmation
+  disabled, sign the user straight in on sign-up and send them to the same
+  destination sign-in uses (the safe `next` path when present, otherwise the
+  app's default destination), so they never pass through the sign-in screen
+  again. With confirmation enabled, keep the confirmation notice.
+- The block's sign-in, sign-up, and sign-out only navigate. Make each of them
+  refresh the server-rendered UI as well, so the shared header reflects the new
+  state at once.
 
 ## Verify observable behavior
 
@@ -182,12 +208,20 @@ the client-safe configuration and confirm that no Auth-only artifacts were added
 With Auth, verify all applicable outcomes:
 
 - the selected method completes sign-up or first sign-in, sign-in, and sign-out;
+- with email confirmation disabled, sign-up lands the user signed in at the
+  sign-in destination without showing the sign-in or confirmation screen;
+- the header shows only the sign-in link when signed out and the settings link
+  and sign-out action when signed in, and switches right after sign-up,
+  sign-in, and sign-out without a manual reload;
+- signing out from the header makes `/settings` inaccessible;
 - the session survives a refresh;
-- a profile is created for a new user;
-- the user can read and update their own profile;
+- a profile is created for a new user with its email equal to the Auth email
+  and its creation and last-updated times equal;
+- the user can read and update their own profile, `/settings` shows the email
+  read-only, and an update moves the last-updated time while the creation time
+  stays the same;
 - an unauthenticated user and another authenticated user cannot read or update it;
-- `/settings` rejects unauthenticated access; and
-- after sign-out, `/settings` is inaccessible again.
+- `/settings` rejects unauthenticated access.
 
 Use two users or an equivalent check supported by the official skills to prove
 the owner-only boundary. If email confirmation is enabled, verify that flow too.
